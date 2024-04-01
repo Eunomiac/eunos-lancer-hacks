@@ -133,7 +133,7 @@
         "extensions": ["css", "hbs", "json"]
     }
   },
-  "url": "",
-  "manifest": "",
-  "download": ""
+  "url": "https://github.com/Eunomiac/eunos-lancer-hacks",
+  "manifest": "https://raw.githubusercontent.com/Eunomiac/eunos-lancer-hacks/main/module.json",
+  "download": "https://raw.githubusercontent.com/Eunomiac/eunos-lancer-hacks/main/eunos-lancer-hacks.zip"
 }
