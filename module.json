@@ -1,0 +1,139 @@
+{
+  "id": "eunos-lancer-hacks",
+  "title": "Euno's Hacks for Lancer",
+  "description": "A collection of bespoke hacks for a Lancer campaign run by Thaumaterge.",
+  "version": "0.1",
+  "authors": [
+		{
+			"name": "Eunomiac",
+			"url": "https://github.com/Eunomiac",
+			"email": "ryan.o.west@gmail.com",
+			"discord": "Eunomiac#8172"
+		}
+  ],
+  "compatibility": {
+    "minimum": 10,
+    "verified": 11
+  },
+  "esmodules": [
+    "module/eunos-lancer-hacks.js",
+		"greensock/esm/all.js"
+  ],
+  "packs": [],
+  "styles": [
+    "css/fonts.min.css",
+    "css/styles.min.css"
+  ],
+  "relationships": {
+    "systems": [{
+      "id": "lancer",
+      "type": "system"
+    }],
+		"requires": [
+      {
+        "id": "socketlib",
+        "type": "module"
+		  },
+      {
+        "id": "ct-effect-tooltips",
+        "type": "module"
+		  },
+      {
+        "id": "drag-ruler",
+        "type": "module"
+		  },
+      {
+        "id": "hex-size-support",
+        "type": "module"
+		  },
+      {
+        "id": "status-icon-counters",
+        "type": "module"
+		  },
+      {
+        "id": "tokenmagic",
+        "type": "module"
+		  },
+      {
+        "id": "token-tooltip-alt",
+        "type": "module"
+		  },
+      {
+        "id": "token-action-hud",
+        "type": "module"
+		  },
+      {
+        "id": "lancer-conditions",
+        "type": "module"
+		  },
+      {
+        "id": "barbrawl",
+        "type": "module"
+		  },
+      {
+        "id": "wall-height",
+        "type": "module"
+		  },
+      {
+        "id": "sequencer",
+        "type": "module"
+		  },
+      {
+        "id": "lancer-weapon-fx",
+        "type": "module"
+		  },
+      {
+        "id": "lancer-speed-provider",
+        "type": "module"
+		  },
+      {
+        "id": "JB2A_DnD5e",
+        "type": "module"
+		  },
+      {
+        "id": "elevatedvision",
+        "type": "module"
+		  },
+      {
+        "id": "easy-target",
+        "type": "module"
+		  },
+      {
+        "id": "ernies-modern-layout",
+        "type": "module"
+		  },
+      {
+        "id": "popout",
+        "type": "module"
+		  },
+      {
+        "id": "mountup",
+        "type": "module"
+		  },
+      {
+        "id": "statuscounter",
+        "type": "module"
+		  },
+      {
+        "id": "grid-aware-templates",
+        "type": "module"
+		  },
+      {
+        "id": "tidy-ui_game-settings",
+        "type": "module"
+		  },
+      {
+        "id": "permission_viewer",
+        "type": "module"
+      }
+    ]
+	},
+  "flags": {
+    "hotReload": {
+        "extensions": ["css", "hbs", "json"]
+    }
+  },
+  "url": "",
+  "manifest": "",
+  "download": ""
+}

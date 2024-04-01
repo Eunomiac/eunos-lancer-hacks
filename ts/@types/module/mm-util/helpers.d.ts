@@ -1,0 +1,13 @@
+import { EntryType, License, LiveEntryTypes, OpCtx, RegEntry } from "machine-mind";
+import { LancerActor, LancerActorType } from "../actor/lancer-actor";
+import type { AnyMMItem, LancerItem, LancerItemType } from "../item/lancer-item";
+export declare function mm_wrap_item<T extends LancerItemType>(item: LancerItem, use_existing_ctx: OpCtx): Promise<LiveEntryTypes<T>>;
+export declare function mm_wrap_actor<T extends EntryType & LancerActorType>(actor: LancerActor, use_existing_ctx: OpCtx): Promise<LiveEntryTypes<T>>;
+export declare function resort_item(moverand: LancerItem, dest: LancerItem, sort_before?: boolean): Promise<LancerItem | undefined>;
+export declare function mm_resort_item(moverand: AnyMMItem, dest: AnyMMItem, sort_before?: boolean): Promise<LancerItem | undefined>;
+export declare function find_license_for(mm: LiveEntryTypes<LancerItemType>, in_actor?: LancerActor): Promise<License | null>;
+export declare function mm_owner<T extends LancerItemType>(item: RegEntry<T>): LancerActor | null;
+export declare function is_core_pack_name(name: string): boolean;
+export declare function get_secondary_packs(doc_type: "Actor" | "Item"): any[];
+export declare function get_pack_id(type: EntryType): string;
+export declare function get_pack(type: LancerItemType | LancerActorType): Promise<CompendiumCollection<CompendiumCollection.Metadata>>;

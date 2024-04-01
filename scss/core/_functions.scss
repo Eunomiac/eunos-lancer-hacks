@@ -1,0 +1,5 @@
+@function getBondCard($bond) {
+  /* bond cards are stored in ../assets/bond-cards and are named "bond-card-($bond).webp" */
+  $address: "../assets/bond-cards/bond-card-#{$bond}.webp";
+  @return $address;
+}

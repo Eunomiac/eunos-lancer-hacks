@@ -1,0 +1,257 @@
+@use "sass:math";
+
+@function calculate-angle($val, $max) {
+  // Calculate the angle-size of each segment
+  $segment-size: math.div(360, $max);
+  // Calculate the total angle between the origin line pointing upwards, including $val segments
+  $angle: $val * $segment-size;
+  // @debug "caclulate-angle(#{$val}, #{$max}) = #{$angle}.";
+  @return $angle;
+}
+
+
+@function calculate-intersection($angle) {
+  // Square properties
+  $size: 100%;
+
+  // Calculate relative angle in terms of single side, 45deg - 135deg
+  $angle-rel: (($angle - 45) % 90) + 45;
+
+  // Convert angle to radians and subtract from 90 degrees
+  $angle-rad: math.div((90 - $angle-rel) * 3.1415, 180);
+
+  // Determine percentage along that side
+  $side-percent: 0.5 * (1 - math.tan($angle-rad));
+
+  // Initialize x and y
+  $x: 0;
+  $y: 0;
+
+  // Depending on side of square, apply $side-percent to $x and $y coords.
+  @if $angle >= 45 and $angle < 135 {
+    $x: $size;
+    $y: $size * $side-percent;
+  } @else if $angle >= 135 and $angle < 225 {
+    $x: $size * (1 - $side-percent);
+    $y: $size;
+  } @else if $angle >= 225 and $angle < 315 {
+    $x: 0;
+    $y: $size * (1 - $side-percent);
+  } @else {
+    $x: $size * $side-percent;
+    $y: 0;
+  }
+
+  // @debug "At #{math.round($angle)}deg: {x: #{math.round($x)}, y: #{math.round($y)}}.";
+
+  // Return the intersection point
+  @return ($x $y);
+}
+
+@function calculate-polygon($val, $max) {
+  $size: 100%;
+  // Define the square's center
+  $center: 50%;
+
+  // Define the initial polygon points
+  $polygon: ($center $center), ($center 0);
+
+  // Get the angle of intersection
+  $angle: calculate-angle($val, $max);
+
+  // Corner Check 1: The polygon includes the top-right corner
+  @if $angle > 45 {
+    $polygon: append($polygon, ($size 0));
+  }
+  // Corner Check 2: The polygon includes the bottom-right corner
+  @if $angle > 135 {
+    $polygon: append($polygon, ($size $size));
+  }
+  // Corner Check 3: The polygon includes the bottom-left corner
+  @if $angle > 225 {
+    $polygon: append($polygon, (0 $size));
+  }
+  // Corner Check 4: The polygon includes the top-left corner
+  @if $angle > 315 {
+    $polygon: append($polygon, (0 0));
+  }
+
+  // Add the intersection point
+  $polygon: append($polygon, calculate-intersection($angle));
+
+  // Return to the center
+  $polygon: append($polygon, ($center $center));
+
+  // Return the polygon points
+  @return $polygon;
+}
+
+@mixin generate-clock-clip($val, $max, $size) {
+  &[data-value="#{$val}"][data-max="#{$max}"] .clock-glow,
+  &[data-value="#{$val}"][data-max="#{$max}"] .clock-fill {
+    clip-path: polygon(#{calculate-polygon($val, $max)});
+  }
+}
+
+@mixin generate-one-segment($max, $size) {
+  &[data-max="#{$max}"] .clock-one-segment {
+    clip-path: polygon(#{calculate-polygon(1, $max)});
+  }
+}
+
+& {
+  --main-font-family: "HelveticaNeue", Helvetica, Arial, sans-serif;
+  background: var(--clock-container-bg);
+  // height: 100px;
+  margin-top: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0px;
+  justify-content: space-evenly;
+  padding: 0 5px 10px 5px;
+
+  &, & * {
+    pointer-events: none;
+  }
+
+
+  .clock-container {
+    --clock-size: 80px;
+
+    // position: absolute;
+    // top: 0px;
+    // left: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    height: calc(1.5 * var(--clock-size));
+    width: var(--clock-size);
+    // transform: translate(-50%, -50%) !important;
+
+    .clock {
+      position: relative;
+      overflow: visible;
+
+      margin-top: -20px;
+
+      &,
+      & * {
+        height: var(--clock-size);
+        width: var(--clock-size);
+        pointer-events: none;
+        border: none;
+      }
+
+      .clock-label {
+        z-index: 20;
+        text-transform: uppercase;
+        height: auto;
+        width: max-content;
+        color: var(--clock-label-color, #ff9400);
+        text-shadow: none;
+
+        left: 50%;
+        top: 115%;
+        position: absolute;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: none;
+        font-size: 14px;
+        font-family: Oswald;
+        font-weight: bold;
+        text-align: center;
+        transform: translate(-50%, -50%);
+        text-wrap: balance;
+        pointer-events: all;
+        text-shadow: none;
+
+        &::placeholder {
+          font-style: italic;
+          text-shadow: none;
+          text-transform: lowercase;
+          font-family: 'HelveticaNeue';
+          color: black;
+          font-weight: normal;
+          font-variant: small-caps;
+        }
+      }
+
+      .clock-frame,
+      .clock-fill,
+      .clock-one-segment {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        height: 100%;
+        width: 100%;
+      }
+
+      .clock-bg {
+        opacity: 0.25;
+      }
+
+      .clock-frame {
+        pointer-events: auto;
+        filter: drop-shadow(1px 1px 2px black);
+      }
+
+      .clock-one-segment { visibility: hidden; }
+
+      .clock-frame { z-index: 5; }
+      .clock-fill { z-index: 2; }
+      .clock-one-segment { z-index: 3; }
+
+      // Generate clip-paths for all possible combinations of val and max
+      @for $max from 2 through 12 {
+        @include generate-one-segment($max, 400px);
+        &[data-value="0"][data-max="#{$max}"] .clock-glow,
+        &[data-value="0"][data-max="#{$max}"] .clock-fill {
+          clip-path: polygon(50% 50%, 50% 100%, 50% 50%);
+        }
+        @for $val from 1 through $max {
+          @include generate-clock-clip($val, $max, 400px);
+        }
+      }
+
+      &[data-value="0"] {
+        *:not(.clock-label) {
+          opacity: 0.5;
+        }
+
+        .clock-bg {
+          opacity: 0;
+        }
+      }
+
+      .clock-delete-button {
+        position: absolute;
+        pointer-events: auto;
+        transition: 0.15s;
+        transform-origin: 50% 50%;
+        scale: 1;
+        top: 0;
+        right: -10px;
+        left: unset;
+        z-index: 6;
+        height: 16px;
+        width: 16px;
+        opacity: 0.25;
+
+        > i {
+          height: 16px;
+          width: 16px;
+        }
+
+        &:hover {
+          opacity: 1;
+          outline-color: var(--bond-red-bright);
+          color: var(--bond-red-bright);
+          scale: 1.25;
+        }
+      }
+    }
+  }
+}

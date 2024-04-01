@@ -1,0 +1,395 @@
+& {
+  position: relative;
+  height: 100%;
+
+  .bond-card-container {
+    position: absolute;
+    top: -8px;
+    bottom: -7px;
+    left: -8px;
+    right: -8px;
+    pointer-events: none;
+    z-index: 0;
+    perspective: 3000px; // Enables 3D space for children to be rotated in
+    overflow: hidden;
+
+    .bond-card {
+      position: absolute;
+      pointer-events: none;
+      transform-style: preserve-3d; // Allows child elements to be transformed in 3D space
+      z-index: 0;
+      border: none;
+      opacity: 0.25;
+
+      top: 50%;
+      left: 25%;
+      height: 100%;
+      transform-origin: left center; // Ensures transformations are relative to the left center
+      translate: -50% -50%;
+
+      // Apply initial transformation for a subtle effect
+      transform: scale(1) rotateY(-15deg);
+      filter: blur(2px);
+
+      // Define a pleasing looping animation that varies the card's rotation, blur, position, and scale
+      animation: subtleMovement 20s infinite alternate ease;
+
+      @keyframes subtleMovement {
+        0% {
+          transform: scale(1) rotateY(-15deg);
+          filter: blur(2px);
+          // left: 0;
+        }
+        // 25% {
+        //   transform: scale(1.02) rotateY(0deg);
+        //   filter: blur(0px);
+        // }
+        // 50% {
+        //   transform: scale(1) rotateY(15deg);
+        //   filter: blur(2px);
+        //   // left: -1%;
+        // }
+        // 75% {
+        //   transform: scale(1.02) rotateY(0deg);
+        //   filter: blur(0px);
+        // }
+        50% {
+          transform: scale(1.03) rotateY(0deg);
+          filter: blur(0px);
+        }
+        100% {
+          transform: scale(1) rotateY(15deg);
+          filter: blur(2px);
+          // left: 0;
+        }
+      }
+
+    //   // Apply initial transformation for a subtle effect
+    //   transform: scale(1) rotateY(-15deg) rotateX(0deg) translateY(-15px);
+    //   filter: blur(2px);
+
+    //   // Define a pleasing looping animation that varies the card's rotation, blur, position, and scale
+    //   animation: subtleMovement 20s infinite alternate ease;
+
+    //   @keyframes subtleMovement {
+    //     0% {
+    //       transform: scale(1) rotateY(-15deg) rotateX(0deg) translateY(-15px);
+    //       filter: blur(4px);
+    //       // left: 0;
+    //     }
+    //     25% {
+    //       transform: scale(1.02) rotateY(-7.5deg) rotateX(-5deg) translateY(-7.5px);
+    //       filter: blur(2px);
+    //     }
+    //     50% {
+    //       transform: scale(1.05) rotateY(0deg) rotateX(-10deg) translateY(0px);
+    //       filter: blur(0px);
+    //     }
+    //     75% {
+    //       transform: scale(1.02) rotateY(7.5deg) rotateX(-15deg) translateY(7.5px);
+    //       filter: blur(2px);
+    //     }
+    //     100% {
+    //       transform: scale(1) rotateY(15deg) rotateX(-20deg) translateY(15px);
+    //       filter: blur(4px);
+    //     }
+    //   }
+    }
+  }
+
+  .bond-wrap-row {
+    position: relative;
+    z-index: 1;
+
+    .bond-col {
+      width: 40%;
+
+      > * { flex: 0; }
+
+      .bond-section {
+
+        margin-bottom: 10px;
+
+        .bond-title {
+          // background-color: var(--talent-color);
+          // color: #fff;
+
+          .bond-title-label {
+            display: block;
+            font-family: "PerpetuaTilting";
+            font-size: 30px;
+            text-indent: 20px;
+            color: var(--bond-red-dark);
+            text-shadow: 0 0 1px var(--bond-red-dark);
+          }
+        }
+
+        .title-card {
+          --main-font-family: Oswald, Helvetica, Arial, sans-serif;
+          background: var(--bond-power-color);
+          color: var(--bond-white);
+          padding: 0 10px 0 32px;
+          text-align: left;
+          margin-bottom: 0;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          text-transform: uppercase;
+          flex-direction: row;
+          position: relative;
+
+          .powers-title, .clocks-title {
+            text-indent: 20px;
+          }
+
+          // &.clocks-title-card {
+          //   background: rgb(85, 72, 0);
+          // }
+        }
+
+        .bond-header {
+          margin-top: 10px;
+
+          &.ideals-header {
+            color: var(--bond-red-dark);
+            font-family: "Plantin";
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: right;
+
+            &.major-ideals-header {
+              margin-top: 0;
+            }
+
+            &.questions-header {
+              text-align: right;
+              text-transform: none;
+              white-space: nowrap;
+            }
+
+            &.boon-header {
+              text-align: center;
+            }
+          }
+        }
+
+        .container-card {
+          --main-font-family: "HelveticaNeue", Helvetica, Arial, sans-serif;
+          margin-top: 0;
+          background: var(--bond-red-fade-faint);
+
+          &.powers-container { @import "sections/powers-section"; }
+          &.stress-container { @import "sections/stress-section"; }
+          &.general-clocks-container { @import "sections/general-clocks-section"; }
+        }
+
+        .bond-subsection {
+          --main-font-family: "HelveticaNeue", Helvetica, Arial, sans-serif;
+
+          ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+          }
+
+          li, .bond-boon, .bond-ideal {
+            // font-family: "HelveticaNeue";
+            font-style: italic;
+            font-size: 12px;
+            text-align: right;
+            margin: 3px 0px;
+            color: var(--bond-black);
+            display: block;
+            width: 100%;
+          }
+
+
+          select {
+            background: transparent;
+            border: none;
+            // font-family: "Helvetica";
+            font-style: italic;
+            font-weight: normal;
+            color: var(--bond-black);
+            font-size: 12px;
+            text-align: right;
+            box-shadow: none !important;
+            outline: none !important;
+            // box-shadow: inset 0px 0px 5px rgba(0,0,0,0.25);
+
+            margin: -5px 0px 0px;
+            height: 36px;
+            width: 100%;
+            text-wrap: balance;
+          }
+
+          input[type='text'] {
+            background: rgba(0,0,0,0.1);
+            border: none;
+            // font-family: "HelveticaNeue";
+            // font-weight: normal;
+            font-style: italic;
+            color: var(--bond-black);
+            font-size: 14px;
+            text-align: right;
+            box-shadow: inset 0px 0px 5px rgba(0,0,0,0.25);
+          }
+        }
+
+        &.xp-track {
+          max-height: 30px;
+        }
+      }
+
+      .collapsible-section {
+        @import 'comps/collapsible-sections';
+
+        &.bond-main {
+          --collapse-icon-color: var(--bond-red-dark);
+          .section-collapse-button,
+          .section-collapse-icon {
+            left: -3px;
+
+            > i {
+              text-shadow: 0 0 1px var(--bond-red-dark), 0 0 1px var(--bond-red-dark);
+            }
+          }
+        }
+
+        &.power-card-container {
+          --collapse-icon-color: var(--bond-red-dark);
+          .section-collapse-button,
+          .section-collapse-icon {
+            top: 3px;
+            left: -3px;
+            height: 15px;
+            width: 15px;
+
+            > i {
+              color: var(--bond-red-dark);
+              line-height: 17px;
+              text-shadow: 0 0 1px var(--bond-red-dark), 0 0 1px var(--bond-red-dark);
+            }
+          }
+        }
+
+        &.bond-main {
+
+        }
+      }
+    }
+  }
+
+  .dotline-container {
+    @import 'comps/dotlines';
+
+    &.xp-dotline {
+      --dotline-bright: var(--bond-blue-bright);
+      --dotline-dark: cyan;
+    }
+
+    &.stress-dotline {
+      --dotline-bright: var(--bond-red-dark);
+      --dotline-dark: red;
+      margin-bottom: 0;
+      color: #fff;
+    }
+  }
+
+  .clock-add-panel {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    align-items: center;
+    translate: 0% -50%;
+    top: 50%;
+    right: 0;
+    gap: 5px;
+    padding-right: 5px;
+
+    &::before {
+      content: "ADD:";
+      font-size: 12px;
+    }
+
+    .clock-add-button {
+      height: 16px;
+      width: 16px;
+      display: block;
+      pointer-events: all;
+      text-align: center;
+      font-family: Oswald;
+      font-size: 10px;
+      line-height: 16px;
+      border-radius: 8px;
+      outline: 1px solid #888888;
+      color: #888888;
+      transition: 0.15s;
+      transform-origin: 50% 50%;
+      scale: 1;
+
+      &:hover {
+        outline-color: white;
+        color: white;
+        scale: 1.25;
+        background: var(--bond-blue-bright);
+        text-shadow: none;
+      }
+    }
+  }
+
+  .clocks-container {
+    --clock-bg: var(--bond-red-fade);
+    @import 'comps/clocks';
+
+    &.burdens-container {
+      background: var(--bond-red-fade) !important;
+      --clock-label-color: #ff3816;
+
+      .clock-container {
+        height: calc(1.75 * var(--clock-size));
+        order: 1;
+
+        .clock {
+          margin-top: -50px;
+          .clock-label {
+            top: 105%;
+
+            text-shadow:
+              0 0 2px black,
+              0 0 2px black,
+              0 0 2px black,
+              0 0 2px black;
+          }
+        }
+
+        &:nth-child(1) {
+          order: 1;
+          .clock { margin-top: -50px; }
+        }
+
+        &:nth-child(2) {
+          order: 3;
+          .clock { margin-top: -50px; }
+        }
+
+        &:nth-child(3) {
+          order: 2;
+          .clock {
+            margin-top: 30px;
+            --clock-label-color: #ff2424;
+
+            .clock-label { font-size: larger; }
+          }
+        }
+      }
+
+      .clock-delete-button { display: none; }
+    }
+  }
+
+}

@@ -1,0 +1,53 @@
+// Utility imports
+@import './core/functions';
+// @import './core/mixins';
+
+/* Globals */
+:root * {
+  @import "./core/colors";
+}
+
+/* Modifications to Bond Chat Messages */
+#chat-log {
+  .message-content {
+    .bond-power-use {
+      --main-font-family: "HelveticaNeue", Helvetica, Arial, sans-serif;
+      .bond-power {
+        background-color: var(--bond-red-dark);
+        --main-font-family: "Oswald";
+        text-transform: uppercase;
+      }
+
+      .power-description {
+        margin: 0 0 10px 0;
+        font-family: "HelveticaNeue", Helvetica, Arial, sans-serif;
+        font-size: 12px;
+        color: var(--bond-black);
+        text-align: left;
+        text-wrap: pretty;
+      }
+    }
+  }
+}
+
+/* Modifications to Sheet Tabs to make room for Bonds Tab */
+.app.window-app.lancer.sheet.actor.pilot {
+
+  .lancer-tabs {
+    justify-content: space-around;
+
+    .lancer-tab {
+      font-family: "Oswald";
+      padding: 7px;
+      font-size: 16px;
+      line-height: 16px;
+    }
+  }
+
+  section.sheet-body.scroll-body {
+    height: calc(100% - 208px);
+    overflow: visible;
+  }
+}
+
+.tab.bonds.active { @import './bonds'; }

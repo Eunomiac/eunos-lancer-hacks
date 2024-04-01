@@ -1,0 +1,43 @@
+& {
+  position: relative;
+  // padding-left: 50px !important;
+
+  .section-collapse-icon, .section-collapse-button {
+    height: 20px;
+    width: 20px;
+    min-width: unset;
+    position: absolute;
+    display: block;
+    pointer-events: none;
+    top: 8px;
+    left: 15px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    color: var(--collapse-icon-color, white);
+
+    > i {
+      display: block;
+      pointer-events: none;
+      line-height: 20px;
+      transition: 0.15s;
+      transform-origin: center center;
+    }
+  }
+
+  .section-collapse-button {
+    cursor: pointer;
+    pointer-events: auto;
+    opacity: 0;
+
+    &:hover + .section-collapse-icon i {
+      scale: 1.25;
+      text-shadow: 0 0 2px var(--collapse-icon-color, white);
+    }
+  }
+
+  .collapse-container {
+    overflow: hidden;
+    height: auto;
+  }
+}
