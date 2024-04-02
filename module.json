@@ -2,7 +2,7 @@
   "id": "eunos-lancer-hacks",
   "title": "Euno's Hacks for Lancer",
   "description": "A collection of bespoke hacks for a Lancer campaign run by Thaumaterge.",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "authors": [
     {
       "name": "Eunomiac",
@@ -157,6 +157,6 @@
     }
   },
   "url": "https://github.com/Eunomiac/eunos-lancer-hacks",
-  "manifest": "https://raw.githubusercontent.com/Eunomiac/eunos-lancer-hacks/main/module.json",
-  "download": "https://github.com/Eunomiac/eunos-lancer-hacks/raw/main/eunos-lancer-hacks.zip"
+  "manifest": "https://github.com/Eunomiac/eunos-lancer-hacks/releases/latest/download/module.json",
+  "download": "https://github.com/Eunomiac/eunos-lancer-hacks/releases/download/v1.0.0/eunos-lancer-hacks-v1.0.0.zip"
 }
