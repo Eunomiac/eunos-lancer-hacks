@@ -157,6 +157,6 @@
     }
   },
   "url": "https://github.com/Eunomiac/eunos-lancer-hacks",
-  "manifest": "https://github.com/Eunomiac/eunos-lancer-hacks/releases/latest/download/module.json",
+  "manifest": "https://raw.githubusercontent.com/Eunomiac/eunos-lancer-hacks/main/module.json",
   "download": "https://github.com/Eunomiac/eunos-lancer-hacks/releases/download/v1.0.0/eunos-lancer-hacks-v1.0.0.zip"
 }
