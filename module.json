@@ -2,98 +2,113 @@
   "id": "eunos-lancer-hacks",
   "title": "Euno's Hacks for Lancer",
   "description": "A collection of bespoke hacks for a Lancer campaign run by Thaumaterge.",
-  "version": "0.1",
+  "version": "0.0.1",
   "authors": [
-		{
-			"name": "Eunomiac",
-			"url": "https://github.com/Eunomiac",
-			"email": "ryan.o.west@gmail.com",
-			"discord": "Eunomiac#8172"
-		}
+    {
+      "name": "Eunomiac",
+      "url": "https://github.com/Eunomiac",
+      "email": "ryan.o.west@gmail.com",
+      "discord": "Eunomiac#8172",
+      "flags": {}
+    }
   ],
   "compatibility": {
-    "minimum": 10,
-    "verified": 11
+    "minimum": "10",
+    "verified": "10"
   },
   "esmodules": [
     "module/eunos-lancer-hacks.js",
-		"greensock/esm/all.js"
+    "greensock/esm/all.js"
   ],
-  "packs": [],
   "styles": [
     "css/fonts.min.css",
     "css/styles.min.css"
   ],
   "relationships": {
-    "systems": [{
-      "id": "lancer",
-      "type": "system"
-    }],
-		"requires": [
+    "systems": [
       {
-        "id": "socketlib",
-        "type": "module"
-		  },
-      {
-        "id": "ct-effect-tooltips",
-        "type": "module"
-		  },
-      {
-        "id": "drag-ruler",
-        "type": "module"
-		  },
-      {
-        "id": "hex-size-support",
-        "type": "module"
-		  },
-      {
-        "id": "status-icon-counters",
-        "type": "module"
-		  },
-      {
-        "id": "tokenmagic",
-        "type": "module"
-		  },
-      {
-        "id": "token-tooltip-alt",
-        "type": "module"
-		  },
-      {
-        "id": "token-action-hud",
-        "type": "module"
-		  },
-      {
-        "id": "lancer-conditions",
-        "type": "module"
-		  },
+        "id": "lancer",
+        "type": "system",
+        "compatibility": {}
+      }
+    ],
+    "requires": [
       {
         "id": "barbrawl",
-        "type": "module"
-		  },
+        "type": "module",
+        "compatibility": {}
+      },
       {
-        "id": "wall-height",
+        "id": "ct-effect-tooltips",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "drag-ruler",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "elevatedvision",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "hex-size-support",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "JB2A_DnD5e",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "lancer-speed-provider",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "lancer-weapon-fx",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "popout",
         "type": "module"
 		  },
       {
         "id": "sequencer",
-        "type": "module"
-		  },
+        "type": "module",
+        "compatibility": {}
+      },
       {
-        "id": "lancer-weapon-fx",
-        "type": "module"
-		  },
+        "id": "socketlib",
+        "type": "module",
+        "compatibility": {}
+      },
       {
-        "id": "lancer-speed-provider",
-        "type": "module"
-		  },
+        "id": "statuscounter",
+        "type": "module",
+        "compatibility": {}
+      },
       {
-        "id": "JB2A_DnD5e",
-        "type": "module"
-		  },
+        "id": "token-tooltip-alt",
+        "type": "module",
+        "compatibility": {}
+      },
       {
-        "id": "elevatedvision",
-        "type": "module"
-		  },
+        "id": "tokenmagic",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "wall-height",
+        "type": "module",
+        "compatibility": {}
+      }
+    ],
+    "recommends": [
       {
         "id": "easy-target",
         "type": "module"
@@ -103,7 +118,7 @@
         "type": "module"
 		  },
       {
-        "id": "popout",
+        "id": "grid-aware-templates",
         "type": "module"
 		  },
       {
@@ -111,26 +126,34 @@
         "type": "module"
 		  },
       {
-        "id": "statuscounter",
+        "id": "token-z",
         "type": "module"
-		  },
+      },
       {
-        "id": "grid-aware-templates",
+        "id": "token-attacher",
         "type": "module"
-		  },
+      },
+      {
+        "id": "permission_viewer",
+        "type": "module"
+      },
       {
         "id": "tidy-ui_game-settings",
         "type": "module"
 		  },
       {
-        "id": "permission_viewer",
+        "id": "token-action-hud-core",
         "type": "module"
-      }
+		  }
     ]
-	},
+  },
   "flags": {
     "hotReload": {
-        "extensions": ["css", "hbs", "json"]
+      "extensions": [
+        "css",
+        "hbs",
+        "json"
+      ]
     }
   },
   "url": "https://github.com/Eunomiac/eunos-lancer-hacks",

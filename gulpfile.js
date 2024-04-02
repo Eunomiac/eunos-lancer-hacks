@@ -185,10 +185,10 @@ const subGroup = (array, groupSize) => {
   return subArrays;
 };
 // #endregion ▮▮▮▮[UTILITY]▮▮▮▮
-const ISRAPIDGULPING = argv.isMinimizingCSS !== "true";
+const ISRAPIDGULPING = false; // argv.isMinimizingCSS !== "true";
 
 const ISMINIFYINGJS = argv.isMinimizingJS === "true";
-const ISBUILDINGDIST = argv.isBuildingDist === "true";
+const ISBUILDINGDIST = true; // argv.isBuildingDist === "true";
 const ISDEPLOYING = argv.isDeploying === "true";
 const ISANALYZING = argv.isAnalyzing === "true";
 const ISGENERATINGTYPEFILES = argv.isGeneratingTypeDefs === "true";
@@ -246,7 +246,7 @@ if (ISCOMPILINGCODE) {
   } else {
     BUILDFILES = {
       ts: {
-        "./module_staging_1/": ["ts/**/*.*"]
+        "./module/": ["ts/**/*.*"]
       },
       css: {
         "./css/": ["scss/**/*.scss"]
@@ -502,7 +502,7 @@ const PLUMBING = {
     } else {
       return src(source, {allowEmpty: true})
         .pipe(PIPES.openPipe("cssFull")())
-        .pipe(sasser({outputStyle: "nested"}))
+        .pipe(sasser())
         .pipe(bundler([
           prefixer({cascade: false})
         ]))

@@ -1,29 +1,81 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import C from "../core/constants";
 import {EntryType} from "machine-mind";
-import {LancerActor, LancerActorType} from "../@types/module/actor/lancer-actor";
+
+import EunosLancerPilot from "../overrides/eunos-lancer-actor";
 import {LancerActorSheet} from "../@types/module/actor/lancer-actor-sheet";
 import {LancerToken} from "../@types/module/token";
 /* eslint-enable @typescript-eslint/no-unused-vars */
+
+/* Replace __DEPENDENCY_NAME__ with the name of the module that this component depends on. */
 
 declare global {
   interface EunosLancerPilotSheet extends LancerActorSheet<EntryType.PILOT> {
     actor: EunosLancerPilot;
     isBondsTabActive?: boolean;
   }
+
+  interface LancerClockData {
+    id: IDString,
+    name: string,
+    value: number,
+    max: number,
+    color: string,
+    targetFlag: string,
+    placeholder: string
+  }
+
+  type BurdenKey = "minor4" | "minor6" | "major";
+  type PowerKey = keyof typeof C["bondPowersMap"];
+
+  interface CollapseFlags {
+    main: boolean,
+    stress: boolean,
+    clocks: boolean,
+    powers: Record<PowerKey|"main", boolean>
+  }
 }
 
-
 export default class Hack_EnableBondsTab {
-  static async Initialize() {
-    // Load HBS partial for inserting bonds section into Lancer sheet
-    loadTemplates([
-      "modules/eunos-lancer-hacks/templates/partials/clock.hbs",
-      "modules/eunos-lancer-hacks/templates/partials/bonds.hbs",
-      "modules/eunos-lancer-hacks/templates/partials/power-chat.hbs",
-      "modules/eunos-lancer-hacks/templates/partials/dotline.hbs"
-    ]);
 
+  // #region Environment Viability Checks ~
+  static get canEnable(): boolean {
+    return true;
+  }
+  static isEnabled(): boolean {
+    return this.canEnable && game.settings.get("eunos-lancer-hacks", "enableBondsTab") === true;
+  }
+  // #endregion
+
+  // #region *** INITIALIZATION *** ~
+  static RegisterSettings() {
+
+    game.settings.register("eunos-lancer-hacks",
+      "enableBondsTab",
+      {
+        name: "Title",
+        hint: "Description.",
+        scope: "world",
+        config: true,
+        default: false,
+        type: Boolean
+      }
+    );
+
+    // game.settings.register("eunos-lancer-hacks",
+    //   "__setting_key__",
+    //   {
+    //     name: "Title",
+    //     hint: "Description.",
+    //     scope: "world",
+    //     config: true,
+    //     default: true,
+    //     type: Boolean
+    //   }
+    // );
+  }
+
+  static RegisterHooks() {
     Hooks.on("renderLancerActorSheet", (actorSheet: EunosLancerPilotSheet, elem$: JQuery) => {
       if (actorSheet.actor.is_pilot()) {
         this.addBondsTab(actorSheet, elem$).then(function() {
@@ -34,6 +86,26 @@ export default class Hack_EnableBondsTab {
         });
       }
     });
+  }
+
+  static async RegisterTemplates() {
+    loadTemplates([
+      "modules/eunos-lancer-hacks/templates/partials/clock.hbs",
+      "modules/eunos-lancer-hacks/templates/partials/bonds.hbs",
+      "modules/eunos-lancer-hacks/templates/partials/power-chat.hbs",
+      "modules/eunos-lancer-hacks/templates/partials/dotline.hbs"
+    ]);
+  }
+
+  static async Initialize() {
+
+    // Register settings related to this component
+    this.RegisterSettings();
+
+    // Register hooks related to this component
+    this.RegisterHooks();
+
+    return this.RegisterTemplates();
   }
 
   static getBondsTabData(actor: EunosLancerPilot) {
@@ -318,3 +390,4 @@ export default class Hack_EnableBondsTab {
     });
   }
 }
+// #endregion

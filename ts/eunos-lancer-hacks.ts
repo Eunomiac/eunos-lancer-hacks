@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import C from "./core/constants";
-import ELHSettings from "./core/settings";
-import OverrideLancerPilot from "./overrides/eunos-lancer-actor";
 import {registerHandlebarHelpers} from "./core/helpers";
+
+import EunosLancerPilot from "./overrides/eunos-lancer-actor";
 import Hack_BarBrawl from "./module-hacks/barbrawl";
+import Hack_EnableBondsTab from "./components/enable-bonds-tab";
+import Hack_EnableScanVision from "./components/enable-scan-vision";
+
 import {LancerActor, LancerActorType} from "./@types/module/actor/lancer-actor";
 import {LancerActorSheet} from "./@types/module/actor/lancer-actor-sheet";
 import {LancerToken} from "./@types/module/token";
@@ -14,9 +17,15 @@ import {EntryType} from "machine-mind";
 class ELH {
 
   static Initialize() {
+    // Disable Compatibility Warnings
+    console.log("*** INITIALIZING EUNO'S LANCER HACKS");
+    CONFIG.compatibility.mode = 0;
     // Register settings to show up in module settings configuration
     // ELHSettings.RegisterSettings();
     Hack_BarBrawl.Initialize();
+    EunosLancerPilot.Initialize();
+    Hack_EnableBondsTab.Initialize();
+    Hack_EnableScanVision.Initialize();
 
 
     // Register handlebar helpers

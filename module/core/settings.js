@@ -1,3 +1,10 @@
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌█░░░░░░░░░ Euno's Hacks for Lancer for Foundry VTT ░░░░░░░░░░░█▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌█  License █ v0.1 ██▐     *|
+|*     ▌████░░░░  ░░░░█████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
+/* @@DOUBLE-BLANK@@ ~*/
 class ELHSettings {
     static RegisterSettings() {
         game.settings.register("eunos-lancer-hacks", "isLinkingFeelTremorToScanningRadius", {

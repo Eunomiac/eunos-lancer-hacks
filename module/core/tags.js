@@ -1,3 +1,10 @@
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌█░░░░░░░░░ Euno's Hacks for Lancer for Foundry VTT ░░░░░░░░░░░█▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌█  License █ v0.1 ██▐     *|
+|*     ▌████░░░░  ░░░░█████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
+/* @@DOUBLE-BLANK@@ ~*/
 import { Tagify } from "../libraries.js";
 import { Tag, MainDistrict, OtherDistrict, Vice, Playbook, BladesActorType } from "./constants.js";
 import U from "./utilities.js";
@@ -13,13 +20,7 @@ const _onTagifyChange = (event, doc, targetKey) => {
 };
 const Tags = {
     InitListeners: (html, doc) => {
-        /**
-         * Applies tags and Tagify functionality to a specified HTML element.
-         * @param {HTMLElement} elem The element to tagify.
-         * @param {Record<string,BladesTag[]>} tags The tags, sorted into groups, to apply.
-         */
-        function makeTagInput(elem, tags) {
-            // Create tagify instance; populate dropdown list with tags
+                function makeTagInput(elem, tags) {
             const tagify = new Tagify(elem, {
                 enforceWhitelist: true,
                 editTags: false,
@@ -60,12 +61,7 @@ const Tags = {
                 })
                     .join("");
             };
-            /**
-             * Returns the tag group to which a tag belongs, or false if no group found.
-             * @param {BladesTag|string} tag
-             * @returns {string|false} Either the group containing the given tag, or false if no group found.
-             */
-            function findDataGroup(tag) {
+                        function findDataGroup(tag) {
                 for (const [group, tagList] of Object.entries(tags)) {
                     if (tagList.includes(tag)) {
                         return group;
@@ -73,7 +69,6 @@ const Tags = {
                 }
                 return false;
             }
-            // Check if element specifies an alternate schema target from doc.tags
             const targetKey = $(elem).data("tagTarget") ?? "system.tags";
             const curTags = [getProperty(doc, targetKey) ?? []].flat().filter(Boolean);
             tagify.addTags(curTags
@@ -82,8 +77,6 @@ const Tags = {
                 value: (new Handlebars.SafeString(tag)).toString(),
                 "data-group": findDataGroup(tag)
             })), true, true);
-            // Add event listener for tag changes, setting defined target
-            // Wait briefly, so other tag elements' tags can be set before listener initializes
             setTimeout(() => elem.addEventListener("change", (event) => { _onTagifyChange(event, doc, targetKey); }), 1000);
         }
         const systemTags = {

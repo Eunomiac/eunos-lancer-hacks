@@ -1,0 +1,74 @@
+body.-emu {
+
+  #sidebar, .sidebar-popout {
+
+    &[id=chat-popout] .window-content [data-tab=chat],
+    [data-tab=chat] {
+      #chat-log {
+        .message {
+          .message-header {
+            background-color: rgba(0, 0, 0, 0.25);
+            padding: 3px;
+            margin-bottom: -3px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            line-height: 1;
+            flex-wrap: nowrap;
+            gap: 0;
+            position: relative;
+
+            .message-sender {
+              font-family: "Plantin";
+              font-size: 18px;
+              line-height: 16px;
+              white-space: nowrap;
+              overflow: visible;
+            }
+
+            .message-metadata {
+              max-height: 16px;
+              white-space: nowrap;
+              position: absolute;
+              right: 5px;
+              text-shadow: 1px 1px 2px black;
+            }
+          }
+
+          .message-content {
+            padding: 0;
+
+            div {
+              background-color: rgba(0, 0, 0, 0.15);
+            }
+          }
+        }
+      }
+    }
+
+  }
+}
+
+.-emu-layout body.-emu #sidebar [data-tab=chat] #chat-log .message .message-header {
+  background-color: rgba(0, 0, 0, 0.25);
+  padding: 3px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  margin-bottom: -3px;
+  line-height: 1;
+  flex-wrap: nowrap;
+  gap: 0;
+  position: relative;
+}
+
+.-emu-layout body.-emu #sidebar [data-tab=chat] #chat-log .message .message-header .message-sender {
+    font-family: "Plantin";
+    font-size: 18px;
+    line-height: 16px;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+.-emu-layout body.-emu #sidebar [data-tab=chat] #chat-log .message .message-content {
+  padding: 0;
+
+}

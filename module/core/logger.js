@@ -1,10 +1,17 @@
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌█░░░░░░░░░ Euno's Hacks for Lancer for Foundry VTT ░░░░░░░░░░░█▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌█  License █ v0.1 ██▐     *|
+|*     ▌████░░░░  ░░░░█████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
+/* @@DOUBLE-BLANK@@ ~*/
 import U from "./utilities.js";
 import C from "./constants.js";
 const LOGGERCONFIG = {
     fullName: "eLogger",
     aliases: ["dbLog"],
     stackTraceExclusions: {
-        handlebars: [/scripts\/handlebars/] // From internal Handlebars module
+        handlebars: [/scripts\/handlebars/]
     }
 };
 const STYLES = {
@@ -149,11 +156,7 @@ const eLogger = (type = "base", ...content) => {
         console.groupEnd();
     }
     console.groupEnd();
-    /**
-     *
-     * @param regExpFilters
-     */
-    function getStackTrace(regExpFilters = []) {
+        function getStackTrace(regExpFilters = []) {
         regExpFilters.push(new RegExp(`at (getStackTrace|${LOGGERCONFIG.fullName}|${LOGGERCONFIG.aliases.map(String).join("|")}|Object\\.(log|display|hbsLog|error))`), /^Error/);
         return ((new Error()).stack ?? "")
             .split(/\n/)

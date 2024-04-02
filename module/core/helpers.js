@@ -1,12 +1,13 @@
-// #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
-// import U from "./utilities.js";
-// #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌█░░░░░░░░░ Euno's Hacks for Lancer for Foundry VTT ░░░░░░░░░░░█▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌█  License █ v0.1 ██▐     *|
+|*     ▌████░░░░  ░░░░█████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
+/* @@DOUBLE-BLANK@@ ~*/
+
 const isList = (ref) => ref === Object(ref) && !Array.isArray(ref);
-// #region ████████ Handlebars: Handlebar Helpers Definitions ████████ ~
 const handlebarHelpers = {
-    // randString(param1 = 10) {
-    //   return U.randString(param1);
-    // },
     test(param1, operator, param2) {
         const stringMap = {
             true: true,
@@ -37,8 +38,7 @@ const handlebarHelpers = {
             case "||": {
                 return param1 || param2;
             }
-            case "==": /* { return U.areFuzzyEqual(param1, param2); } */
-            case "===": {
+            case "==":             case "===": {
                 return param1 === param2;
             }
             case "!=":
@@ -110,9 +110,6 @@ const handlebarHelpers = {
             default: return str;
         }
     },
-    // romanize(val: number): string {
-    //   return U.romanizeNum(U.pInt(val));
-    // },
     count(param) {
         if (Array.isArray(param) || isList(param)) {
             return Object.values(param).filter((val) => val !== null && val !== undefined).length;
@@ -122,8 +119,6 @@ const handlebarHelpers = {
         }
         return param ? 1 : 0;
     },
-    // Concat helper
-    // Usage: (concat 'first 'second')
     concat(...args) {
         let outStr = "";
         for (const arg of args) {
@@ -133,12 +128,10 @@ const handlebarHelpers = {
         }
         return outStr;
     },
-    // Merge helper - To merge additional properties into a template's context
     merge(context, ...args) {
         args.pop();
         return args.reduce((acc, val) => Object.assign(acc, val), context);
     },
-    // For loop: {{#for [from = 0, to, stepSize = 1]}}<html content, this = index>{{/for}}
     forloop: (...args) => {
         const options = args.pop();
         let [from, to, stepSize] = args;
@@ -157,10 +150,6 @@ const handlebarHelpers = {
     signNum(num) {
         return Math.sign(num);
     },
-    // compileSvg(...args): string {
-    //   const [svgDotKey, svgPaths]: [string, string] = args as [string, string];
-    //   return U.getSvgCode(svgDotKey, svgPaths);
-    // },
     eLog(...args) {
         args.pop();
         let dbLevel = 3;
@@ -169,9 +158,6 @@ const handlebarHelpers = {
         }
         eLog.hbsLog(...args, dbLevel);
     },
-    // Does the name of this turf block represent a standard 'Turf' claim?
-    // isTurfBlock: (name: string): boolean => U.fuzzyMatch(name, "Turf"),
-    // Which other connection does this connector overlap with?
     getConnectorPartner: (index, direction) => {
         index = parseInt(`${index}`, 10);
         const partners = {
@@ -198,7 +184,6 @@ const handlebarHelpers = {
         }
         return null;
     },
-    // Is the value Turf side.
     isTurfOnEdge: (index, direction) => {
         index = parseInt(`${index}`, 10);
         const edges = {
@@ -223,7 +208,6 @@ const handlebarHelpers = {
         }
         return edges[index].includes(direction);
     },
-    // Multiboxes
     multiboxes(selected, options) {
         let html = options.fn(this);
         selected = [selected].flat(1);
@@ -239,7 +223,6 @@ const handlebarHelpers = {
     repturf: (turfsAmount, options) => {
         let html = options.fn(this);
         let turfsAmountInt = parseInt(turfsAmount, 10);
-        // Can't be more than 6.
         if (turfsAmountInt > 6) {
             turfsAmountInt = 6;
         }
@@ -256,10 +239,6 @@ handlebarHelpers.eLog3 = function (...args) { handlebarHelpers.eLog(...[3, ...ar
 handlebarHelpers.eLog4 = function (...args) { handlebarHelpers.eLog(...[4, ...args.slice(0, 7)]); };
 handlebarHelpers.eLog5 = function (...args) { handlebarHelpers.eLog(...[5, ...args.slice(0, 7)]); };
 Object.assign(handlebarHelpers);
-/**
- *
- */
 export function registerHandlebarHelpers() {
     Object.entries(handlebarHelpers).forEach(([name, func]) => Handlebars.registerHelper(name, func));
 }
-// #endregion ▄▄▄▄▄ Handlebars ▄▄▄▄▄

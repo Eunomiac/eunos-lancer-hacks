@@ -7,6 +7,10 @@
   @import "./core/colors";
 }
 
+.-emu-layout {
+  @import "./module-hacks/ernies-modern-ui";
+}
+
 /* Modifications to Bond Chat Messages */
 #chat-log {
   .message-content {

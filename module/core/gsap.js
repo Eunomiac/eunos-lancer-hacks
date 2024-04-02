@@ -1,4 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌█░░░░░░░░░ Euno's Hacks for Lancer for Foundry VTT ░░░░░░░░░░░█▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌█  License █ v0.1 ██▐     *|
+|*     ▌████░░░░  ░░░░█████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
+/* @@DOUBLE-BLANK@@ ~*/
 import U from "./utilities.js";
 import C from "./constants.js";
 import { Flip, TextPlugin, Draggable as Dragger, MotionPathPlugin, Observer, CustomEase } from "../libraries.js";
@@ -7,15 +13,10 @@ const gsapPlugins = [
     Flip,
     MotionPathPlugin,
     Dragger,
-    // SplitText,
     Observer,
     CustomEase,
-    //   CustomWiggle,
-    //   CustomBounce,
-    //   EasePack
 ];
 export const gsapEffects = {
-    // #region CLOCK KEYS
     keyDrop: {
         effect: (clockKey, config) => {
             const [keyContainer] = $(clockKey).closest(".clock-key-container");
@@ -76,9 +77,7 @@ export const gsapEffects = {
                 onStart() {
                     if (target) {
                         const target$ = $(target);
-                        // Get the next sibling of the target element if it has the class "clock-control"
                         const nextSibling$ = target$.next(".clock-control-flipper");
-                        // Check if the nextSibling element exists
                         if (nextSibling$.length) {
                             U.gsap.effects.keyControlPanelFlip(nextSibling$[0], {
                                 ...config,
@@ -100,28 +99,21 @@ export const gsapEffects = {
         },
         extendTimeline: true
     },
-    // #endregion
-    // #region CHAT CONSEQUENCE EFFECTS
     csqEnter: {
         effect: (csqContainer, config) => {
             const csqRoot = U.gsap.utils.selector(csqContainer);
-            // ELog.checkLog3("gsap", "gsapEffects.consequenceEnter -> THIS", {this: this, csqRoot});
             const csqIconCircle = csqRoot(".consequence-icon-circle.base-consequence");
-            // const csqBaseElems = csqRoot(".base-consequence:not(.consequence-icon-circle)");
             const csqBaseTypeElem = csqRoot(".consequence-type.base-consequence");
             const csqAcceptTypeElem = csqRoot(".consequence-type.accept-consequence");
             const csqBaseNameElem = csqRoot(".consequence-name.base-consequence");
             const csqAcceptNameElem = csqRoot(".consequence-name.accept-consequence");
-            // const csqAcceptElems = csqRoot(".accept-consequence:not(.consequence-icon-circle):not(.consequence-button-container)");
             const tl = U.gsap.timeline({ paused: true, defaults: {} });
-            // Initialize name and type opacities.
             if (csqAcceptTypeElem.length > 0) {
                 tl.set(csqAcceptTypeElem, { opacity: 0 }, 0);
             }
             if (csqAcceptNameElem.length > 0) {
                 tl.set(csqAcceptNameElem, { opacity: 0 }, 0);
             }
-            // Crossfade base/accept type lines
             if (csqBaseTypeElem.length > 0) {
                 tl.fromTo(csqBaseTypeElem, {
                     opacity: 1
@@ -140,7 +132,6 @@ export const gsapEffects = {
                     ease: "sine"
                 }, 0);
             }
-            // Crossfade base/accept name lines
             if (csqBaseNameElem.length > 0) {
                 tl.fromTo(csqBaseNameElem, {
                     opacity: 1
@@ -159,7 +150,6 @@ export const gsapEffects = {
                     ease: "sine"
                 }, 0);
             }
-            // Brighten the entire container slightly
             if (csqContainer) {
                 tl.fromTo(csqContainer, {
                     filter: "brightness(1)"
@@ -169,7 +159,6 @@ export const gsapEffects = {
                     ease: "none"
                 }, 0);
             }
-            // Enlarge the icon circle, add stroke
             if (csqIconCircle.length > 0) {
                 tl.fromTo(csqIconCircle, {
                     scale: 0.75,
@@ -213,7 +202,6 @@ export const gsapEffects = {
                     $(csqInteractionPads).css("pointerEvents", "none");
                 }
             });
-            // Slide out the background
             if (csqBackgroundImg.length) {
                 tl.fromTo(csqBackgroundImg, {
                     xPercent: 110,
@@ -225,7 +213,6 @@ export const gsapEffects = {
                     ease: "back"
                 }, 0);
             }
-            // Fade out the base consequence icon circle
             if (csqIconCircleBase.length > 0) {
                 tl.fromTo(csqIconCircleBase, {
                     opacity: 1
@@ -235,7 +222,6 @@ export const gsapEffects = {
                     ease: "sine.out"
                 }, 0);
             }
-            // Fade in the accept consequence icon circle, enlarging the stroke
             if (csqIconCircleAccept.length > 0) {
                 tl.fromTo(csqIconCircleAccept, {
                     opacity: 0
@@ -254,7 +240,6 @@ export const gsapEffects = {
                     ease: "sine"
                 }, 0.175);
             }
-            // Scale and fade in the button containers
             if (csqButtonContainers.length > 0) {
                 tl.fromTo(csqButtonContainers, {
                     scale: config.scale,
@@ -289,7 +274,6 @@ export const gsapEffects = {
             const buttonIcon = buttonRoot(".button-icon i");
             const buttonLabel = buttonRoot(".consequence-button-label");
             const tl = U.gsap.timeline({ paused: true, defaults: {} });
-            // Turn type line white
             if (typeLine.length > 0) {
                 tl.fromTo(typeLine, {
                     color: C.Colors.RED
@@ -299,7 +283,6 @@ export const gsapEffects = {
                     ease: "sine.inOut"
                 }, 0);
             }
-            // Slide type line background out from under icon
             if (typeLineBg.length > 0) {
                 tl.fromTo(typeLineBg, {
                     x: 5,
@@ -314,7 +297,6 @@ export const gsapEffects = {
                     ease: "back.out"
                 }, 0);
             }
-            // Slide accept button background out from under icon
             if (buttonBg.length > 0) {
                 tl.fromTo(buttonBg, {
                     scaleX: 0,
@@ -329,7 +311,6 @@ export const gsapEffects = {
                     ease: "back.out"
                 }, 0);
             }
-            // Turn button icon black and scale
             if (buttonIcon.length > 0) {
                 tl.fromTo(buttonIcon, {
                     color: C.Colors.GREY,
@@ -343,7 +324,6 @@ export const gsapEffects = {
                     ease: "sine"
                 }, 0);
             }
-            // Turn button label black, add letter-spacing, bold
             if (buttonLabel.length > 0) {
                 tl.fromTo(buttonLabel, {
                     color: C.Colors.GREY,
@@ -368,7 +348,6 @@ export const gsapEffects = {
             const acceptIconCircle = csqRoot(".consequence-icon-circle.accept-consequence");
             const acceptButton = csqRoot(".consequence-button-container.consequence-accept-button-container");
             const tl = U.gsap.timeline({ paused: true, defaults: {} });
-            // Fade out type line
             if (typeLine.length > 0) {
                 tl.to(typeLine, {
                     opacity: 0,
@@ -376,7 +355,6 @@ export const gsapEffects = {
                     ease: "sine.inOut"
                 }, 0);
             }
-            // Fade out name
             if (nameLine.length > 0) {
                 tl.to(nameLine, {
                     opacity: 0,
@@ -384,7 +362,6 @@ export const gsapEffects = {
                     ease: "sine.inOut"
                 }, 0);
             }
-            // Fade out icon
             if (acceptIconCircle.length > 0) {
                 tl.to(acceptIconCircle, {
                     opacity: 0,
@@ -392,7 +369,6 @@ export const gsapEffects = {
                     ease: "sine.inOut"
                 }, 0);
             }
-            // Fade out accept button
             if (acceptButton.length > 0) {
                 tl.fromTo(acceptButton, {
                     opacity: 1
@@ -415,7 +391,6 @@ export const gsapEffects = {
             const footerBg = csqRoot(`.consequence-footer-container .consequence-footer-bg.${config.type}-consequence`);
             const specialFooterMsg = csqRoot(`.consequence-footer-container .consequence-footer-message.${config.type}-consequence`);
             const tl = U.gsap.timeline({ paused: true, defaults: {} });
-            // Fade in icon circle
             if (iconCircle.length > 0) {
                 tl.fromTo(iconCircle, {
                     opacity: 0
@@ -425,7 +400,6 @@ export const gsapEffects = {
                     ease: "back.out"
                 }, 0);
             }
-            // Fade in typeLine
             if (typeLine.length > 0) {
                 tl.fromTo(typeLine, {
                     opacity: 0
@@ -435,7 +409,6 @@ export const gsapEffects = {
                     ease: "back.out"
                 }, 0);
             }
-            // Slide out nameLine from left
             if (nameLine.length > 0) {
                 tl.fromTo(nameLine, {
                     scaleX: 0
@@ -445,7 +418,6 @@ export const gsapEffects = {
                     ease: "back.inOut"
                 }, 0);
             }
-            // Slide out footer background from left
             if (footerBg.length > 0) {
                 tl.fromTo(footerBg, {
                     scaleX: 0,
@@ -459,7 +431,6 @@ export const gsapEffects = {
                     ease: "back.inOut"
                 }, 0);
             }
-            // Slide out attribute from left
             if (specialFooterMsg.length > 0) {
                 tl.fromTo(specialFooterMsg, {
                     scaleX: 0,
@@ -476,7 +447,6 @@ export const gsapEffects = {
                 const buttonBg = buttonRoot(".consequence-button-bg");
                 const buttonIcon = buttonRoot(".button-icon i");
                 const buttonLabel = buttonRoot(".consequence-button-label");
-                // Slide out button background from right
                 if (buttonBg.length > 0) {
                     tl.fromTo(buttonBg, {
                         scaleX: 0,
@@ -490,7 +460,6 @@ export const gsapEffects = {
                         ease: "back.inOut"
                     }, 0);
                 }
-                // Turn button icon black and scale
                 if (buttonIcon.length > 0) {
                     tl.fromTo(buttonIcon, {
                         color: C.Colors.GREY,
@@ -504,7 +473,6 @@ export const gsapEffects = {
                         ease: "sine"
                     }, 0);
                 }
-                // Turn button label black, bold
                 if (buttonLabel.length > 0) {
                     tl.fromTo(buttonLabel, {
                         color: C.Colors.GREY,
@@ -522,15 +490,8 @@ export const gsapEffects = {
         },
         defaults: {}
     },
-    // #endregion
-    // #region CHARACTER SHEET EFFECTS
     fillCoins: {
         effect: (targets, config) => {
-            // Targets will be all coins from zero to where fill currently is
-            // Some will already be full, others not.
-            // Stagger in timeline
-            // Pulse in size and color
-            // Shimmer as they shrink back ?
             return U.gsap.to(targets, {
                 duration: config.duration / 2,
                 scale: config.scale,
@@ -552,8 +513,6 @@ export const gsapEffects = {
         },
         extendTimeline: true
     },
-    // #endregion
-    // #region GENERAL: 'blurRemove', 'hoverTooltip', 'textJitter'
     blurRemove: {
         effect: (targets, config) => U.gsap.timeline({ stagger: config.stagger })
             .to(targets, {
@@ -763,11 +722,7 @@ export const gsapEffects = {
         },
         extendTimeline: true
     }
-    // #endregion
 };
-/**
- * Registers relevant GSAP plugins and effects.
- */
 export function Initialize() {
     if (gsapPlugins.length) {
         U.gsap.config({
@@ -779,22 +734,14 @@ export function Initialize() {
             Flip,
             MotionPathPlugin,
             Dragger,
-            // SplitText,
             Observer,
             CustomEase,
-            // CustomWiggle,
-            // CustomBounce,
-            // EasePack
         });
     }
     Object.entries(gsapEffects).forEach(([name, effect]) => {
         U.gsap.registerEffect(Object.assign(effect, { name }));
     });
 }
-/**
- * Applies listeners to '.tooltip-trigger' elements in the document.
- * @param {JQuery<HTMLElement>} html The document to be searched.
- */
 export function ApplyTooltipAnimations(html) {
     html.find(".tooltip-trigger").each((_, el) => {
         const tooltipElem = $(el).find(".tooltip")[0] ?? $(el).next(".tooltip")[0];
@@ -802,23 +749,14 @@ export function ApplyTooltipAnimations(html) {
             return;
         }
         const tooltip$ = $(tooltipElem);
-        /**
-         * Use the .tooltip-trigger element as the definitive positioning element for the tooltip itself.
-         * If the tooltip-trigger's absolute position relative to the viewport is, e.g., near the top,
-         * then the tooltip should appear beneath, etc
-         */
-        // Find the tooltip's parent container. If its position isn't relative or absolute, set it to relative.
         const tooltipContainer$ = tooltip$.parent();
         if (tooltipContainer$.css("position") !== "relative"
             && tooltipContainer$.css("position") !== "absolute") {
             tooltipContainer$.css("position", "relative");
         }
-        // Set the tooltip itself to absolute positioning
         tooltip$.css("position", "absolute");
-        // Assign a unique ID to the tooltip element
         const tooltipID = `tooltip-${randomID()}`;
         tooltip$.attr("id", tooltipID);
-        // For .tooltip-wide tooltips, adjust the aspect ratio accordingly
         if (tooltip$.hasClass("tooltip-wide")) {
             U.adjustTextContainerAspectRatio(tooltipElem, 6);
         }
@@ -833,10 +771,6 @@ export function ApplyTooltipAnimations(html) {
     });
 }
 export { TextPlugin, Flip, MotionPathPlugin, Dragger, 
-// SplitText,
 Observer, CustomEase
-// CustomWiggle,
-// CustomBounce,
-// EasePack
  };
 export default U.gsap;

@@ -82,6 +82,11 @@ declare global {
     debug: {
       logging: boolean,
       hooks: boolean
+    },
+    compatibility: {
+      mode: number,
+      includePatterns: string[],
+      excludePatterns: string[]
     }
   }
   interface LenientGlobalVariableTypes { game: never }

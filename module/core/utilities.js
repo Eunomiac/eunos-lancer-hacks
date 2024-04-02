@@ -1,22 +1,19 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// /// <reference types="gsap" />
-// #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌█░░░░░░░░░ Euno's Hacks for Lancer for Foundry VTT ░░░░░░░░░░░█▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌█  License █ v0.1 ██▐     *|
+|*     ▌████░░░░  ░░░░█████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
+/* @@DOUBLE-BLANK@@ ~*/
 import C, { SVGDATA } from "./constants.js";
 import { gsap, MotionPathPlugin } from "../libraries.js";
-// import gsap from "../../../public/lib/greensock/all.js";
-// import gsap, {MotionPathPlugin} from "/scripts/greensock/esm/all.js";
 gsap.registerPlugin(MotionPathPlugin);
-// #endregion ▮▮▮▮ IMPORTS ▮▮▮▮
-// #region ▮▮▮▮▮▮▮ [HELPERS] Internal Functions, Data & References Used by Utility Functions ▮▮▮▮▮▮▮ ~
-// _noCapWords -- Patterns matching words that should NOT be capitalized when converting to TITLE case.
 const _noCapWords = "a|above|after|an|and|at|below|but|by|down|for|for|from|in|nor|of|off|on|onto|or|out|so|the|to|under|up|with|yet"
     .split("|")
     .map((word) => new RegExp(`\\b${word}\\b`, "gui"));
-// _capWords -- Patterns matching words that should ALWAYS be capitalized when converting to SENTENCE case.
 const _capWords = [
     "I", /[^a-z]{3,}|[.0-9]/gu
 ].map((word) => (/RegExp/.test(Object.prototype.toString.call(word)) ? word : new RegExp(`\\b${word}\\b`, "gui")));
-// _loremIpsumText -- Boilerplate lorem ipsum
 const _loremIpsumText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse ultricies
 nibh sed massa euismod lacinia. Aliquam nec est ac nunc ultricies scelerisque porta vulputate odio.
 Integer gravida mattis odio, semper volutpat tellus. Ut elit leo, auctor eget fermentum hendrerit,
@@ -31,7 +28,6 @@ sollicitudin interdum. Sed id lacus porttitor nisi vestibulum tincidunt. Nulla f
 feugiat finibus magna in pretium. Proin consectetur lectus nisi, non commodo lectus tempor et. Cras
 viverra, mi in consequat aliquet, justo mauris fringilla tellus, at accumsan magna metus in eros. Sed
 vehicula, diam ut sagittis semper, purus massa mattis dolor, in posuere.`;
-// _randomWords -- A collection of random words for various debugging purposes.
 const _randomWords = `
 aboveboard|account|achiever|acoustics|act|action|activity|actor|addition|adjustment|advertisement|advice|afterglow|afterimage|afterlife|aftermath|afternoon|afterthought|agreement
 air|aircraft|airfield|airlift|airline|airmen|airplane|airport|airtime|alarm|allover|allspice|alongside|also|amount|amusement|anger|angle|animal|another|ants|anyhow|anymore
@@ -135,12 +131,7 @@ const _romanNumerals = {
     ]
 };
 const UUIDLOG = [];
-// #endregion ▮▮▮▮[HELPERS]▮▮▮▮
-// #region ████████ GETTERS: Basic Data Lookup & Retrieval ████████ ~
-// @ts-expect-error Leauge of foundry developers is wrong about user not being on game.
 const GMID = () => game?.user?.find((user) => user.isGM)?.id ?? false;
-// #endregion ▄▄▄▄▄ GETTERS ▄▄▄▄▄
-// #region ████████ TYPES: Type Checking, Validation, Conversion, Casting ████████ ~
 const isNumber = (ref) => typeof ref === "number" && !isNaN(ref);
 const isNumString = (ref) => typeof ref === "string"
     && !isNaN(parseFloat(ref))
@@ -165,89 +156,56 @@ const isEmpty = (ref) => Object.keys(ref).length === 0;
 const hasItems = (ref) => !isEmpty(ref);
 const isInstance = (classRef, ref) => ref instanceof classRef;
 const isNullish = (ref) => isUndefined(ref) || ref === null;
-/**
- * Asserts that a given value is of a specified type.
- * Throws an error if the value is not of the expected type.
- *
- * @template T The expected type of the value.
- * @param {unknown} val The value to check.
- * @param {(new(...args: unknown[]) => T) | string} type The expected type of the value.
- * @throws {Error} If the value is not of the expected type.
- */
 function assertNonNullType(val, type) {
     let valStr;
-    // Attempt to convert the value to a string for error messaging.
     try {
         valStr = JSON.stringify(val);
     }
     catch {
         valStr = String(val);
     }
-    // Check if the value is undefined
     if (val === undefined) {
         throw new Error(`Value ${valStr} is undefined!`);
     }
-    // If the type is a string, compare the typeof the value to the type string.
     if (typeof type === "string") {
-        // eslint-disable-next-line valid-typeof
         if (typeof val !== type) {
             throw new Error(`Value ${valStr} is not a ${type}!`);
         }
     }
     else if (!(val instanceof type)) {
-        // If the type is a function (constructor), check if the value is an instance of the type.
         throw new Error(`Value ${valStr} is not a ${type.name}!`);
     }
 }
-/**
- * Checks if two values are "fuzzy" equal, simulating the behavior of the "==" operator.
- * This function does not use the "==" operator directly to comply with linting rules.
- *
- * @param {unknown} val1 The first value to compare.
- * @param {unknown} val2 The second value to compare.
- * @returns {boolean} True if the values are "fuzzy" equal, false otherwise.
- */
 const areFuzzyEqual = (val1, val2) => {
-    // If both values are null or undefined, they are considered equal
     if ([null, undefined].includes(val1)
         && [null, undefined].includes(val2)) {
         return true;
     }
-    // If only one of the values is null or undefined, they are not equal
     if ([null, undefined].includes(val1)
         || [null, undefined].includes(val2)) {
         return false;
     }
-    // If both values are numbers, they are considered equal if they are numerically equal
     if (typeof val1 === "number" && typeof val2 === "number") {
         return val1 === val2;
     }
-    // If both values are booleans, they are considered equal if they are both true or both false
     if (typeof val1 === "boolean" && typeof val2 === "boolean") {
         return val1 === val2;
     }
-    // If both values are strings, they are considered equal if they are identical
     if (typeof val1 === "string" && typeof val2 === "string") {
         return val1 === val2;
     }
-    // If one value is a number and the other is a string, they are considered
-    //                         equal if the string can be converted to the number
     if (typeof val1 === "number" && typeof val2 === "string") {
         return val1 === Number(val2);
     }
     if (typeof val1 === "string" && typeof val2 === "number") {
         return Number(val1) === val2;
     }
-    // If one value is a boolean and the other is a non-null object, they are not equal
     if (typeof val1 === "boolean" && typeof val2 === "object") {
         return false;
     }
     if (typeof val1 === "object" && typeof val2 === "boolean") {
         return false;
     }
-    // If one value is a boolean and the other is a string, they are considered equal ID:
-    //      ... the boolean is true and the string is not empty, or
-    //      ... the boolean is false and the string is empty
     if (typeof val1 === "boolean"
         && typeof val2 === "string") {
         return (val1 && val2 !== "") || (!val1 && val2 === "");
@@ -256,18 +214,15 @@ const areFuzzyEqual = (val1, val2) => {
         && typeof val2 === "boolean") {
         return (val2 && val1 !== "") || (!val2 && val1 === "");
     }
-    // If one value is a number or a string and the other is an object, they are not equal
     if ((typeof val1 === "number" || typeof val1 === "string") && typeof val2 === "object") {
         return false;
     }
     if (typeof val1 === "object" && (typeof val2 === "number" || typeof val2 === "string")) {
         return false;
     }
-    // If both values are objects, they are considered equal if they are identical
     if (typeof val1 === "object" && typeof val2 === "object") {
         return val1 === val2;
     }
-    // If none of the above conditions are met, the values are not equal
     return false;
 };
 const areEqual = (...refs) => {
@@ -338,9 +293,7 @@ const getKey = (key, obj) => {
 const FILTERS = {
     IsInstance: ((classRef) => ((item) => typeof classRef === "function" && item instanceof classRef))
 };
-// #endregion ▄▄▄▄▄ TYPES ▄▄▄▄▄
-// #region ████████ STRINGS: String Parsing, Manipulation, Conversion, Regular Expressions ████████
-// #region ░░░░░░░[Case Conversion]░░░░ Upper, Lower, Sentence & Title Case ░░░░░░░ ~
+
 const uCase = (str) => String(str).toUpperCase();
 const lCase = (str) => String(str).toLowerCase();
 const sCase = (str) => {
@@ -354,17 +307,12 @@ const sCase = (str) => {
 const tCase = (str) => String(str).split(/\s/)
     .map((word, i) => (i && testRegExp(word, _noCapWords) ? lCase(word) : sCase(word)))
     .join(" ").trim();
-// #endregion ░░░░[Case Conversion]░░░░
-// #region ░░░░░░░[RegExp]░░░░ Regular Expressions ░░░░░░░ ~
 const testRegExp = (str, patterns = [], flags = "gui", isTestingAll = false) => patterns
     .map((pattern) => (pattern instanceof RegExp
     ? pattern
     : new RegExp(`\\b${pattern}\\b`, flags)))[isTestingAll ? "every" : "some"]((pattern) => pattern.test(`${str}`));
 const regExtract = (ref, pattern, flags) => {
-    /* Wrapper around String.match() that removes the need to worry about match()'s different handling of the 'g' flag.
-        - IF your pattern contains unescaped parentheses -> Returns Array of all matching groups.
-        - OTHERWISE -> Returns string that matches the provided pattern. */
-    const splitFlags = [];
+        const splitFlags = [];
     [...(flags ?? "").replace(/g/g, ""), "u"].forEach((flag) => {
         if (flag && !splitFlags.includes(flag)) {
             splitFlags.push(flag);
@@ -379,9 +327,6 @@ const regExtract = (ref, pattern, flags) => {
     const matches = `${ref}`.match(pattern) || [];
     return isGrouping ? Array.from(matches) : matches.pop();
 };
-// #endregion ░░░░[RegExp]░░░░
-// #region ░░░░░░░[Formatting]░░░░ Hyphenation, Pluralization, "a"/"an" Fixing ░░░░░░░ ~
-// const hyphenate = (str: unknown) => (/^<|\u00AD|\u200B/.test(`${str}`) ? `${str}` : _hyph(`${str}`));
 const unhyphenate = (str) => `${str}`.replace(/[\u00AD\u200B]/gu, "");
 const parseArticles = (str) => `${str}`.replace(/\b([aA])\s([aeiouAEIOU])/gu, "$1n $2");
 const pluralize = (singular, num = 2, plural) => {
@@ -417,7 +362,6 @@ const pad = (text, minLength, delim = " ") => {
     return str;
 };
 const toKey = (text) => (text ?? "").toLowerCase().replace(/ /g, "-").replace(/default/, "DEFAULT");
-// #region ========== Numbers: Formatting Numbers Into Strings =========== ~
 const signNum = (num, delim = "", zeroSign = "+") => {
     let sign;
     const parsedNum = pFloat(num);
@@ -449,8 +393,6 @@ const padNum = (num, numDecDigits, includePlus = false) => {
     return `${prefix}${leftDigits}.${"0".repeat(numDecDigits)}`;
 };
 const stringifyNum = (num) => {
-    // Can take string representations of numbers, either in standard or scientific/engineering notation.
-    // Returns a string representation of the number in standard notation.
     if (pFloat(num) === 0) {
         return "0";
     }
@@ -490,7 +432,6 @@ const stringifyNum = (num) => {
     return `${num}`;
 };
 const verbalizeNum = (num) => {
-    // Converts a float with absolute magnitude <= 9.99e303 into words.
     num = stringifyNum(num);
     const getTier = (trioNum) => {
         if (trioNum < _numberWords.tiers.length) {
@@ -590,9 +531,7 @@ const romanizeNum = (num, isUsingGroupedChars = true) => {
         ? romanNum.replace(/ⅩⅠ/gu, "Ⅺ").replace(/ⅩⅡ/gu, "Ⅻ")
         : romanNum;
 };
-// #endregion _______ Numbers _______
-// #endregion ░░░░[Formatting]░░░░
-// #region ░░░░░░░[Content]░░░░ Lorem Ipsum, Random Content Generation, Randum UUID ░░░░░░░ ~
+
 const loremIpsum = (numWords = 200) => {
     const lrWordList = _loremIpsumText.split(/\n?\s+/g);
     const words = [...lrWordList[randNum(0, lrWordList.length - 1)]];
@@ -614,16 +553,12 @@ const getUID = (id) => {
     Object.assign(globalThis, { UUIDLOG });
     return uuid;
 };
-// #endregion ░░░░[Content]░░░░
-// #endregion ▄▄▄▄▄ STRINGS ▄▄▄▄▄
-// #region ████████ SEARCHING: Searching Various Data Types w/ Fuzzy Matching ████████ ~
+
 const fuzzyMatch = (val1, val2) => {
     const [str1, str2] = [val1, val2].map((val) => lCase(String(val).replace(/[^a-zA-Z0-9.+-]/g, "").trim()));
     return str1.length > 0 && str1 === str2;
 };
 const isIn = (needle, haystack = [], fuzziness = 0) => {
-    // Looks for needle in haystack using fuzzy matching, then returns value as it appears in haystack.
-    // STEP ONE: POPULATE SEARCH TESTS ACCORDING TO FUZZINESS SETTING
     const SearchTests = [
         (ndl, item) => new RegExp(`^${ndl}$`, "gu").test(`${item}`),
         (ndl, item) => new RegExp(`^${ndl}$`, "gui").test(`${item}`)
@@ -640,11 +575,10 @@ const isIn = (needle, haystack = [], fuzziness = 0) => {
             SearchTests.push(...fuzzyTests
                 .map((func) => (ndl, item) => func(`${ndl}`.replace(/\W/g, ""), `${item}`.replace(/\W/gu, ""))));
             if (fuzziness >= 3) {
-                SearchTests.push(() => false); // Have to implement Fuse matching
+                SearchTests.push(() => false);
             }
         }
     }
-    // STEP TWO: PARSE NEEDLE & CONSTRUCT SEARCHABLE HAYSTACK.
     const searchNeedle = `${needle}`;
     const searchStack = (() => {
         if (isArray(haystack)) {
@@ -663,7 +597,6 @@ const isIn = (needle, haystack = [], fuzziness = 0) => {
     if (!isArray(searchStack)) {
         return false;
     }
-    // STEP THREE: SEARCH HAY FOR NEEDLE USING PROGRESSIVELY MORE FUZZY SEARCH TESTS
     let matchIndex = -1;
     while (!isPosInt(matchIndex)) {
         const testFunc = SearchTests.shift();
@@ -678,8 +611,6 @@ const isIn = (needle, haystack = [], fuzziness = 0) => {
     return false;
 };
 const isInExact = (needle, haystack) => isIn(needle, haystack, 0);
-// #endregion ▄▄▄▄▄ SEARCHING ▄▄▄▄▄
-// #region ████████ NUMBERS: Number Casting, Mathematics, Conversion ████████ ~
 const randNum = (min, max, snap = 0) => gsap.utils.random(min, max, snap);
 const randInt = (min, max) => randNum(min, max, 1);
 const coinFlip = () => randNum(0, 1, 1) === 1;
@@ -689,7 +620,6 @@ const cycleAngle = (angle, range = [0, 360]) => cycleNum(angle, range);
 const roundNum = (num, sigDigits = 0) => (sigDigits === 0 ? pInt(num) : pFloat(num, sigDigits));
 const sum = (...nums) => Object.values(nums.flat()).reduce((num, tot) => tot + num, 0);
 const average = (...nums) => sum(...nums) / nums.flat().length;
-// #region ░░░░░░░[Positioning]░░░░ Relationships On 2D Cartesian Plane ░░░░░░░ ~
 const getDistance = ({ x: x1, y: y1 }, { x: x2, y: y2 }) => (((x1 - x2) ** 2) + ((y1 - y2) ** 2)) ** 0.5;
 const getAngle = ({ x: x1, y: y1 }, { x: x2, y: y2 }, { x: xO, y: yO } = { x: 0, y: 0 }, range = [0, 360]) => {
     x1 -= xO;
@@ -699,40 +629,29 @@ const getAngle = ({ x: x1, y: y1 }, { x: x2, y: y2 }, { x: xO, y: yO } = { x: 0,
     return cycleAngle(radToDeg(Math.atan2(y2 - y1, x2 - x1)), range);
 };
 const getAngleDelta = (angleStart, angleEnd, range = [0, 360]) => cycleAngle(angleEnd - angleStart, range);
-/**
- * Function to calculate the smallest rectangle that can contain all the given shapes.
- * @param arrayOfShapes - Array of objects, each describing a shape's position and size.
- * @returns An object describing the position (center) and size of the smallest rectangle that can contain all the shapes.
- */
 const getBoundingRectangle = (arrayOfShapes) => {
-    // Initialize the minimum and maximum x and y coordinates.
     let minX = Infinity;
     let minY = Infinity;
     let maxX = -Infinity;
     let maxY = -Infinity;
-    // Iterate over the array of shapes.
     for (const shape of arrayOfShapes) {
-        // Calculate the minimum and maximum x and y coordinates for the current shape.
         let shapeMinX;
         let shapeMinY;
         let shapeMaxX;
         let shapeMaxY;
         if (shape.radius !== undefined) {
-            // The shape is a circle.
             shapeMinX = shape.x - shape.radius;
             shapeMinY = shape.y - shape.radius;
             shapeMaxX = shape.x + shape.radius;
             shapeMaxY = shape.y + shape.radius;
         }
         else if (shape.size !== undefined) {
-            // The shape is a square.
             shapeMinX = (shape.x - shape.size) / 2;
             shapeMinY = (shape.y - shape.size) / 2;
             shapeMaxX = (shape.x + shape.size) / 2;
             shapeMaxY = (shape.y + shape.size) / 2;
         }
         else if (shape.width !== undefined || shape.height !== undefined) {
-            // The shape is a rectangle (or possibly a square).
             shape.width ??= shape.height;
             shape.height ??= shape.width;
             shapeMinX = (shape.x - shape.width) / 2;
@@ -743,24 +662,18 @@ const getBoundingRectangle = (arrayOfShapes) => {
         else {
             throw new Error(`[getBoundingRectangle] Error: shape must be a circle, square, or rectangle, not ${JSON.stringify(shape)}`);
         }
-        // Update the overall minimum and maximum x and y coordinates.
         minX = Math.min(minX, shapeMinX);
         minY = Math.min(minY, shapeMinY);
         maxX = Math.max(maxX, shapeMaxX);
         maxY = Math.max(maxY, shapeMaxY);
     }
-    // Calculate the width and height of the smallest rectangle.
     const width = maxX - minX;
     const height = maxY - minY;
-    // Calculate the center of the rectangle.
     const x = (minX + width) / 2;
     const y = (minY + height) / 2;
-    // Return the position (center) and size of the smallest rectangle.
     return { x, y, width, height };
 };
-// #endregion ░░░░[Positioning]░░░░
-// #endregion ▄▄▄▄▄ NUMBERS ▄▄▄▄▄
-// #region ████████ ARRAYS: Array Manipulation ████████ ~
+
 const randElem = (array) => gsap.utils.random(array);
 const randIndex = (array) => randInt(0, array.length - 1);
 const makeIntRange = (min, max) => {
@@ -771,8 +684,6 @@ const makeIntRange = (min, max) => {
     return intRange;
 };
 const makeCycler = (array, index = 0) => {
-    // Given an array and a starting index, returns a generator function that can be used
-    // to iterate over the array indefinitely, or wrap out-of-bounds index values
     const wrapper = gsap.utils.wrap(array);
     index--;
     return (function* () {
@@ -782,12 +693,6 @@ const makeCycler = (array, index = 0) => {
         }
     })();
 };
-/**
- * Returns the last element of an array, or the last value of an object literal.
- *
- * @param {Index<Type>} array An array or object literal
- * @returns {Type|undefined} The last element, or undefined if empty.
- */
 function getLast(array) {
     array = Object.values(array);
     if (array.length === 0) {
@@ -795,7 +700,6 @@ function getLast(array) {
     }
     return array[array.length - 1];
 }
-// Const getLast = <Type>(array: Type[]): typeof array extends [] ? undefined : Type => ;
 const unique = (array) => {
     const returnArray = [];
     array.forEach((item) => { if (!returnArray.includes(item)) {
@@ -829,33 +733,18 @@ const sample = (array, numElems = 1, isUniqueOnly = true, uniqueTestFunc = (e, a
     return elems;
 };
 const removeFirst = (array, element) => array.splice(array.findIndex((v) => v === element));
-/**
- * This function removes and returns the first element in an array that equals the provided value
- *   or satisfies the provided testing function.
- * If no elements satisfy the testing function, the function will return undefined.
- *
- * @param {T[]} array The array to be searched.
- * @param {(T|((_v: T, _i?: number, _a?: T[]) => boolean))} checkFunc The testing function or value to be searched for.
- * @returns {T | undefined} The first element in the array that passes the test.
- *                          If no elements pass the test, return undefined.
- */
 function pullElement(array, checkFunc) {
-    // Define the test function
     let testFunction;
-    // If checkFunc is not a function, create a function that checks for equality with checkFunc
     if (typeof checkFunc !== "function") {
         testFunction = (_v) => _v === checkFunc;
     }
     else {
         testFunction = checkFunc;
     }
-    // Find the index of the first element that passes the test
     const index = array.findIndex((v, i, a) => testFunction(v, i, a));
-    // If no element passes the test, return undefined
     if (index === -1) {
         return undefined;
     }
-    // Remove the element from the array and return it
     return array.splice(index, 1).pop();
 }
 const pullIndex = (array, index) => pullElement(array, (_, i) => i === index);
@@ -874,12 +763,9 @@ const subGroup = (array, groupSize) => {
 const shuffle = (array) => {
     let currentIndex = array.length;
     let randomIndex;
-    // While there remain elements to shuffle.
     while (currentIndex !== 0) {
-        // Pick a remaining element.
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
-        // And swap it with the current element.
         [array[currentIndex], array[randomIndex]] = [
             array[randomIndex], array[currentIndex]
         ];
@@ -889,8 +775,6 @@ const shuffle = (array) => {
 const toArray = (target) => {
     return gsap.utils.toArray(target);
 };
-// #endregion ▄▄▄▄▄ ARRAYS ▄▄▄▄▄
-// #region ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████ ~
 const checkVal = ({ k, v }, checkTest) => {
     if (typeof checkTest === "function") {
         if (isDefined(v)) {
@@ -903,12 +787,6 @@ const checkVal = ({ k, v }, checkTest) => {
     }
     return (new RegExp(checkTest)).test(`${v}`);
 };
-/**
- * Given an array or list and a search function, will remove the first matching element and return it.
- * @param {Index<unknown>} obj The array or list to be searched.
- * @param {testFunc<keyFunc | valFunc> | number | string} checkTest The search function.
- * @returns {unknown | false} - The removed element or false if no element was found.
- */
 const remove = (obj, checkTest) => {
     if (isArray(obj)) {
         const index = obj.findIndex((v) => checkVal({ v }, checkTest));
@@ -924,12 +802,6 @@ const remove = (obj, checkTest) => {
     }
     return false;
 };
-/**
- * Removes an element from an array at a given index and returns it.
- * @param {unknown[]} array The array to remove the element from.
- * @param {number} index The index of the element to remove.
- * @returns {unknown} - The removed element.
- */
 const removeElementFromArray = (array, index) => {
     let remVal;
     for (let i = 0; i <= array.length; i++) {
@@ -942,20 +814,12 @@ const removeElementFromArray = (array, index) => {
     }
     return remVal;
 };
-/**
- * Removes an element from a list at a given key and returns it.
- * @param {List<unknown>} list The list to remove the element from.
- * @param {string} key The key of the element to remove.
- * @returns {unknown} - The removed element.
- */
 const removeElementFromList = (list, key) => {
     const remVal = list[key];
     delete list[key];
     return remVal;
 };
 const replace = (obj, checkTest, repVal) => {
-    // As remove, except instead replaces the element with the provided value.
-    // Returns true/false to indicate whether the replace action succeeded.
     let repKey;
     if (isList(obj)) {
         [repKey] = Object.entries(obj).find((v) => checkVal({ v }, checkTest)) || [false];
@@ -973,24 +837,13 @@ const replace = (obj, checkTest, repVal) => {
         repKey = `${repKey}`;
     }
     if (typeof repVal === "function") {
-        // @ts-expect-error Need to figure out how to properly define testFunc<keyFunc | valFunc> (keyFunc/valFunc types?)
         obj[repKey] = repVal(obj[repKey], repKey);
     }
     else {
-        // @ts-expect-error Need to figure out how to properly define testFunc<keyFunc | valFunc> (keyFunc/valFunc types?)
         obj[repKey] = repVal;
     }
     return true;
 };
-/**
- * Cleans an object or value by removing specified values recursively.
- *
- * @template T - The type of the input object or value.
- * @param {T} data The object or value to be cleaned.
- * @param {Array<any>} [remVals] An array of values to be removed during the cleaning process.
- * @returns {T | Partial<T> | "KILL"} - The cleaned version of the input object or value.
- *                                      If marked for removal, returns "KILL".
- */
 const objClean = (data, remVals = [undefined, null, "", {}, []]) => {
     const remStrings = remVals.map((rVal) => JSON.stringify(rVal));
     if (remStrings.includes(JSON.stringify(data)) || remVals.includes(data)) {
@@ -1009,32 +862,17 @@ const objClean = (data, remVals = [undefined, null, "", {}, []]) => {
     }
     return data;
 };
-// Given an object and a predicate function, returns array of two objects:
-//   one with entries that pass, one with entries that fail.
 const partition = (obj, predicate = () => true) => [
     objFilter(obj, predicate),
     objFilter(obj, (v, k) => !predicate(v, k))
 ];
-/**
- * Zips two arrays into an object.
- *
- * @template T - The type of the keys.
- * @template U - The type of the values.
- * @param {T[]} keys - The array of keys.
- * @param {U[]} values - The array of values.
- * @returns {Record<T, U>} - The resulting object.
- * @throws {Error} - Throws an error if the arrays are not of equal length, if the keys are not unique, or if the keys are not of a type that can be used as object keys.
- */
 const zip = (keys, values) => {
-    // Check that the arrays are of equal length
     if (keys.length !== values.length) {
         throw new Error("The arrays must be of equal length.");
     }
-    // Check that the keys are unique
     if (new Set(keys).size !== keys.length) {
         throw new Error("The keys must be unique.");
     }
-    // Zip the arrays into an object
     const result = {};
     keys.forEach((key, i) => {
         result[key] = values[i];
@@ -1059,13 +897,6 @@ function objMap(obj, keyFunc, valFunc) {
         return [keyFuncTyped(key, val), valFuncTyped(val, key)];
     }));
 }
-/**
- * This function returns the 'size' of any reference passed into it, following these rules:
- * - object: the number of enumerable keys
- * - array: the number of elements
- * - false/null/undefined: 0
- * - anything else: 1
- */
 const objSize = (obj) => {
     if (isSimpleObj(obj)) {
         return Object.keys(obj).length;
@@ -1078,52 +909,25 @@ const objSize = (obj) => {
     }
     return 1;
 };
-/**
- * This function is an object-equivalent of Array.findIndex() function.
- * It accepts check functions for both keys and/or values.
- * If only one function is provided, it's assumed to be searching via values and will receive (v, k) args.
- *
- * @param {Type} obj The object to be searched.
- * @param {testFunc<keyFunc> | testFunc<valFunc> | false} keyFunc The testing function for keys.
- * @param {testFunc<valFunc>} valFunc The testing function for values.
- * @returns {KeyOf<Type> | false} The key of the first entry that passes the test.
- *                                If no entries pass the test, return false.
- */
 function objFindKey(obj, keyFunc, valFunc) {
-    // If valFunc is not provided, assume keyFunc is meant to be valFunc
     if (!valFunc) {
         valFunc = keyFunc;
         keyFunc = false;
     }
-    // If keyFunc is not provided, create a function that returns the key
     if (!keyFunc) {
         keyFunc = ((k) => k);
     }
-    // If obj is an array, find the index of the first element that passes the test
     if (isArray(obj)) {
         return obj.findIndex(valFunc);
     }
-    // Define the testing functions for keys and values
     const kFunc = keyFunc || (() => true);
     const vFunc = valFunc || (() => true);
-    // Find the first entry that passes the test
     const validEntry = Object.entries(obj).find(([k, v]) => kFunc(k, v) && vFunc(v, k));
-    // If an entry passes the test, return its key
     if (validEntry) {
         return validEntry[0];
     }
-    // If no entries pass the test, return false
     return false;
 }
-/**
- * An object-equivalent Array.filter() function, which accepts filter functions for both keys and/or values.
- * If only one function is provided, it's assumed to be mapping the values and will receive (v, k) args.
- *
- * @param {Type} obj The object to be searched.
- * @param {testFunc<keyFunc> | testFunc<valFunc> | false} keyFunc The testing function for keys.
- * @param {testFunc<valFunc>} [valFunc] The testing function for values.
- * @returns {Type} The filtered object.
- */
 const objFilter = (obj, keyFunc, valFunc, isMutating = false) => {
     //
     if (!valFunc) {
@@ -1155,7 +959,6 @@ const objFilter = (obj, keyFunc, valFunc, isMutating = false) => {
         .filter(([key, val]) => kFunc(key, val) && vFunc(val, key)));
 };
 const objForEach = (obj, func) => {
-    // An object-equivalent Array.forEach() function, which accepts one function(val, key) to perform for each member.
     if (isArray(obj)) {
         obj.forEach(func);
     }
@@ -1163,7 +966,6 @@ const objForEach = (obj, func) => {
         Object.entries(obj).forEach(([key, val]) => func(val, key));
     }
 };
-// Prunes an object of given set of values, [undefined, null] default
 const objCompact = (obj, removeWhiteList = [undefined, null], isMutating = false) => objFilter(obj, (val) => !removeWhiteList.includes(val), undefined, isMutating);
 const objClone = (obj, isStrictlySafe = false) => {
     const cloneArray = (arr) => [...arr];
@@ -1184,75 +986,42 @@ const objClone = (obj, isStrictlySafe = false) => {
     }
     return obj;
 };
-/**
- * Returns a deep merge of source into target. Does not mutate target unless isMutatingOk = true.
- * @param {Tx} target The target object to be merged.
- * @param {Ty} source The source object to be merged.
- * @param {object} options An object containing various options for the merge operation.
- * @param {boolean} options.isMutatingOk
- * @param {boolean} options.isStrictlySafe
- * @param {boolean} options.isConcatenatingArrays
- * @param {boolean} options.isReplacingArrays
- * @returns {Tx & Ty} - The merged object.
- */
 function objMerge(target, source, { isMutatingOk = false, isStrictlySafe = false, isConcatenatingArrays = true, isReplacingArrays = false } = {}) {
-    // Clone the target if mutation is not allowed
     target = isMutatingOk ? target : objClone(target, isStrictlySafe);
-    // If source is an instance of  or target is undefined, return source
     if ((source && typeof source === "object" && "id" in source && isDocID(source.id)) || isUndefined(target)) {
         return source;
     }
-    // If source is undefined, return target
     if (isUndefined(source)) {
         return target;
     }
-    // If source is not an index, return target
     if (!isIndex(source)) {
         return target;
     }
-    // Iterate over each entry in the source object
     for (const [key, val] of Object.entries(source)) {
         const targetVal = target[key];
-        // If replacing arrays is enabled and both target and source values are
-        // arrays, replace target value with source value
         if (isReplacingArrays && isArray(targetVal) && isArray(val)) {
             target[key] = val;
         }
         else if (isConcatenatingArrays && isArray(targetVal) && isArray(val)) {
-            // If concatenating arrays is enabled and both target and source values
-            // are arrays, concatenate source value to target value
             target[key].push(...val);
         }
         else if (val !== null && typeof val === "object") {
-            // If source value is an object and not null, merge it into target value
             if (isUndefined(targetVal) && !(val instanceof Application)) {
                 target[key] = new (Object.getPrototypeOf(val).constructor)();
             }
             target[key] = objMerge(target[key], val, { isMutatingOk: true, isStrictlySafe });
         }
         else {
-            // For all other cases, assign source value to target
             target[key] = val;
         }
     }
-    // Return the merged target
     return target;
 }
-/**
- * Deep-compares two objects and returns an object containing only the keys and values
- * in the second object that differ from the first.
- * If the second object is missing a key or value contained in the first, it sets the
- * value in the returned object to null, and prefixes the key with "-=".
- * @param {Tx} obj1 The first object to be compared.
- * @param {Ty} obj2 The second object to be compared.
- * @returns {Record<string, unknown>} - An object containing the differences between the two input objects.
- */
 function objDiff(obj1, obj2) {
     const diff = {};
     const bothObj1AndObj2Keys = Object.keys(obj2).filter((key) => Object.hasOwn(obj2, key) && Object.hasOwn(obj1, key));
     const onlyObj2Keys = Object.keys(obj2).filter((key) => Object.hasOwn(obj2, key) && !Object.hasOwn(obj1, key));
     for (const key of bothObj1AndObj2Keys) {
-        // If both values are non-array objects, recursively compare them
         if (typeof obj1[key] === "object" && typeof obj2[key] === "object" && !Array.isArray(obj1[key]) && !Array.isArray(obj2[key])) {
             const nestedDiff = objDiff(obj1[key], obj2[key]);
             if (Object.keys(nestedDiff).length > 0) {
@@ -1263,17 +1032,14 @@ function objDiff(obj1, obj2) {
             const array1 = obj1[key];
             const array2 = obj2[key];
             if (array1.toString() !== array2.toString()) {
-                // If both values are arrays and they are not equal, add the second array to the diff
                 diff[key] = obj2[key];
             }
         }
         else if (obj1[key] !== obj2[key]) {
-            // If the values are not equal, add the second value to the diff
             diff[key] = obj2[key];
         }
     }
     for (const key of onlyObj2Keys) {
-        // If the second object has a key that the first does not, add it to the diff with a "-=" prefix
         diff[`-=${key}`] = obj2[key];
     }
     return diff;
@@ -1289,12 +1055,7 @@ const objExpand = (obj) => {
             setProperty(expObj, key, val);
         }
     }
-    // Iterate through expanded Object, converting object literals to arrays where it makes sense
-    /**
-     *
-     * @param o
-     */
-    function arrayify(o) {
+        function arrayify(o) {
         if (isList(o)) {
             if (/^\d+$/.test(Object.keys(o).join(""))) {
                 return Object.values(o).map(arrayify);
@@ -1322,39 +1083,23 @@ const objFlatten = (obj) => {
     }
     return flatObj;
 };
-/**
- *
- * @param obj
- */
 function objNullify(obj) {
-    // Check if the input is an object or an array
     if (!isIndex(obj)) {
         return obj;
     }
-    // If the input is an array, nullify all its elements
     if (Array.isArray(obj)) {
         obj.forEach((_, i) => {
             obj[i] = null;
         });
         return obj;
     }
-    // If the input is an object, nullify all its properties
     Object.keys(obj).forEach((objKey) => {
         obj[objKey] = null;
     });
     return obj;
 }
-/**
- * This function freezes the properties of an object based on a provided schema or keys.
- * If a property is missing, it throws an error.
- * @param {Partial<T>} data The object whose properties are to be frozen.
- * @param {...Array<keyof T> | [T]} keysOrSchema The keys or schema to freeze the properties.
- * @returns {T} - The object with frozen properties.
- * @throws {Error} - Throws an error if a property is missing.
- */
 function objFreezeProps(data, ...keysOrSchema) {
     const firstArg = keysOrSchema[0];
-    // If the first argument is an object and not an array, treat it as a schema
     if (firstArg instanceof Object && !Array.isArray(firstArg)) {
         const schema = firstArg;
         for (const key in schema) {
@@ -1364,18 +1109,14 @@ function objFreezeProps(data, ...keysOrSchema) {
         }
     }
     else {
-        // If the first argument is not an object or is an array, treat it as an array of keys
         for (const key of keysOrSchema) {
             if (data[key] === undefined) {
                 throw new Error(`Missing value for ${String(key)}`);
             }
         }
     }
-    // Return the data as type T
     return data;
 }
-// #endregion ▄▄▄▄▄ OBJECTS ▄▄▄▄▄
-// #region ████████ FUNCTIONS: Function Wrapping, Queuing, Manipulation ████████ ~
 const getDynamicFunc = (funcName, func, context) => {
     if (typeof func === "function") {
         const dFunc = { [funcName](...args) { return func(...args); } }[funcName];
@@ -1389,98 +1130,58 @@ const withLog = (fn) => {
         return fn(...args);
     };
 };
-// #endregion ▄▄▄▄▄ FUNCTIONS ▄▄▄▄▄
-// #region ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████ ~
 const changeContainer = (elem, container, isCloning = false) => {
     elem = $(elem)[0];
     container = $(container)[0];
-    // Get the element's current container, which defines its current coordinate space.
     const curContainer = $(elem).parent()[0];
-    // Get the element's current position in its current coordinate space.
     const curPosition = {
         x: gsap.getProperty(elem, "x"),
         y: gsap.getProperty(elem, "y")
     };
-    // Convert the element's position in its current space, to the equivalent position in the target space.
     const relPos = MotionPathPlugin.convertCoordinates(curContainer, container, curPosition);
     eLog.checkLog3("changeContainer", "Target Element", { elem, container, curContainer, curPosition, relPos });
-    // Clone the element, if indicated
     if (isCloning) {
         elem = $(elem).clone()[0];
     }
-    // Append the element to the new container, and set its new position
     $(elem).appendTo($(container));
     gsap.set(elem, relPos);
     return elem;
 };
-/**
- * Adjusts the aspect ratio of a text container to match a target ratio by modifying its font size and line height.
- * This function recursively adjusts the font size and line height until the container's aspect ratio or maximum dimensions are met.
- *
- * @param {HTMLElement|JQuery<HTMLElement>} textContainer - The text container element or jQuery object to adjust.
- * @param {number} targetRatio - The target aspect ratio (width / height) to achieve.
- * @param {number} [maxHeight] - Optional maximum height for the text container.
- * @param {number} [maxWidth] - Optional maximum width for the text container.
- * @param {number} [minFontSize=8] - Optional minimum font size to prevent the text from becoming too small.
- * @returns {void}
- */
 const adjustTextContainerAspectRatio = (textContainer, targetRatio, maxHeight, maxWidth, minFontSize = 8) => {
-    // Ensure textContainer is an HTMLElement
     textContainer = $(textContainer)[0];
-    // If no maxWidth is provided, initialize textContainer's width to maximum possible
     if (!maxWidth) {
         textContainer.style.setProperty("width", "max-content", "important");
     }
     else {
         textContainer.style.setProperty("width", `${maxWidth}px`, "important");
     }
-    /**
-     * Recursively adjusts the font size and line height of the text container.
-     * This function is called if the current adjustments do not meet the target aspect ratio or maximum dimensions.
-     *
-     * @returns {boolean} - Returns false if the new font size is below the minimum font size, indicating no further adjustments should be made.
-     */
-    function recurAdjustment() {
-        // Ensure textContainer is an HTMLElement for each recursive call
+        function recurAdjustment() {
         textContainer = $(textContainer)[0];
-        // Calculate new font size and line height as 80% of their current values
         const newFontSize = parseFloat(style.fontSize) * 0.8;
         const newLineHeight = parseFloat(style.lineHeight) * 0.8;
-        // Stop recursion if the new font size is below the minimum
         if (newFontSize < minFontSize) {
             return false;
         }
-        // Apply the new font size and line height
         textContainer.style.fontSize = `${newFontSize}px`;
         textContainer.style.lineHeight = `${newLineHeight}px`;
-        // Recursively call adjustTextContainerAspectRatio with updated parameters
         return adjustTextContainerAspectRatio(textContainer, targetRatio, lineCount ?? maxHeight, maxWidth, minFontSize);
     }
-    // Get computed styles of the text container
     const style = window.getComputedStyle(textContainer);
     const lineHeight = parseFloat(style.lineHeight);
-    // Initialize lineCount as undefined
     let lineCount = undefined;
-    // If maxHeight is provided and is an integer less than lineHeight, calculate lineCount
     if (isInt(maxHeight) && maxHeight < lineHeight) {
         lineCount = maxHeight;
     }
-    // Get the initial width of the text container
     const initialWidth = parseFloat(style.width);
-    // Initialize bestWidth with the initial width
     let bestWidth = initialWidth;
-    // Flag to indicate if the maximum line count has been reached
     let isAtMaxLineCount = false;
-    // Loop to find the best width that matches the target aspect ratio
     for (let lines = 1;; lines++) {
         const expectedHeight = lineHeight * lines;
         const expectedWidth = initialWidth / lines;
         const expectedRatio = expectedWidth / expectedHeight;
-        // Break the loop if the expected ratio is less than the target ratio
         if (expectedRatio < targetRatio) {
             break;
         }
-        // Handle cases where lineCount is defined
         if (isInt(lineCount)) {
             if (lines > lineCount) {
                 if (recurAdjustment()) {
@@ -1490,32 +1191,26 @@ const adjustTextContainerAspectRatio = (textContainer, targetRatio, maxHeight, m
             }
         }
         else if (maxHeight && expectedHeight > maxHeight) {
-            // Handle cases where maxHeight is exceeded
             if (recurAdjustment()) {
                 return;
             }
             break;
         }
-        // Update bestWidth with the expected width
         bestWidth = expectedWidth;
-        // Check if the current line count matches the maximum line count
         if (isInt(lineCount) && lines === lineCount) {
             isAtMaxLineCount = true;
             break;
         }
     }
-    // If the best width exceeds maxWidth, attempt to adjust font size and line height
     if (!isAtMaxLineCount && maxWidth && bestWidth > maxWidth) {
         if (recurAdjustment()) {
             return;
         }
     }
-    // Apply the best width to the text container
     textContainer.style.setProperty("width", `${bestWidth}px`, "important");
 };
 const getSvgCode = (svgDotKey, svgPathKeys) => {
     const svgData = getProperty(SVGDATA, svgDotKey);
-    // eLog.checkLog3("compileSvg", {svgDotKey, svgPaths, svgData});
     if (!svgData) {
         return "";
     }
@@ -1531,7 +1226,6 @@ const getSvgCode = (svgDotKey, svgPathKeys) => {
         "</svg>"
     ].join("\n");
 };
-// #region ░░░░░░░[SVG]░░░░ SVG Generation & Manipulation ░░░░░░░ ~
 const getRawCirclePath = (r, { x: xO, y: yO } = { x: 0, y: 0 }) => {
     [r, xO, yO] = [r, xO, yO].map((val) => roundNum(val, 2));
     const [b1, b2] = [0.4475 * r, (1 - 0.4475) * r];
@@ -1556,8 +1250,6 @@ const drawCirclePath = (radius, origin) => {
     path.push("z");
     return path.join(" ");
 };
-// #endregion ░░░░[SVG]░░░░
-// #region ░░░░░░░[Colors]░░░░ Color Manipulation ░░░░░░░ ~
 const getColorVals = (red, green, blue, alpha) => {
     if (isRGBColor(red)) {
         [red, green, blue, alpha] = red
@@ -1619,11 +1311,8 @@ const getContrastingColor = (...colorVals) => {
     return null;
 };
 const getRandomColor = () => getRGBString(gsap.utils.random(0, 255, 1), gsap.utils.random(0, 255, 1), gsap.utils.random(0, 255, 1));
-// #endregion ░░░░[Colors]░░░░
-// #region ░░░░░░░[DOM]░░░░ DOM Manipulation ░░░░░░░ ~
 const getSiblings = (elem) => {
     const siblings = [];
-    // If no parent, return no sibling
     if (!elem.parentNode) {
         return siblings;
     }
@@ -1634,7 +1323,6 @@ const getSiblings = (elem) => {
     });
     return siblings;
 };
-// #endregion ░░░░[DOM]░░░░
 const escapeHTML = (str) => (typeof str === "string"
     ? str
         .replace(/&/g, "&amp;")
@@ -1643,53 +1331,32 @@ const escapeHTML = (str) => (typeof str === "string"
         .replace(/"/g, "&quot;")
         .replace(/[`']/g, "&#039;")
     : str);
-// #region ████████ PERFORMANCE: Performance Testing & Metrics ████████
-/**
- * Test the performance of a function (synchronous or asynchronous).
- * The function will be called repeatedly for 10 seconds, and the total and average execution times will be logged.
- * @param func - The function to test. Can be synchronous or asynchronous.
- * @param params - The parameters to pass to the function.
- */
 const testFuncPerformance = (func, ...params) => {
-    const start = performance.now(); // Start the timer
-    let tally = 0; // Keep track of how many times the function is called
-    // This function will be called each time 'func' finishes executing
+    const start = performance.now();
+    let tally = 0;
     const handleResult = () => {
-        // Check if 10 seconds have passed
         if (performance.now() - start < 10000) {
-            runFunc(); // If not, call 'func' again
-            tally++; // And increment the tally
+            runFunc();
+            tally++;
         }
         else {
-            // If 10 seconds have passed, calculate the total and average time and log them
             const elapsedTime = performance.now() - start;
             const timePerCall = roundNum(elapsedTime / tally / 4000, 4);
             eLog.checkLog3("performance", `[TestPerformance] Function Ran ${tally} Times in ${roundNum(elapsedTime / 1000, 4)}s, Averaging ${timePerCall}s per Call`);
         }
     };
-    // This function calls 'func' and handles its result, whether it's a Promise or not
     const runFunc = () => {
-        const result = func(...params); // Call 'func' with the provided parameters
+        const result = func(...params);
         if (result instanceof Promise) {
-            // If 'func' is asynchronous, wait for the Promise to resolve before handling the result
             result.then(handleResult);
         }
         else {
-            // If 'func' is synchronous, handle the result immediately
             handleResult();
         }
     };
-    runFunc(); // Start the first call to 'func'
+    runFunc();
 };
-// #endregion
-// #region ░░░░░░░[GreenSock]░░░░ Wrappers for GreenSock Functions ░░░░░░░ ~
 const set = (targets, vars) => gsap.set(targets, vars);
-/**
- *
- * @param target
- * @param property
- * @param unit
- */
 function get(target, property, unit) {
     if (unit) {
         const propVal = regExtract(gsap.getProperty(target, property, unit), /[\d.]+/);
@@ -1711,7 +1378,6 @@ const getNearestLabel = (tl, matchTest) => {
     if (typeof matchTest === "string") {
         matchTest = new RegExp(matchTest);
     }
-    // Filter the labels against the matchTest, if one provided, and sort by time in ascending order.
     const labelTimes = Object.entries(tl.labels)
         .filter(([label]) => {
         return matchTest instanceof RegExp
@@ -1719,32 +1385,24 @@ const getNearestLabel = (tl, matchTest) => {
             : true;
     })
         .sort((a, b) => a[1] - b[1]);
-    // Snap the current time of the timeline to the values in labelTimes
     const nearestTime = gsap.utils.snap(labelTimes.map(([_label, time]) => time), tl.time());
-    // Get the associated label for the nearest time
     const [nearestLabel] = labelTimes.find(([_label, time]) => time === nearestTime);
     return nearestLabel;
 };
 const reverseRepeatingTimeline = (tl) => {
-    // FIRST: Determine if timeline itself is repeating, or if most-recent child tween of timeline is repeating
     if (tl.repeat() === -1) {
-        // Timeline itself is repeating. Set totalTime equal to time, reverse.
         tl.totalTime(tl.time());
     }
     else {
-        // Get currently-running child tween, check if that is repeating.
         const [tw] = tl.getChildren(false, true, true, tl.time());
         if (tw && tw.repeat() === -1) {
-            // Child tween is repeating. Set totalTime of TWEEN equal to time, reverse TIMELINE.
             tw.totalTime(tw.time());
         }
         tl.reverse();
     }
     return tl;
 };
-// #endregion ░░░░[GreenSock]░░░░
-// #endregion ▄▄▄▄▄ HTML ▄▄▄▄▄
-// #region ████████ ASYNC: Async Functions, Asynchronous Flow Control ████████ ~
+
 const sleep = (duration) => new Promise((resolve) => {
     setTimeout(resolve, duration >= 100 ? duration : duration * 1000);
 });
@@ -1762,7 +1420,6 @@ function waitFor(waitForTarget) {
         }
     });
 }
-// #endregion ▄▄▄▄▄ ASYNC ▄▄▄▄▄
 const EventHandlers = {
     onTextInputBlur: async (inst, event) => {
         const elem = event.target;
@@ -1830,7 +1487,6 @@ const EventHandlers = {
         }
     }
 };
-// #region ████████ FOUNDRY: Requires Configuration of System ID in constants.ts ████████ ~
 const isDocID = (ref) => {
     return typeof ref === "string" && /^[A-Za-z0-9]{16}$/.test(ref);
 };
@@ -1888,7 +1544,7 @@ const parseDocRefToUUID = (ref) => {
     throw new Error(`[U.parseDocRefToUUID] Unrecognized reference: '${ref}'`);
 };
 const loc = (locRef, formatDict = {}) => {
-    if (/[a-z]/.test(locRef)) { // Reference contains lower-case characters: add system ID namespacing to dot notation
+    if (/[a-z]/.test(locRef)) {
         locRef = locRef.replace(new RegExp(`^(${C.SYSTEM_ID}.)*`), `${C.SYSTEM_ID}.`);
     }
     if (typeof game.i18n.localize(locRef) === "string") {
@@ -1905,26 +1561,12 @@ const getSetting = (setting) => {
     }
     return undefined;
 };
-/**
- *
- * @param subFolder
- * @param fileName
- */
 function getTemplatePath(subFolder, fileName) {
     if (typeof fileName === "string") {
         return `${C.TEMPLATE_ROOT}/${subFolder}/${fileName.replace(/\..*$/, "")}.hbs`;
     }
     return fileName.map((fName) => getTemplatePath(subFolder, fName));
 }
-// DisplayImageSelector: Displays a file selector in tiles mode at the indicated path root.
-/**
- *
- * @param callback
- * @param pathRoot
- * @param position
- * @param position.top
- * @param position.left
- */
 function displayImageSelector(callback, pathRoot = `systems/${C.SYSTEM_ID}/assets`, position = { top: 200, left: 200 }) {
     const fp = new FilePicker({
         type: "image",
@@ -1936,11 +1578,8 @@ function displayImageSelector(callback, pathRoot = `systems/${C.SYSTEM_ID}/asset
     });
     return fp.browse(pathRoot);
 }
-// #endregion ▄▄▄▄▄ FOUNDRY ▄▄▄▄▄
 export default {
-    // ████████ GETTERS: Basic Data Lookup & Retrieval ████████
     GMID, getUID,
-    // ████████ TYPES: Type Checking, Validation, Conversion, Casting ████████
     isNumber, isNumString, isBooleanString, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
     isHTMLCode, isRGBColor, isHexColor,
     isUndefined, isDefined, isEmpty, hasItems, isInstance, isNullish,
@@ -1949,31 +1588,22 @@ export default {
     getKey,
     assertNonNullType,
     FILTERS,
-    // ████████ REGEXP: Regular Expressions, Replacing, Matching ████████
     testRegExp,
     regExtract,
-    // ████████ STRINGS: String Parsing, Manipulation, Conversion ████████
-    // ░░░░░░░ Case Conversion ░░░░░░░
     uCase, lCase, sCase, tCase,
-    // ░░░░░░░ Formatting ░░░░░░░
-    /* hyphenate, */ unhyphenate, pluralize, oxfordize, ellipsize, pad,
+    unhyphenate, pluralize, oxfordize, ellipsize, pad,
     toKey,
     parseArticles,
     signNum, padNum, stringifyNum, verbalizeNum, ordinalizeNum, romanizeNum,
-    // ░░░░░░░ Content ░░░░░░░
     loremIpsum, randString, randWord,
-    // ████████ SEARCHING: Searching Various Data Types w/ Fuzzy Matching ████████
     fuzzyMatch, isIn, isInExact,
-    // ████████ NUMBERS: Number Casting, Mathematics, Conversion ████████
     randNum, randInt,
     coinFlip,
     cycleNum, cycleAngle, roundNum, clampNum,
     sum, average,
-    // ░░░░░░░ Positioning ░░░░░░░
     getDistance,
     getAngle, getAngleDelta,
     getBoundingRectangle,
-    // ████████ ARRAYS: Array Manipulation ████████
     randElem, randIndex,
     makeIntRange,
     makeCycler,
@@ -1981,32 +1611,22 @@ export default {
     getLast, removeFirst, pullElement, pullIndex,
     subGroup, shuffle,
     toArray,
-    // ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████
     remove, replace, partition, zip,
     objClean, objSize, objMap, objFindKey, objFilter, objForEach, objCompact,
     objClone, objMerge, objDiff, objExpand, objFlatten, objNullify,
     objFreezeProps,
-    // ████████ FUNCTIONS: Function Wrapping, Queuing, Manipulation ████████
     getDynamicFunc, withLog,
-    // ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████
     getSvgCode,
     changeContainer, adjustTextContainerAspectRatio,
     getRawCirclePath, drawCirclePath,
     getColorVals, getRGBString, getHEXString, getContrastingColor, getRandomColor,
     getSiblings,
     escapeHTML,
-    // ████████ PERFORMANCE: Performance Testing & Metrics ████████
     testFuncPerformance,
-    // ░░░░░░░ GreenSock ░░░░░░░
-    gsap, get, set, getGSAngleDelta, getNearestLabel, reverseRepeatingTimeline, /* to, from, fromTo, */
-    /* TextPlugin, Flip, */ MotionPathPlugin,
-    // ████████ ASYNC: Async Functions, Asynchronous Flow Control ████████
+    gsap, get, set, getGSAngleDelta, getNearestLabel, reverseRepeatingTimeline,     MotionPathPlugin,
     sleep, waitFor,
-    // EVENT HANDLERS
     EventHandlers,
-    // ░░░░░░░ SYSTEM: System-Specific Functions (Requires Configuration of System ID in constants.js) ░░░░░░░
     isDocID, isDocUUID, isDotKey, isTargetKey, isTargetFlagKey,
     parseDocRefToUUID,
     loc, getSetting, getTemplatePath, displayImageSelector
 };
-// #endregion ▄▄▄▄▄ EXPORTS ▄▄▄▄▄

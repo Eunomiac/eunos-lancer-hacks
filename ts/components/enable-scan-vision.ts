@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import C from "../core/constants";
-import ELHSettings from "../core/settings";
 import OverrideLancerPilot from "../overrides/eunos-lancer-actor";
 import {registerHandlebarHelpers} from "../core/helpers";
 import Hack_BarBrawl from "../module-hacks/barbrawl";
@@ -8,35 +7,70 @@ import {LancerActor, LancerActorType} from "../@types/module/actor/lancer-actor"
 import {LancerActorSheet} from "../@types/module/actor/lancer-actor-sheet";
 import {LancerToken} from "../@types/module/token";
 import {EntryType} from "machine-mind";
-// import {ChatMessageConstructorData} from "@league-of-foundry-developers/foundry-vtt-types";
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
+declare global {
+
+}
+
 export default class Hack_EnableScanVision {
-  static RegisterSettings() {
+
+  // #region Environment Viability Checks ~
+  static get canEnable(): boolean {
+    return game.modules.has("__DEPENDENCY_NAME__");
+  }
+  static isEnabled(): boolean {
+    return this.canEnable && game.settings.get("eunos-lancer-hacks", "enableScanVision") === true;
+  }
+  // #endregion
+
+  // #region *** INITIALIZATION *** ~
+
+  static _registerComponentToggle() {
     game.settings.register("eunos-lancer-hacks",
-      "isLinkingFeelTremorToScanningRadius",
+      "enableScanVision",
       {
-        name: "Dynamic Scanning Radius",
-        hint: "Automatically update the 'Feel Tremor' vision mode of tokens to match their Scanning range.",
+        name: "Title",
+        hint: "Description.",
         scope: "world",
         config: true,
-        default: true,
+        default: false,
         type: Boolean
       }
     );
   }
 
-  static Initialize() {
+  static _registerComponentSettings() {
 
-    this.RegisterSettings();
+    // game.settings.register("eunos-lancer-hacks",
+    //   "__setting_key__",
+    //   {
+    //     name: "Title",
+    //     hint: "Description.",
+    //     scope: "world",
+    //     config: true,
+    //     default: true,
+    //     type: Boolean
+    //   }
+    // );
 
-    Hooks.on("drawToken", (token: LancerToken) => {
+  }
+
+  static RegisterSettings() {
+
+    this._registerComponentToggle();
+    this._registerComponentSettings();
+
+  }
+
+  static RegisterHooks() {
+    Hooks.on("drawToken", (token: EunosLancerToken): void => {
 
       // Verify that this is a token, controlled by an actor, of type 'mech'.
       if (!token?.actor?.is_mech()) { return; }
 
       // Initialize update data
-      const updateData = {};
+      const updateData: DeepPartial<EunosLancerTokenData> = {};
 
       // Assign heat and hp to token bars (but don't make them visible yet)
       updateData.bar1 = {attribute: "derived.heat"};
@@ -46,7 +80,7 @@ export default class Hack_EnableScanVision {
       const sensorRange = this.getSensorRange(token);
 
       // Extract sight data, update to show sensor range as faint glow
-      updateData.sight = token.document.sight;
+      updateData.sight = token.document.data.sight ?? {};
       updateData.sight.enabled = true;
       updateData.sight.color = "#0f000f";
       updateData.sight.range = sensorRange;
@@ -61,9 +95,27 @@ export default class Hack_EnableScanVision {
       // Update token with new data
       token.document.update(updateData);
     });
+  }
+
+  static async RegisterTemplates() {
+    return loadTemplates([
+      // "modules/eunos-lancer-hacks/templates/ ... .hbs"
+    ]);
 
   }
 
+  static async Initialize() {
+
+    // Register settings related to this component
+    this.RegisterSettings();
+
+    if (!this.isEnabled) { return; }
+
+    // Register hooks related to this component
+    this.RegisterHooks();
+
+    return this.RegisterTemplates();
+  }
   static getSensorRange(token?: LancerToken) {
     // Verify that this is a token, controlled by an actor, of type 'mech'.
     if (!token?.actor?.is_mech()) { return; }
@@ -88,3 +140,4 @@ export default class Hack_EnableScanVision {
     });
   }
 }
+// #endregion

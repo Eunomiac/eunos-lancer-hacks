@@ -1,9 +1,14 @@
-// @ts-nocheck
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌█░░░░░░░░░ Euno's Hacks for Lancer for Foundry VTT ░░░░░░░░░░░█▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌█  License █ v0.1 ██▐     *|
+|*     ▌████░░░░  ░░░░█████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
+/* @@DOUBLE-BLANK@@ ~*/
 import C from "../core/constants.js";
 export default function OverrideLancerActor(lancerActorClass) {
     return class EunosLancerActor extends lancerActorClass {
         static Initialize() {
-            // Register the new actor class
             CONFIG.Actor.documentClass = this;
         }
         parseBondPowersDownload(bond, bondPowers) {
@@ -44,56 +49,13 @@ export default function OverrideLancerActor(lancerActorClass) {
                 return;
             }
             await super.importCC(data, clearFirst);
-            /**
-             * [
-          {
-              "id": "88da0238-42ff-425a-b863-9091c5082769",
-              "title": "First Burden",
-              "description": "Burden Description",
-              "resolution": "Burden Resolution",
-              "segments": 4,
-              "progress": 1
-          },
-          {
-              "id": "e88650a5-b970-44f7-a856-301e48dde629",
-              "title": "Second Burden",
-              "description": "",
-              "resolution": "",
-              "segments": 6,
-              "progress": 3
-          },
-          {
-              "id": "858c35ee-557c-44de-acbe-aa940827ea0a",
-              "title": "Third Burden",
-              "description": "asd",
-              "resolution": "",
-              "segments": 10,
-              "progress": 2
-          }
-      
-      
-          [
-          {
-              "id": "8466e920-80af-4f4a-a999-257e2174e5ac",
-              "title": "General 10-Clock",
-              "description": "10-Clock Description",
-              "resolution": "10-Clock Resolution",
-              "segments": "10",
-              "progress": 0
-          }
-      ]
-             */
-            // Extract relevant data from retrieved Comp/Con data object
             const { bondId, bondPowers: bondPowerData, bondAnswers, minorIdeal, stress, xp } = data;
             if (typeof bondId !== "string" || bondId.length < 3) {
                 ui.notifications.error("Bond not selected; bond tab will be disabled. Please configure your Bonds in the COMP/CON app, then sync again.");
                 return;
             }
-            // Convert bondId to bond
             const bond = bondId.split(/-/).pop();
-            // Parse bond powers
             const bondPowers = this.parseBondPowersDownload(bond, bondPowerData);
-            // Generate burden clocks if they aren't already registered under fData.burden_clocks
             const burden_clocks = this.fData.burden_clocks ?? {};
             const clocks = this.fData.clocks ?? {};
             const defaultBurdenClocks = this.buildBurdenData();
@@ -106,7 +68,6 @@ export default function OverrideLancerActor(lancerActorClass) {
                 burden_clocks[burdenKey] = burdenClock.id;
                 clocks[burdenClock.id] = burdenClock;
             });
-            // Initialize collapse flags to true
             const collapse = {
                 main: true,
                 stress: true,
@@ -118,7 +79,6 @@ export default function OverrideLancerActor(lancerActorClass) {
             for (const pKey of Object.keys(bondPowers)) {
                 collapse.powers[pKey] = true;
             }
-            // Prepare new flag update data
             const bondFlagData = Object.fromEntries(Object.entries({
                 bond,
                 bondPowers,
@@ -139,7 +99,6 @@ export default function OverrideLancerActor(lancerActorClass) {
                 clocks,
                 collapse
             }).map(([key, value]) => [`flags.eunos-lancer-hacks.${key}`, value]));
-            // Write bond-related data to module flags
             await this.update(bondFlagData);
         }
     };

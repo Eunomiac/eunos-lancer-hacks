@@ -1,11 +1,15 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌█░░░░░░░░░ Euno's Hacks for Lancer for Foundry VTT ░░░░░░░░░░░█▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌█  License █ v0.1 ██▐     *|
+|*     ▌████░░░░  ░░░░█████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
+/* @@DOUBLE-BLANK@@ ~*/
 import { RollPermissions, ActionTrait, RollPhase, Effect, RollType, Position } from "../core/constants.js";
 import { BladesPC, BladesNPC, BladesFaction } from "../documents/BladesActorProxy.js";
 import { BladesRollPrimary, BladesRollOpposition } from "../classes/BladesRoll.js";
 class BladesDebug {
     static async GetSampleSchemas(docNames = {}) {
-        // Documents
         const SAMPLE_USER_NAME = docNames.user || "Alistair";
         const SAMPLE_PC_NAME = docNames.pc || "Alistair";
         const SAMPLE_NPC_NAME = docNames.npc || "Setarra";
@@ -26,22 +30,11 @@ class BladesDebug {
         if (!BladesFaction.IsType(sampleFaction)) {
             throw new Error(`Sample BladesFaction with name "${SAMPLE_FACTION_NAME}" not found or is not a valid BladesFaction.`);
         }
-        // BladesActionRoll
         const BladesActionRoll_Schema = {
             rollType: RollType.Action,
-            // rollSubType: RollSubType.GatherInfo,
-            // rollPrompt: "Gathering Information",
             rollTrait: ActionTrait.skirmish,
-            // rollUserID: sampleUser.id,
-            // rollDowntimeAction: DowntimeAction.AcquireAsset,
-            // rollClockKey: U.getLast(game.eunoblades.ClockKeys.contents)?.id,
             rollPrimaryData: BladesRollPrimary.GetDataFromDoc(samplePC),
             rollOppData: BladesRollOpposition.GetDataFromDoc(sampleFaction),
-            // rollParticipantData: {},
-            // consequenceData: {},
-            // resistanceData: {
-            //   consequence: {}
-            // },
             rollModsData: {},
             rollPositionInitial: Position.risky,
             rollEffectInitial: Effect.standard,
@@ -57,15 +50,6 @@ class BladesDebug {
             userPermissions: {
                 [sampleUser.id]: RollPermissions.Primary
             }
-            // rollPositionFinal: Position.risky,
-            // rollEffectFinal: Effect.standard,
-            // rollResult: RollResult.success,
-            // rollResultDelta: 0,
-            // rollResultFinal: RollResult.success,
-            // rollTraitVerb: "skirmishes",
-            // rollTraitPastVerb: "skirmished",
-            // finalDiceData: [],
-            // isInlineResistanceRoll: false
         };
         return {
             BladesActionRoll_Schema

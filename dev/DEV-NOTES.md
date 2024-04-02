@@ -11,9 +11,7 @@ npx tsc -p tsconfig-emit.json
 
 - Copy the generated `.d.ts` files to `D:/Users/Ryan/Documents/Projects/!!!!CODING/FoundryVTTv10/FoundryDevData/Data/modules/eunos-lancer-hacks/ts/@types/system-types/**`, retaining the original folder structure
 
+# To Generate a Release
 
 
-- Edit the relative import paths by changing, e.g.:
-  `import type { AutomationOptions } from "./module/settings";`
-  to
-  `import type { AutomationOptions } from "../@types/system-types/module/settings";`
+gh release create <tag> --title "<release-title>" --notes "<release-notes>" --assets path/to/first/asset,path/to/second/asset

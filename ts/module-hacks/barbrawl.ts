@@ -43,9 +43,6 @@ export default class Hack_BarBrawl {
     await Promise.all(
       (game.scenes ?? []).map((scene: Scene) => Promise.all(
         scene.tokens.map((token: LancerTokenDocument) => {
-          const updateData = {
-            sight: token.sight
-          };
           if (!token?.actor?.is_mech()) { return null; }
 
           // Get sensor range of actor's active mech frame
@@ -54,13 +51,18 @@ export default class Hack_BarBrawl {
           if (!activeFrame?.is_frame()) { return null; }
           const sensorRange = activeFrame.system.stats.sensor_range;
           if (typeof sensorRange !== "number") { return null; }
-          updateData.sight.enabled = true;
-          updateData.sight.color = null;
-          updateData.sight.range = sensorRange;
-          updateData.detectionModes = [
-            {id: "feelTremor", enabled: true, range: sensorRange},
-            {id: "basicSight", enabled: true, range: sensorRange}
-          ];
+
+          const updateData: DeepPartial<EunosLancerTokenData> = {
+            sight: {
+              enabled: true,
+              color: null,
+              range: sensorRange
+            },
+            detectionModes: [
+              {id: "feelTremor", enabled: true, range: sensorRange},
+              {id: "basicSight", enabled: true, range: sensorRange}
+            ]
+          };
           return token.update(updateData);
         })
       ))

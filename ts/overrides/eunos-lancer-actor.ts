@@ -1,30 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import C, {LancerBondPowerData, LancerBondType} from "../core/constants";
 import {LancerActor, LancerActorType} from "../@types/module/actor/lancer-actor";
+import {LancerToken, LancerTokenDocument} from "../@types/module/token";
 import {EntryType, Pilot} from "machine-mind";
+import {TokenData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 /* eslint-enable @typescript-eslint/no-unused-vars */
-
-declare global {
-  interface LancerClockData {
-    id: IDString,
-    name: string,
-    value: number,
-    max: number,
-    color: string,
-    targetFlag: string,
-    placeholder: string
-  }
-
-  type BurdenKey = "minor4" | "minor6" | "major";
-  type PowerKey = keyof typeof C["bondPowersMap"];
-
-  interface CollapseFlags {
-    main: boolean,
-    stress: boolean,
-    clocks: boolean,
-    powers: Record<PowerKey|"main", boolean>
-  }
-}
 
 declare global {
 
@@ -66,6 +46,34 @@ declare global {
     buildClockData(color: string, max: number, value?: number, placeholder?: string): LancerClockData;
 
     buildBurdenData(): [LancerClockData, LancerClockData, LancerClockData];
+  }
+
+  interface EunosLancerTokenData extends TokenData {
+    sight: {
+      enabled: boolean,
+      range: number,
+      angle: number,
+      visionMode: string,
+      color: string|null,
+      attenuation: number,
+      brightness: number,
+      saturation: number,
+      contrast: number
+    },
+    detectionModes: Array<{
+      id: string,
+      enabled: boolean,
+      range: number
+    }>
+  }
+
+  interface EunosLancerToken extends LancerToken {
+    document: EunosLancerTokenDocument,
+    data: EunosLancerTokenData
+  }
+
+  interface EunosLancerTokenDocument extends LancerTokenDocument {
+    data: EunosLancerTokenData
   }
 
   // class LancerActorSheet<T extends LancerActorType> {

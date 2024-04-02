@@ -1,4 +1,10 @@
-// @ts-nocheck
+/* ****▌███████████████████████████████████████████████████████████████████████████▐**** *\
+|*     ▌█░░░░░░░░░ Euno's Hacks for Lancer for Foundry VTT ░░░░░░░░░░░█▐     *|
+|*     ▌██████████████████░░░░░░░░░░░░░ by Eunomiac ░░░░░░░░░░░░░██████████████████▐     *|
+|*     ▌█  License █ v0.1 ██▐     *|
+|*     ▌████░░░░  ░░░░█████▐     *|
+\* ****▌███████████████████████████████████████████████████████████████████████████▐**** */
+/* @@DOUBLE-BLANK@@ ~*/
 import C from "../core/constants.js";
 export default class Hack_BarBrawl {
     static get IsActive() {
@@ -30,9 +36,7 @@ export default class Hack_BarBrawl {
         const isPerType = "mech" in barBrawlConfig;
         await game.settings.set("barbrawl", "defaultsPerType", isPerType);
         await game.settings.set("barbrawl", "defaultTypeResources", C.barBrawlConfigs[value]);
-        // :warning: Reset all actors' prototype token bars
         await Promise.all(game.actors.map((a) => a.update({ "token.flags.barbrawl.-=resourceBars": null })));
-        // Remove vision ranges from tokens
         await Promise.all(game.scenes.map((scene) => Promise.all(scene.tokens.map((token) => {
             const updateData = {
                 sight: token.sight,
@@ -40,7 +44,6 @@ export default class Hack_BarBrawl {
             if (token?.actor?.type !== "mech") {
                 return;
             }
-            // Get sensor range of actor's active mech frame
             const activeFrameID = token.actor.system.loadout.frame.id;
             const activeFrame = token.actor.items.get(activeFrameID ?? "");
             if (!activeFrame) {
@@ -59,7 +62,6 @@ export default class Hack_BarBrawl {
             ];
             return token.update(updateData);
         }))));
-        // Reset the bars on all existing tokens
         await Promise.all(game.scenes.map(async (s) => {
             const updates = await Promise.all(s.tokens.map(async (t) => {
                 await t.unsetFlag("barbrawl", "resourceBars");
