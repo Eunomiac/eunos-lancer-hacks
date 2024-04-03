@@ -2,11 +2,10 @@
 import {defineConfig, type UserConfig, type Plugin} from "vite";
 import path from "path";
 import fs from "fs";
-import checker from "vite-plugin-checker";
+// import checker from "vite-plugin-checker";
 import {svelte} from "@sveltejs/vite-plugin-svelte";
 import tsconfigPaths from "vite-plugin-tsconfig-paths";
 import {visualizer} from "rollup-plugin-visualizer";
-import commonjs from "@rollup/plugin-commonjs";
 
 /** *** CHECK: *** https://vitejs.dev/guide/performance
  *
@@ -159,6 +158,7 @@ const config = defineConfig({
     //   external: ["gsap/all"]
     // },
     // Configuration for building a library
+    // brotliSize: true,
     lib: {
       name:     "eunos-lancer-hacks", // Name of the library
       entry:    path.resolve(__dirname, "src/ts/eunos-lancer-hacks.ts"), // Entry point for the library
@@ -172,18 +172,17 @@ const config = defineConfig({
   },
   resolve: {
     alias: {
-      "gsap/all": "scripts/greensock/esm/all.js",
-      "eunosTypes": path.resolve(__dirname, "src/ts/@types")
+      "gsap/all": "scripts/greensock/esm/all.js"
     }
   },
   plugins: [
-    commonjs(),
-    tsconfigPaths(), // Automatically resolves TS path aliases
+    // commonjs(),
+    // tsconfigPaths(), // Automatically resolves TS path aliases
     svelte({
       configFile: "../svelte.config.cjs"
     }),
-    foundryPlugin(),
-    checker({typescript: true}),
+    // foundryPlugin(),
+    // checker({typescript: true}),
     visualizer({
       gzipSize: true,
       template: "treemap"

@@ -80,11 +80,8 @@
     "strict": true,
     "strictNullChecks": true,
     "target": "esnext",
-    "types": ["@league-of-foundry-developers/foundry-vtt-types", "svelte"],
-    "useDefineForClassFields": false,
-    "paths": {
-      "eunosTypes/*": ["./src/ts/@types/*"]
-    },
+    "types": ["@league-of-foundry-developers/foundry-vtt-types", "svelte", "node"],
+    "useDefineForClassFields": false
   },
-  "include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte"]
+  "include": ["src/ts/**/*.d.ts", "src/ts/**/*.ts", "src/ts/**/*.js", "src/ts/**/*.svelte"]
 }

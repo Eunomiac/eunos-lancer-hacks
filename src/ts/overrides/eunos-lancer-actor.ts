@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import C, {type LancerBondPowerData, type LancerBondType} from "../core/constants";
-import {LancerActor, type LancerActorType} from "eunosTypes/module/actor/lancer-actor";
-import {LancerToken, LancerTokenDocument} from "eunosTypes/module/token";
+import {LancerActor, LancerActorType, LancerToken, LancerTokenDocument} from "../eunosTypes/index.d.ts";
+// import type {LancerToken, LancerTokenDocument} from "../@types/module/token";
 import {EntryType, Pilot} from "machine-mind";
 import {TokenData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 /* eslint-enable @typescript-eslint/no-unused-vars */

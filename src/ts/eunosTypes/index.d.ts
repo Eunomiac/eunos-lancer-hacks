@@ -1,5 +1,6 @@
 import C from "../core/constants";
-import {LancerActor} from "./module/actor/lancer-actor";
+import type {LancerActor, LancerActorType} from "./module/actor/lancer-actor.d.ts";
+import type {LancerToken, LancerTokenDocument} from "./module/token.d.ts";
 import EunosLancerPilot from "../overrides/eunos-lancer-actor";
 import {EntryType, Mech, Deployable, Npc, OpCtx, LiveEntryTypes, Pilot, PackedPilotData, RegEntryTypes, Frame} from "machine-mind";
 
@@ -7,8 +8,8 @@ import {EntryType, Mech, Deployable, Npc, OpCtx, LiveEntryTypes, Pilot, PackedPi
 declare module "gsap/all";
 import type gsap from "gsap/all";
 
-import "./general-types";
-import "./global";
+import "./general-types.d.ts";
+import "./global.d.ts";
 
 /**
  * TypeScript entry file for Foundry VTT.
@@ -19,8 +20,10 @@ import "./global";
  * Software License: GNU GPLv3
  */
 import "tippy.js/dist/tippy.css";
-import "./module/helpers/text-enrichers";
+import "./module/helpers/text-enrichers.d.ts";
 export declare const system_ready: Promise<void>;
+
+export {LancerActor, LancerActorType, LancerToken, LancerTokenDocument};
 
 declare global {
 

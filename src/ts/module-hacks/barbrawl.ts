@@ -1,5 +1,5 @@
 import C from "../core/constants";
-import type {LancerTokenDocument} from "eunosTypes/module/token";
+import type {LancerTokenDocument} from "../@types/module/token";
 import {EntryType} from "machine-mind";
 
 export default class Hack_BarBrawl {

@@ -1,5 +1,5 @@
 import {EntryType} from "machine-mind";
-import {type LancerActorType} from "eunosTypes/module/actor/lancer-actor";
+import {type LancerActorType} from "../@types/module/actor/lancer-actor";
 
 const getMajorIdeals = (methods: string): Record<"a"|"b"|"c", string> => ({
   a: `I addressed challenges with ${methods}.`,
