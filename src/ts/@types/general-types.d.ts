@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {gsap} from "gsap/all";
-import {LancerActor} from "./module/actor/lancer-actor";
+import {LancerActor, LancerActorType} from "./module/actor/lancer-actor";
 import {LancerActorSheet} from "./module/actor/lancer-actor-sheet";
-import {LancerItem} from "./module/item/lancer-item";
-import {LancerItemSheet} from "./module/item/lancer-item-sheet";
+import {LancerItem, LancerItemType} from "./module/item/lancer-item";
+import {LancerItemSheet} from "./module/item/item-sheet";
 
 declare global {
   // #region MISCELLANEOUS TYPE ALIASES (nonfunctional; for clarity) ~
@@ -76,7 +77,7 @@ declare global {
   type KeyOf<T> = keyof T;
 
   // Represents a value of a certain type
-  type ValOf<T> = T extends Array<unknown> | ReadonlyArray<unknown> ? T[number] : T[keyof T];
+  type ValOf<T> = T extends unknown[] | readonly unknown[] ? T[number] : T[keyof T];
 
   // Represents a function that takes a key and an optional value and returns unknown
   type keyFunc = (key: number | string, val?: any) => unknown;
@@ -136,7 +137,7 @@ declare global {
   type LancerDoc = LancerActor | LancerItem;
 
   // Represents any Lancer document sheet
-  type LancerSheet = LancerActorSheet | LancerItemSheet;
+  type LancerSheet = LancerActorSheet<LancerActorType> | LancerItemSheet<LancerItemType>;
 
   // Represents a reference to a Lancer document
   type DocRef = string | LancerDoc;
@@ -150,8 +151,17 @@ declare global {
   // Utility Types for Variable Template Values
   type ValueMax = {max: number, value: number};
   type NamedValueMax = ValueMax & {name: string};
-  type RollableStat = AttributeTrait | ActionTrait;
 
-
-  export declare function randomID(length?: number): IDString;
+  /**
+   * Declaration merging to extend the existing `randomID` function from Foundry VTT types.
+   * This interface merges with the global scope of the Foundry VTT types to override the return type of `randomID`.
+   */
+  namespace foundry.utils {
+    /**
+     * Generates a random ID string with a specified length.
+     * @param length The desired length of the ID string. If not provided, a default length is used.
+     * @returns A random ID string of type IDString, extending the basic string type.
+     */
+    function randomID(length?: number): IDString;
+  }
 }

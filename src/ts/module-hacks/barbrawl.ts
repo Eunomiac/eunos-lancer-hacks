@@ -1,5 +1,5 @@
 import C from "../core/constants";
-import type {LancerTokenDocument} from "../@types/module/token";
+import type {LancerTokenDocument} from "eunosTypes/module/token";
 import {EntryType} from "machine-mind";
 
 export default class Hack_BarBrawl {
@@ -37,7 +37,7 @@ export default class Hack_BarBrawl {
     await game.settings.set("barbrawl", "defaultTypeResources", C.barBrawlConfigs[value]);
 
     // :warning: Reset all actors' prototype token bars
-    await Promise.all(game.actors?.map((a) => a.update({ "token.flags.barbrawl.-=resourceBars": null })) ?? []);
+    await Promise.all(game.actors?.map((a) => a.update({"token.flags.barbrawl.-=resourceBars": null})) ?? []);
 
     // Remove vision ranges from tokens
     await Promise.all(
@@ -76,7 +76,7 @@ export default class Hack_BarBrawl {
           if (!type) { return; }
           await t.unsetFlag("barbrawl", "resourceBars");
           return {
-            _id: t.id,
+            "_id": t.id,
             "flags.barbrawl.resourceBars": isPerType(barBrawlConfig)
               ? barBrawlConfig[type]
               : barBrawlConfig

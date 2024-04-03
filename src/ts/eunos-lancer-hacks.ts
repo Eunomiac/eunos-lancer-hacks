@@ -7,9 +7,9 @@ import Hack_BarBrawl from "./module-hacks/barbrawl";
 import Hack_EnableBondsTab from "./components/enable-bonds-tab";
 import Hack_EnableScanVision from "./components/enable-scan-vision";
 
-import {LancerActor, LancerActorType} from "./@types/module/actor/lancer-actor";
-import {LancerActorSheet} from "./@types/module/actor/lancer-actor-sheet";
-import {LancerToken} from "./@types/module/token";
+import {LancerActor, type LancerActorType} from "eunosTypes/module/actor/lancer-actor";
+import {LancerActorSheet} from "eunosTypes/module/actor/lancer-actor-sheet";
+import {LancerToken} from "eunosTypes/module/token";
 import {EntryType} from "machine-mind";
 // import {ChatMessageConstructorData} from "@league-of-foundry-developers/foundry-vtt-types";
 /* eslint-enable @typescript-eslint/no-unused-vars */

@@ -1,7 +1,7 @@
-import type { LancerInitiativeConfig } from "lancer-initiative";
-import type { IContentPackManifest } from "machine-mind";
-import type { AutomationOptions } from "./module/settings";
-import type { LancerActionManager } from "./module/action/actionManager";
+import type {LancerInitiativeConfig} from "lancer-initiative";
+import type {IContentPackManifest} from "machine-mind";
+import type {AutomationOptions} from "./module/settings";
+import type {LancerActionManager} from "./module/action/actionManager";
 
 declare global {
   // Since we never use these before `init` tell league types that they are
@@ -34,7 +34,7 @@ declare global {
       "lancer.installedLCPs": {
         index: IContentPackManifest[];
       };
-      "lancer.keepStockIcons": booleacn;
+      "lancer.keepStockIcons": boolean;
       "lancer.hideWelcome": boolean;
       "lancer.automationOptions": Partial<AutomationOptions>;
       "lancer.automationSwitch": boolean;
@@ -47,7 +47,7 @@ declare global {
       "lancer.squareGridDiagonals": "111" | "121" | "222" | "euc";
       // "lancer.warningFor120": boolean; // Old setting, currently unused.
       // "lancer.warningForBeta": boolean; // Old setting, currently unused.
-      "lancer.combatTrackerConfig": { sortTracker: boolean } | ClientSettings.Values["lancer.combatTrackerConfig"];
+      "lancer.combatTrackerConfig": { sortTracker: boolean }; // | ClientSettings.Values["lancer.combatTrackerConfig"];
       "lancer.dsnSetup": boolean;
       "lancer.combat-tracker-appearance": Partial<LancerInitiativeConfig["def_appearance"]>;
     }

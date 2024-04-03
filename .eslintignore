@@ -1,0 +1,10 @@
+.vscode/
+dist/
+scripts/
+ts/@types/
+\!archive/
+emu*.js
+.dev-refs/
+module/
+module_staging_1/
+.eslintrc.js

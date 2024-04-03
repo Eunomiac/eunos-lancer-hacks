@@ -3,8 +3,8 @@ import C from "../core/constants";
 import {EntryType} from "machine-mind";
 
 import EunosLancerPilot from "../overrides/eunos-lancer-actor";
-import {LancerActorSheet} from "../@types/module/actor/lancer-actor-sheet";
-import {LancerToken} from "../@types/module/token";
+import {LancerActorSheet} from "eunosTypes/module/actor/lancer-actor-sheet";
+import {LancerToken} from "eunosTypes/module/token";
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 /* Replace __DEPENDENCY_NAME__ with the name of the module that this component depends on. */

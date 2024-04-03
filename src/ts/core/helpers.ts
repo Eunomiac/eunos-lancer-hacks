@@ -61,10 +61,10 @@ const handlebarHelpers: Record<string, Handlebars.HelperDelegate> = {
       "*": (p1, p2) => parseInt(`${p1}`, 10) * parseInt(`${p2}`, 10),
       "/": (p1, p2) => parseInt(`${p1}`, 10) / parseInt(`${p2}`, 10),
       "%": (p1, p2) => parseInt(`${p1}`, 10) % parseInt(`${p2}`, 10),
-      max: (p1, p2) => Math.max(parseInt(`${p1}`, 10), parseInt(`${p2}`, 10)),
-      min: (p1, p2) => Math.min(parseFloat(`${p1}`), parseFloat(`${p2}`)),
-      ceil: (p1) => Math.ceil(parseFloat(`${p1}`)),
-      floor: (p1) => Math.floor(parseFloat(`${p1}`))
+      "max": (p1, p2) => Math.max(parseInt(`${p1}`, 10), parseInt(`${p2}`, 10)),
+      "min": (p1, p2) => Math.min(parseFloat(`${p1}`), parseFloat(`${p2}`)),
+      "ceil": (p1) => Math.ceil(parseFloat(`${p1}`)),
+      "floor": (p1) => Math.floor(parseFloat(`${p1}`))
     };
     const [param1, operator, param2] = typeof params[0] === "string" && params[0] in calcs
       ? [params[1], params[0]]
@@ -132,14 +132,14 @@ const handlebarHelpers: Record<string, Handlebars.HelperDelegate> = {
   //   const [svgDotKey, svgPaths]: [string, string] = args as [string, string];
   //   return U.getSvgCode(svgDotKey, svgPaths);
   // },
-  eLog(...args) {
-    args.pop();
-    let dbLevel = 3;
-    if ([0, 1, 2, 3, 4, 5].includes(args[0])) {
-      dbLevel = args.shift();
-    }
-    eLog.hbsLog(...args, dbLevel);
-  },
+  // eLog(...args) {
+  //   args.pop();
+  //   let dbLevel = 3;
+  //   if ([0, 1, 2, 3, 4, 5].includes(args[0])) {
+  //     dbLevel = args.shift();
+  //   }
+  //   eLog.hbsLog(...args, dbLevel);
+  // },
   // Does the name of this turf block represent a standard 'Turf' claim?
   // isTurfBlock: (name: string): boolean => U.fuzzyMatch(name, "Turf"),
   // Which other connection does this connector overlap with?

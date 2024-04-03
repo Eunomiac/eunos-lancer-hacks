@@ -1,0 +1,90 @@
+// {
+//   // Extending from a stable version of node that includes type definitions to resolve the 'module' definition error.
+//   "extends": "@tsconfig/svelte/tsconfig.json",
+//   "compilerOptions": {
+//     // Disallowing JavaScript files to ensure type safety.
+//     "allowJs": false,
+//     // Allowing default imports from modules with no default export. This is a common practice in modules.
+//     "allowSyntheticDefaultImports": true,
+//     "baseUrl": ".",
+//     "checkJs": false,
+//     "esModuleInterop": true,
+//     "experimentalDecorators": true,
+//     "importsNotUsedAsValues": "remove",
+//     "forceConsistentCasingInFileNames": true,
+//     "isolatedModules": false,
+//     "lib": [
+//       "ESNext",
+//       "DOM"
+//     ],
+//     "module": "ESNext",
+//     "moduleResolution": "node",
+//     "noEmit": true,
+//     "noImplicitAny": true,
+//     "noImplicitOverride": true,
+//     "noImplicitReturns": true,
+//     "noImplicitThis": true,
+//     "paths": {
+//       "*": [
+//         "*",
+//         "D:/Users/Ryan/Documents/Projects/.CODING/FoundryVTT/FoundryDevData/Data/modules/*",
+//         "D:/Users/Ryan/Documents/Projects/.CODING/FoundryVTT/FoundryDevData/Data/systems/lancer/*",
+//         "D:/LTSC Programs/FoundryVTT/resources/app/*"
+//       ],
+//       "eunosTypes/*": ["./src/ts/@types/*"]
+//     },
+//     "plugins": [
+//       {
+//         "name": "typescript-eslint-language-service"
+//       }
+//     ],
+//     "rootDir": ".",
+//     "skipLibCheck": true,
+//     "sourceMap": true,
+//     "strict": true,
+//     "strictNullChecks": true,
+//     "target": "ESNext",
+//     "traceResolution": false,
+//     "types": [
+//       "@league-of-foundry-developers/foundry-vtt-types",
+//       "svelte"
+//     ],
+//     "useDefineForClassFields": false
+//   },
+//   "include": [
+//     "src/**/*.d.ts",
+//     "src/**/*.ts",
+//     "src/**/*.js",
+//     "src/**/*.svelte"
+//   ],
+//   "exclude": [
+//     "gulpfile.js",
+//     "svelte.config.cjs",
+//     "vite.config.ts"
+//   ]
+// }
+
+{
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "importsNotUsedAsValues": "remove",
+    "isolatedModules": false,
+    "lib": ["DOM", "ESNext"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "target": "esnext",
+    "types": ["@league-of-foundry-developers/foundry-vtt-types", "svelte"],
+    "useDefineForClassFields": false,
+    "paths": {
+      "eunosTypes/*": ["./src/ts/@types/*"]
+    },
+  },
+  "include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte"]
+}

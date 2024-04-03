@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import C, {LancerBondPowerData, LancerBondType} from "../core/constants";
-import {LancerActor, LancerActorType} from "../@types/module/actor/lancer-actor";
-import {LancerToken, LancerTokenDocument} from "../@types/module/token";
+import C, {type LancerBondPowerData, type LancerBondType} from "../core/constants";
+import {LancerActor, type LancerActorType} from "eunosTypes/module/actor/lancer-actor";
+import {LancerToken, LancerTokenDocument} from "eunosTypes/module/token";
 import {EntryType, Pilot} from "machine-mind";
 import {TokenData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 /* eslint-enable @typescript-eslint/no-unused-vars */
@@ -132,7 +132,7 @@ export default class EunosLancerPilot extends LancerActor {
     const id = randomID();
     return {
       id,
-      name: "",
+      name:       "",
       value,
       max,
       color,
@@ -220,7 +220,7 @@ export default class EunosLancerPilot extends LancerActor {
 
     // Initialize collapse flags to true
     const collapse: CollapseFlags = {
-      main: true,
+      main:   true,
       stress: true,
       clocks: true,
       powers: {
@@ -246,13 +246,13 @@ export default class EunosLancerPilot extends LancerActor {
           b: bondAnswers[1]
         },
         minorIdeal: this.fData.minorIdeal ?? minorIdeal,
-        pilot_xp: {
+        pilot_xp:   {
           value: this.fData.pilot_xp?.value ?? xp,
-          max: this.fData.pilot_xp?.max ?? 8
+          max:   this.fData.pilot_xp?.max ?? 8
         },
         pilot_stress: {
           value: this.fData.pilot_stress?.value ?? stress,
-          max: this.fData.pilot_stress?.max ?? 8
+          max:   this.fData.pilot_stress?.max ?? 8
         },
         burden_clocks,
         clocks,
