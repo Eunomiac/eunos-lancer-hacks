@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import C from "../core/constants";
-import OverrideLancerPilot from "../overrides/eunos-lancer-actor";
-import {registerHandlebarHelpers} from "../core/helpers";
-import Hack_BarBrawl from "../module-hacks/barbrawl";
+// import OverrideLancerPilot from "../overrides/eunos-lancer-actor";
+// import {registerHandlebarHelpers} from "../core/helpers";
+// import Hack_BarBrawl from "../module-hacks/barbrawl";
 // import type {LancerActor, LancerActorType} from "../@types/module/actor/lancer-actor";
 // import {LancerActorSheet} from "../@types/module/actor/lancer-actor-sheet";
 // import {LancerToken} from "../@types/module/token";
@@ -20,90 +20,11 @@ export default class Hack_EnableScanVision {
     return game.modules.has("__DEPENDENCY_NAME__");
   }
   static isEnabled(): boolean {
-    return this.canEnable && game.settings.get("eunos-lancer-hacks", "enableScanVision") === true;
+    return this.canEnable && ELH.Settings.SubmenuGet("sensorVision", "refreshSensorVision").value === true;
   }
   // #endregion
 
   // #region *** INITIALIZATION *** ~
-
-  static _registerComponentToggle() {
-    // game.settings.register("eunos-lancer-hacks",
-    //   "enableScanVision",
-    //   {
-    //     name: "Title",
-    //     hint: "Description.",
-    //     scope: "world",
-    //     config: true,
-    //     default: false,
-    //     type: Boolean
-    //   }
-    // );
-  }
-
-  static _registerComponentSettings() {
-
-    // game.settings.register("eunos-lancer-hacks",
-    //   "__setting_key__",
-    //   {
-    //     name: "Title",
-    //     hint: "Description.",
-    //     scope: "world",
-    //     config: true,
-    //     default: true,
-    //     type: Boolean
-    //   }
-    // );
-
-  }
-
-  static RegisterSettings() {
-
-    this._registerComponentToggle();
-    this._registerComponentSettings();
-
-  }
-
-  static RegisterHooks() {
-    Hooks.on("drawToken", (token: EunosLancerToken): void => {
-
-      // Verify that this is a token, controlled by an actor, of type 'mech'.
-      if (!token?.actor?.is_mech()) { return; }
-
-      // Initialize update data
-      const updateData: DeepPartial<EunosLancerTokenData> = {};
-
-      // Assign heat and hp to token bars (but don't make them visible yet)
-      updateData.bar1 = {attribute: "derived.heat"};
-      updateData.bar2 = {attribute: "derived.hp"};
-
-      // Get sensor range of actor's active mech frame
-      const sensorRange = this.getSensorRange(token);
-
-      // Extract sight data, update to show sensor range as faint glow
-      updateData.sight = token.document.data.sight ?? {};
-      updateData.sight.enabled = true;
-      updateData.sight.color = "#0f000f";
-      updateData.sight.range = sensorRange;
-      updateData.sight.attenuation = 0;
-
-      // Set up both detectionModes to equal sensor range
-      updateData.detectionModes = [
-        {id: "feelTremor", enabled: true, range: sensorRange},
-        {id: "basicSight", enabled: true, range: sensorRange}
-      ];
-
-      // Update token with new data
-      token.document.update(updateData);
-    });
-  }
-
-  static async RegisterTemplates() {
-    return loadTemplates([
-      // "modules/eunos-lancer-hacks/templates/ ... .hbs"
-    ]);
-
-  }
-
   static async Initialize() {
 
     // Register settings related to this component
@@ -113,10 +34,78 @@ export default class Hack_EnableScanVision {
 
     // Register hooks related to this component
     this.RegisterHooks();
-
-    return this.RegisterTemplates();
   }
-  static getSensorRange(token?: LancerToken) {
+
+  static RegisterSettings() {
+    ELH.Settings.RegisterSettingsMenu(
+      "sensorVision",
+      {
+        name: "Sensor Vision",
+        hint: "Configure how token vision and detection modes are handled.",
+        icon: "fa-duotone fa-eye"
+      },
+      {
+        refreshSensorVision: {
+          name: "Refresh Sensor Vision",
+          hint: "Refresh the sensor vision for all tokens controlled by mech characters.",
+          type: "Button"
+        }
+      },
+      {
+        refreshSensorVision: {
+          click: async (event: Event, elem$: JQuery<HTMLElement>) => {
+            const menuData = ELH.Settings.SubmenuGet("sensorVision");
+            ui.notifications?.info("Refreshing token sensor ranges...");
+            await Promise.all((game.scenes ?? [])
+              .map((s: Scene) => Promise.all(s.tokens
+                .map(
+                  async (t: LancerTokenDocument) => Hack_EnableScanVision.SetScanAura(t, true)
+                )
+              ))
+            );
+            ui.notifications?.info("Token sensor ranges refreshed.");
+          }
+        }
+      }
+    );
+  }
+
+  static RegisterHooks() {
+    Hooks.on("drawToken", (token: EunosLancerToken|EunosLancerTokenDocument): void => {
+      // Verify component is active
+      if (!this.isEnabled) { return; }
+
+      if (token instanceof LancerToken) {
+        token = token.document;
+      }
+
+      // Verify that this is a token, controlled by an actor, of type 'mech'.
+      if (!token?.actor?.is_mech()) { return; }
+
+      // Get sensor range of actor's active mech frame
+      const sensorRange = this.GetSensorRange(token);
+
+      // Update token with new data
+      token.update({
+        // Assign heat and hp to token bars (but don't make them visible yet)
+        bar1: {attribute: "derived.heat"},
+        bar2: {attribute: "derived.hp"},
+        // Enable sight, disable color, set range to sensors
+        sight: {
+          enabled: true,
+          color: null,
+          range: sensorRange
+        },
+        // Set up both detectionModes to equal sensor range
+        detectionModes: [
+          {id: "feelTremor", enabled: true, range: sensorRange},
+          {id: "basicSight", enabled: true, range: sensorRange}
+        ]
+      });
+    });
+  }
+
+  static GetSensorRange(token?: LancerTokenDocument) {
     // Verify that this is a token, controlled by an actor, of type 'mech'.
     if (!token?.actor?.is_mech()) { return; }
 
@@ -130,9 +119,12 @@ export default class Hack_EnableScanVision {
     return sensorRange;
   }
 
-  static setScanAura(token: LancerToken, isEnabling: boolean) {
-    const sensorRange = this.getSensorRange(token);
-    token.document.update({
+  static SetScanAura(token: LancerToken|LancerTokenDocument, isEnabling: boolean) {
+    if (token instanceof LancerToken) {
+      token = token.document;
+    }
+    const sensorRange = this.GetSensorRange(token);
+    token.update({
       detectionModes: [
         {id: "feelTremor", enabled: isEnabling, range: sensorRange},
         {id: "basicSight", enabled: isEnabling, range: sensorRange}

@@ -1,8 +1,9 @@
-import EunosLancerPilot from "../overrides/eunos-lancer-actor";
+import EunosLancerActor from "../overrides/eunos-lancer-actor";
 import {EntryType, Mech, Deployable, Npc, OpCtx, LiveEntryTypes, Pilot, PackedPilotData, RegEntryTypes, Frame} from "machine-mind";
 
 import * as TYPES_CONSTANTS from "../core/constants";
 import * as TYPES_ACTOR from "./module/actor/lancer-actor";
+import * as TYPES_ITEM from "./module/item/lancer-item";
 import * as TYPES_ACTOR_SHEET from "./module/actor/lancer-actor-sheet";
 import * as TYPES_TOKEN from "./module/token";
 
@@ -29,7 +30,15 @@ declare global {
 
   interface Game {
     actors: Collection<LancerActor>,
-    scenes: Collection<Scene>
+    scenes: Collection<Scene>,
+    lancer: {
+      applications: {
+        [x: string]: typeof DocumentSheet;
+      };
+      entities: {
+        [x: string]: typeof Document;
+      }
+    }
   }
 
   function fromUuidSync(uuid: string, options?: {
@@ -71,6 +80,7 @@ declare global {
     }
   }
 
+
   interface LenientGlobalVariableTypes { game: never }
 
   // GreenSock Accessor Object
@@ -95,8 +105,15 @@ declare global {
 
   class LancerActor extends TYPES_ACTOR.LancerActor { }
   class LancerActorSheet<T extends TYPES_ACTOR.LancerActorType> extends TYPES_ACTOR_SHEET.LancerActorSheet<T> { }
+  class LancerItem extends TYPES_ITEM.LancerItem { }
   class LancerToken extends TYPES_TOKEN.LancerToken { }
   class LancerTokenDocument extends TYPES_TOKEN.LancerTokenDocument { }
+
+  // type LancerActor = InstanceType<LancerActorClass>;
+  // type LancerActorSheet<T extends TYPES_ACTOR.LancerActorType> = InstanceType<LancerActorSheetClass<T>>;
+  // type LancerItem = InstanceType<LancerItemClass>
+  // type LancerToken = InstanceType<LancerTokenClass>;
+  // type LancerTokenDocument = InstanceType<LancerTokenDocumentClass>;
 
   type LancerActorType = TYPES_ACTOR.LancerActorType;
 }

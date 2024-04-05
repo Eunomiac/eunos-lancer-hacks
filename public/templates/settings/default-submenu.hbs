@@ -48,13 +48,13 @@
     <div class="settings-container checkbox-container">
       <label class="setting-name">{{data.name}}</label>
       <span class="setting-hint">{{data.hint}}</span>
-      <input type="checkbox" data-key="toggleBarBrawl" {{#if data.value}}checked{{/if}}>
+      <input type="checkbox" data-key="{{key}}" {{#if data.value}}checked{{/if}}>
     {{/if}}
     {{#if (eq data.type "Select")}}
     <div class="settings-container select-container">
       <label class="setting-name">{{data.name}}</label>
       <span class="setting-hint">{{data.hint}}</span>
-      <select name="selectConfig" data-key="selectConfig">
+      <select name="selectConfig" data-key="{{key}}">
         {{#select data.value}}
         {{#each data.choices}}
         <option value="{{name}}">{{display}}</option>
@@ -62,5 +62,9 @@
         {{/select}}
       </select>
     {{/if}}
+    {{#if (eq data.type "Button")}}
+      <button data-key="{{key}}">{{data.name}}</button>
+    {{/if}}
   {{/each}}
+  <button type="submit">OK</button>
 </form>

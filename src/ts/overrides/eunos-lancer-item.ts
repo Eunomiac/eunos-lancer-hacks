@@ -2,7 +2,7 @@
 import C from "../core/constants";
 import {EntryType} from "machine-mind";
 
-import EunosLancerPilot from "./eunos-lancer-actor";
+import EunosLancerActor from "./eunos-lancer-actor";
 // import {LancerActor, type LancerActorType} from "../@types/module/actor/lancer-actor";
 // import {LancerActorSheet} from "../@types/module/actor/lancer-actor-sheet";
 // import {LancerToken} from "../@types/module/token";

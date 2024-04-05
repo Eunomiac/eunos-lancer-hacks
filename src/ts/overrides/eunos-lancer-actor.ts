@@ -37,7 +37,7 @@ declare global {
     xp: number
   }
 
-  interface EunosLancerActor_Instance extends LancerActor {
+  interface EunosLancerActor extends LancerActor {
     fData: Partial<EunosLancerFlags>;
 
     getFlagVal(key: string): unknown;
@@ -91,22 +91,14 @@ export default class Hack_LancerActor {
 
   // #region *** INITIALIZATION *** ~
 
-  static async RegisterTemplates() {
-    return loadTemplates([
-      "modules/eunos-lancer-hacks/templates/partials/clock.hbs",
-      "modules/eunos-lancer-hacks/templates/partials/bonds.hbs",
-      "modules/eunos-lancer-hacks/templates/partials/power-chat.hbs",
-      "modules/eunos-lancer-hacks/templates/partials/dotline.hbs"
-    ]);
-  }
-
-  static Define_EunosLancerActor(lancerActorClass: typeof LancerActor) {
+  static Define_EunosLancerActor(lancerActorClass: typeof Actor & ConstructorOf<LancerActor>): typeof Actor & ConstructorOf<EunosLancerActor> {
 
     if (!lancerActorClass) {
-      throw new Error("[Define_EunosLancerPilot] No LancerActor class provided.");
+      const test = CONFIG.Token.objectClass;
+      throw new Error("[Define_EunosLancerActor] No LancerActor class provided.");
     }
 
-    class EunosLancerPilot_Class extends lancerActorClass {
+    class EunosLancerActor_Class extends lancerActorClass {
 
       // constructor(...args: ConstructorParameters<typeof LancerActor>) {
       //   super(...args);
@@ -256,19 +248,18 @@ export default class Hack_LancerActor {
       // }
     }
 
-    return EunosLancerPilot_Class;
+    return EunosLancerActor_Class as typeof Actor & ConstructorOf<EunosLancerActor>;
   }
 
   static async Initialize() {
 
-    await ELH.lancerSystemInitialized;
+    CONFIG.Actor.documentClass = this.Define_EunosLancerActor(CONFIG.Actor.documentClass);
 
-    // if (!ELH.lancerSystemInitialized) {
-    //   throw new Error("[Initialize] Attempt to define subclass of LancerActor before initialization of lancer system is complete.");
-    // }
-
-    CONFIG.Actor.documentClass = class EunosLancerActor extends this.Define_EunosLancerActor(CONFIG.Actor.documentClass) { };
-
-    await this.RegisterTemplates();
+    return loadTemplates([
+      "modules/eunos-lancer-hacks/templates/partials/clock.hbs",
+      "modules/eunos-lancer-hacks/templates/partials/bonds.hbs",
+      "modules/eunos-lancer-hacks/templates/partials/power-chat.hbs",
+      "modules/eunos-lancer-hacks/templates/partials/dotline.hbs"
+    ]);
   }
 }

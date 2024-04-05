@@ -1,6 +1,5 @@
 import C from "../core/constants";
 import {EntryType} from "machine-mind";
-import EunosHacksSettings from "../core/settings";
 
 declare global {
 
@@ -43,7 +42,7 @@ export default class Hack_BarBrawl {
   }
 
   static RegisterSettings() {
-    EunosHacksSettings.RegisterSettingsMenu(
+    ELH.Settings.RegisterSettingsMenu(
       "barbrawl",
       {
         name: "BarBrawl Hacks",
@@ -70,38 +69,62 @@ export default class Hack_BarBrawl {
           type: "Checkbox",
           default: true,
           value: true
+        },
+        overrideTokenBorders: {
+          name: "Override Token Border",
+          hint: "Update token borders to be wider.",
+          type: "Button",
+          icon: "fa-regular fa-hexagon"
         }
       },
       {
         selectConfig: {
           change: (event: Event) => {
             const select$ = $(event.target as HTMLSelectElement);
-            const bbData = EunosHacksSettings.GetSubmenuData("barbrawl");
+            const bbMenuData = ELH.Settings.SubmenuGet("barbrawl");
             const selectedValue = select$.val() as string;
-            const currentValue = bbData.selectConfig.value;
-            if (bbData.toggleBarBrawl && currentValue !== selectedValue) {
+            const currentValue = bbMenuData.selectConfig.value;
+            if (bbMenuData.toggleBarBrawl.value && currentValue !== selectedValue) {
               ui.notifications?.info(`Applying BarBrawl token configuration: ${selectedValue}...`);
-              bbData.selectConfig.value = selectedValue;
+              bbMenuData.selectConfig.value = selectedValue;
               Hack_BarBrawl.ApplyConfig(selectedValue);
-              game.settings.set("eunos-lancer-hacks", "barbrawl", bbData);
+              ELH.Settings.SubmenuSet("barbrawl", bbMenuData);
             }
           }
         },
         toggleBarBrawl: {
-          click: (event: Event) => {
-            const bbData = EunosHacksSettings.GetSubmenuData("barbrawl");
+          click: (event: Event, elem$: JQuery<HTMLElement>) => {
+            const bbData = ELH.Settings.SubmenuGet("barbrawl");
             const isBBEnabled = $(event.currentTarget as HTMLElement).is(":checked");
             if (isBBEnabled) {
               ui.notifications?.info(`Applying BarBrawl token configuration: ${bbData.selectConfig.value}...`);
               Hack_BarBrawl.ApplyConfig(bbData.selectConfig.value as string);
               bbData.toggleBarBrawl.value = true;
-              game.settings.set("eunos-lancer-hacks", "barbrawl", bbData);
+              elem$.attr("checked", "true");
             } else {
               ui.notifications?.info("Disabling BarBrawl token configuration.");
               Hack_BarBrawl.DisableConfig();
               bbData.toggleBarBrawl.value = false;
-              game.settings.set("eunos-lancer-hacks", "barbrawl", bbData);
+              elem$.attr("checked", "false");
             }
+            ELH.Settings.SubmenuSet("barbrawl", bbData);
+          }
+        },
+        overrideTokenBorders: {
+          click: () => {
+            if (!ELH.Hacks.HexTokenSize.IsActive) { return; }
+            ELH.Settings.SetData("hex-size-support", {
+              borderWidth: 20,
+              altOrientationDefault: false,
+              borderBehindToken: true,
+              fillBorder: true,
+              alwaysShowBorder: false,
+              controlledColor: "#FFFF00",
+              partyColor: "#00cddb",
+              friendlyColor: "#055076",
+              neutralColor: "#b47e08",
+              hostileColor: "#8c0d0f"
+            });
           }
         }
       }
@@ -164,36 +187,6 @@ export default class Hack_BarBrawl {
 
     // :warning: Reset all actors' prototype token bars
     await Promise.all(game.actors?.map((a) => a.update({"token.flags.barbrawl.-=resourceBars": null})) ?? []);
-
-    // Remove vision ranges from tokens
-    await Promise.all(
-      (game.scenes ?? []).map((scene: Scene) => Promise.all(
-        scene.tokens.map((token: LancerTokenDocument) => {
-          if (!token?.actor?.is_mech()) { return null; }
-
-          // Get sensor range of actor's active mech frame
-          const activeFrameID = token.actor.system.loadout.frame?.id;
-          const activeFrame = token.actor.items.get(activeFrameID ?? "");
-          if (!activeFrame?.is_frame()) { return null; }
-          const sensorRange = activeFrame.system.stats.sensor_range;
-          if (typeof sensorRange !== "number") { return null; }
-
-          const updateData: DeepPartial<EunosLancerTokenData> = {
-            sight: {
-              enabled: true,
-              color: null,
-              range: sensorRange
-            },
-            detectionModes: [
-              {id: "feelTremor", enabled: true, range: sensorRange},
-              {id: "basicSight", enabled: true, range: sensorRange}
-            ]
-          };
-          return token.update(updateData);
-        })
-      ))
-    );
-
     // Reset the bars on all existing tokens
     await Promise.all(
       (game.scenes ?? []).map(async (s: Scene) => {

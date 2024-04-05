@@ -8,15 +8,6 @@ import {LancerItemSheet} from "./module/item/item-sheet";
 declare global {
   // #region MISCELLANEOUS TYPE ALIASES (nonfunctional; for clarity) ~
 
-  // Represents a list of a certain type
-  type List<Type = any> = Record<number | string | symbol, Type>
-
-  // Represents an index of a certain type
-  type Index<Type = any> = List<Type> | Type[];
-
-  // Represents a string, false, or undefined
-  type MaybeStringOrFalse = string | false | undefined;
-
   // Represents an integer
   type int = number;
 
@@ -40,6 +31,27 @@ declare global {
 
   // Represents a number represented as a string
   type NumString = string;
+
+  // Represents a value that may be undefined
+  type Maybe<V> = V | undefined;
+
+  // Represents a list of a certain type
+  type List<V = unknown, K extends key = key> = Record<K, V>
+
+  // Represents either an item or a list of items
+  type ItemOrList<V = unknown, K extends key = key> = V | List<V, K>;
+
+  // Represents an index of a certain type, where the keys do not matter
+  type Index<V = unknown> = List<V, key> | V[];
+
+  // Represents either an item or and index of items
+  type ItemOrIndex<V = unknown> = V | Index<V>;
+
+  // Represents an item or a Promise resolving to an item
+  type ItemOrPromise<V = unknown> = V | Promise<V>;
+
+  // Represents a string, false, or undefined
+  type MaybeStringOrFalse = string | false | undefined;
 
   // Represents an object with number-strings as keys
   type StringArray<T> = Record<NumString, T>;

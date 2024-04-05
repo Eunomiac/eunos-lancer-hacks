@@ -5,9 +5,9 @@ declare global {
   type SettingType<T = unknown> = SettingConfig<T>["type"];
 
   type SettingsActionFunctionData = Record<string, {
-    click?: (event: Event) => void;
-    contextmenu?: (event: Event) => void;
-    change?: (event: Event) => void;
+    click?: (event: Event, elem$: JQuery<HTMLElement>) => void;
+    contextmenu?: (event: Event, elem$: JQuery<HTMLElement>) => void;
+    change?: (event: Event, elem$: JQuery<HTMLElement>) => void;
   }>;
 
 
@@ -25,12 +25,10 @@ declare global {
     };
     name?: string;
     hint?: string;
-    default: unknown;
-    value: unknown;
+    default?: unknown;
+    value?: unknown;
     choices?: Array<{name: string, display: string}>
   }
-
-  type SettingsDataSchema = Record<string, EunosSubmenuSettingConfig>;
 
   interface EunosSubmenuConfig extends Partial<Omit<SettingSubmenuConfig, "key"|"namespace"|"type">> {
     name: string,
@@ -58,7 +56,7 @@ function getConstructor<T>(value: T): SettingType<T> | null {
 
 export default class EunosHacksSettings {
 
-  static Initialize() {
+  static Initialize(): Promise<unknown> {
     return loadTemplates([
       this.defaultTemplate,
       ...Object.values(this.customTemplates)
@@ -98,7 +96,7 @@ export default class EunosHacksSettings {
       */
       override async getData() {
         // const superData = await super.getData();
-        const settingsData = game.settings.get("eunos-lancer-hacks", key) as SettingsDataSchema;
+        const settingsData = game.settings.get("eunos-lancer-hacks", key) as List<EunosSubmenuSettingConfig>;
         console.log(`getData settingsData: ${key}`, settingsData);
         return settingsData as unknown as ReturnType<FormApplication["getData"]>;
       }
@@ -112,8 +110,8 @@ export default class EunosHacksSettings {
         if (!formData) { return; }
         console.log("Form Data", {received: formData, expanded: expandObject(formData)});
         const data = await this.getData();
-        Object.entries(expandObject(formData)).forEach(([settingKey, value]: [keyof SettingsDataSchema, unknown]) => {
-          const setting = data[settingKey as keyof typeof data & keyof SettingsDataSchema];
+        Object.entries(expandObject(formData)).forEach(([settingKey, value]: [keyof List<EunosSubmenuSettingConfig>, unknown]) => {
+          const setting = data[settingKey as keyof typeof data & keyof List<EunosSubmenuSettingConfig>];
           if (setting && typeof setting === "object" && "value" in setting) {
             (setting as EunosSubmenuSettingConfig).value = value;
           }
@@ -135,23 +133,23 @@ export default class EunosHacksSettings {
           const {click, contextmenu, change} = actionFunctionData;
 
           if (click) {
-            events$.click = (event: Event) => {
+            events$.click = async (event: Event) => {
               event.preventDefault();
-              click(event);
+              await click(event, elem$);
             };
           }
 
           if (contextmenu) {
             events$.contextmenu = (event: Event) => {
               event.preventDefault();
-              contextmenu(event);
+              contextmenu(event, elem$);
             };
           }
 
           if (change) {
             events$.change = (event: Event) => {
               event.preventDefault();
-              change(event);
+              change(event, elem$);
             };
           }
 
@@ -177,11 +175,53 @@ export default class EunosHacksSettings {
     game.settings.register("eunos-lancer-hacks", key, config);
   }
 
-  static GetSubmenuData(key: string) {
-    return game.settings.get("eunos-lancer-hacks", key) as Record<string, EunosSubmenuSettingConfig>;
+  static Get<T = unknown>(module: string, propKey: string): Maybe<T>
+  static Get<T = unknown>(propKey: string): Maybe<T>
+  static Get<T = unknown>(...args: string[]): Maybe<T> {
+    if (args.length === 1) {
+      args.unshift("eunos-lancer-hacks");
+    }
+    return game.settings.get(...args as [string, string]) as Maybe<T>;
   }
 
-  static RegisterSettingsMenu(key: string, menuData: EunosSubmenuConfig, settingsData: SettingsDataSchema, actionFunctions: SettingsActionFunctionData) {
+  static SetData(module: string, updateData: Record<string, unknown>): Promise<unknown>
+  static SetData(updateData: Record<string, unknown>): Promise<unknown>
+  static SetData(...args: unknown[]): Promise<unknown> {
+    if (args.length === 1) {
+      args.unshift("eunos-lancer-hacks");
+    }
+    const [module, updateData] = args as [string, Record<string, unknown>];
+    return Promise.all(Object.entries(updateData)
+      .map(([propKey, value]) => game.settings.set(module, propKey, value)));
+  }
+
+  static Set(module: string, propKey: string, value: unknown): Promise<unknown>
+  static Set(propKey: string, value: unknown): Promise<unknown>
+  static Set(...args: string[]): Promise<unknown> {
+    if (args.length === 2) {
+      args.unshift("eunos-lancer-hacks");
+    }
+    return game.settings.set(...args as [string, string, unknown]);
+  }
+
+  static SubmenuGet(menuKey: string): List<EunosSubmenuSettingConfig>
+  static SubmenuGet(menuKey: string, dataKey: string): EunosSubmenuSettingConfig
+  static SubmenuGet(menuKey: string, dataKey?: string) {
+    return game.settings.get("eunos-lancer-hacks", [menuKey, dataKey].filter(Boolean).join("."));
+  }
+
+  static async SubmenuSet(menuKey: string, value: List<EunosSubmenuSettingConfig>): Promise<unknown>
+  static async SubmenuSet(menuKey: string, dataKey: string, value: DeepPartial<EunosSubmenuSettingConfig>): Promise<unknown>
+  static async SubmenuSet(menuKey: string, dataKey: string, propKey: string, value: unknown): Promise<unknown>
+  static async SubmenuSet(...args:
+      [string, DeepPartial<List<EunosSubmenuSettingConfig>>]
+    | [string, string, DeepPartial<EunosSubmenuSettingConfig>]
+    | [string, string, string, unknown]): Promise<unknown> {
+    const value = args.pop();
+    return game.settings.set("eunos-lancer-hacks", args.filter(Boolean).join("."), value);
+  }
+
+  static RegisterSettingsMenu(key: string, menuData: EunosSubmenuConfig, settingsData: List<EunosSubmenuSettingConfig>, actionFunctions: SettingsActionFunctionData) {
 
     const menuConfig: ClientSettings.PartialSettingSubmenuConfig = {
       label: menuData.label ?? menuData.name,

@@ -3,7 +3,7 @@ import C from "../core/constants";
 // import type {EunosLancerActor} from "../overrides/eunos-lancer-actor";
 import {EntryType} from "machine-mind";
 
-// import EunosLancerPilot from "../overrides/eunos-lancer-actor";
+// import EunosLancerActor from "../overrides/eunos-lancer-actor";
 // import {LancerActorSheet} from "../@types";
 // import {LancerToken} from "../@types/module/token";
 /* eslint-enable @typescript-eslint/no-unused-vars */
@@ -15,7 +15,7 @@ declare global {
   // type LancerPilotSheet = LancerActorSheet<EntryType.PILOT>;
 
   interface EunosLancerActorSheet<T extends LancerActorType = LancerActorType> extends LancerActorSheet<T> {
-    object: LancerActor & EunosLancerActor_Instance;
+    object: LancerActor & EunosLancerActor;
     actor: this["object"];
     isBondsTabActive?: boolean;
   }
@@ -108,7 +108,7 @@ export default class Hack_EnableBondsTab {
     return this.RegisterTemplates();
   }
 
-  static getBondsTabData(actor: EunosLancerActor_Instance) {
+  static getBondsTabData(actor: EunosLancerActor) {
     if (!actor.is_pilot()) { return; }
 
     if (
@@ -173,7 +173,7 @@ export default class Hack_EnableBondsTab {
   }
 
   static async usePower(
-    actor: EunosLancerActor_Instance,
+    actor: EunosLancerActor,
     powerKey: string
   ) {
     const powerData = actor.fData.bondPowers?.[powerKey];
