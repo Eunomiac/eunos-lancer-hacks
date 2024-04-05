@@ -1,15 +1,18 @@
-import C from "../core/constants";
-import {LancerActor} from "./module/actor/lancer-actor";
 import EunosLancerPilot from "../overrides/eunos-lancer-actor";
 import {EntryType, Mech, Deployable, Npc, OpCtx, LiveEntryTypes, Pilot, PackedPilotData, RegEntryTypes, Frame} from "machine-mind";
 
+import * as TYPES_CONSTANTS from "../core/constants";
+import * as TYPES_ACTOR from "./module/actor/lancer-actor";
+import * as TYPES_ACTOR_SHEET from "./module/actor/lancer-actor-sheet";
+import * as TYPES_TOKEN from "./module/token";
 
 declare module "gsap/all";
 import type gsap from "gsap/all";
 
 import "./general-types";
 import "./global";
-
+import "./foundry-vtt-types";
+import "./module";
 /**
  * TypeScript entry file for Foundry VTT.
  * Registers custom settings, sheets, and constants using the Foundry API.
@@ -28,9 +31,6 @@ declare global {
     actors: Collection<LancerActor>,
     scenes: Collection<Scene>
   }
-
-  // class ObjectField extends foundry.data.fields.OBJECT_FIELD { }
-
 
   function fromUuidSync(uuid: string, options?: {
     relative?: Document|LancerActor,
@@ -56,7 +56,7 @@ declare global {
     id: IDString,
     flags: {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ["eunos-blades"]?: Record<string, any>
+      ["eunos-lancer-hacks"]?: Record<string, any>
     }
   }
   interface CONFIG {
@@ -70,11 +70,12 @@ declare global {
       excludePatterns: string[]
     }
   }
+
   interface LenientGlobalVariableTypes { game: never }
 
   // GreenSock Accessor Object
   const gsap: gsap;
-  type BladesTweenTarget = JQuery<HTMLElement> | gsap.TweenTarget;
+  type TweenTarget = JQuery<HTMLElement> | gsap.TweenTarget;
 
 
   // JQuery Simplified Events
@@ -92,4 +93,10 @@ declare global {
   type SelectChangeEvent = JQuery.ChangeEvent<HTMLSelectElement, undefined, HTMLSelectElement, HTMLSelectElement>;
 
 
+  class LancerActor extends TYPES_ACTOR.LancerActor { }
+  class LancerActorSheet<T extends TYPES_ACTOR.LancerActorType> extends TYPES_ACTOR_SHEET.LancerActorSheet<T> { }
+  class LancerToken extends TYPES_TOKEN.LancerToken { }
+  class LancerTokenDocument extends TYPES_TOKEN.LancerTokenDocument { }
+
+  type LancerActorType = TYPES_ACTOR.LancerActorType;
 }

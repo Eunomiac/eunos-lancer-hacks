@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 // Importing necessary functions and types from the Vite package and the path module from Node.js
 import {defineConfig, type UserConfig, type Plugin} from "vite";
 import path from "path";
 import fs from "fs";
 import checker from "vite-plugin-checker";
+// const svelte = require("@sveltejs/vite-plugin-svelte");
 import {svelte} from "@sveltejs/vite-plugin-svelte";
-import tsconfigPaths from "vite-plugin-tsconfig-paths";
+// import tsconfigPaths from "vite-plugin-tsconfig-paths";
 import {visualizer} from "rollup-plugin-visualizer";
 import commonjs from "@rollup/plugin-commonjs";
 
@@ -32,7 +34,7 @@ function scssVariablesToJsPlugin(): Plugin {
         const filePath = "src/scss/core/_colors.scss"; // Path to your SCSS variables file
         // console.log(`Processing SCSS file: ${filePath}`);
         const scssVariables: string = fs.readFileSync(filePath, "utf-8");
-        const regex = /--blades-([a-z]+-)+nums:\s*(\d+),\s*(\d+),\s*(\d+)\s*;/g;
+        const regex = /--elh-([a-z]+-)+nums:\s*(\d+),\s*(\d+),\s*(\d+)\s*;/g;
         let match: RegExpExecArray | null;
 
         type brightness = "brightest"|"bright"|"normal"|"dark"|"darkest"|"black";
@@ -42,7 +44,7 @@ function scssVariablesToJsPlugin(): Plugin {
           // console.log(`Found match: ${match[0]}`);
           const varName: string = match[0]
             .split(":")[0].trim()
-            .replace(/^--blades-/, "")
+            .replace(/^--elh-/, "")
             .replace(/-nums$/, "")
             .replace(/-/g, "_");
           // eslint-disable-next-line prefer-const
@@ -115,9 +117,9 @@ function foundryPlugin(): Plugin {
 // Defining the Vite configuration object with specific settings for this project
 const config = defineConfig({
   // Setting the root directory for the project to the "src" folder
-  root:      "src/",
+  root:      path.resolve(__dirname, "src"),
   // Setting the base URL for the project when deployed
-  base:      "/modules/eunos-lancer-hacks/",
+  base:      "/eunos-lancer-hacks/",
   // Specifying the directory where static assets are located
   publicDir: path.resolve(__dirname, "public"),
   // Configuration for the development server
@@ -128,8 +130,8 @@ const config = defineConfig({
     open:  true,
     // Configuring proxy rules for certain URLs
     proxy: {
-      // Redirecting requests that do not start with "/modules/eunos-lancer-hacks" to localhost:30000
-      "^(?!/modules/eunos-lancer-hacks)": "http://localhost:30000/",
+      // Redirecting requests that do not start with "/eunos-lancer-hacks" to localhost:30000
+      "^(?!/eunos-lancer-hacks)": "http://localhost:30000/",
       // Special proxy configuration for WebSocket connections used by socket.io
       "/socket.io":                       {
         target: "ws://localhost:30000", // Target server for the proxy
@@ -140,12 +142,13 @@ const config = defineConfig({
   // Configuration for the build process
   build: {
     // Directory where the build output will be placed
-    outDir:        path.resolve(__dirname, "dist"),
+    outDir:        "D:/Users/Ryan/Documents/Projects/!!!!CODING/FoundryVTTv10/FoundryDevData/Data/modules/eunos-lancer-hacks",
     // Clear the output directory before building
     emptyOutDir:   true,
     // Generate source maps for the build
     sourcemap:     true,
     // Configuration for the Terser minifier
+    minify: "terser",
     terserOptions: {
       mangle:          false, // Disable mangling of variable and function names
       keep_classnames: true, // Preserve class names
@@ -171,14 +174,15 @@ const config = defineConfig({
     include: ["lancer-data", "jszip", "axios", "readonly-proxy"] // machine-mind's cjs dependencies
   },
   resolve: {
+    // preserveSymlinks: true,
     alias: {
-      "gsap/all": "scripts/greensock/esm/all.js",
-      "eunosTypes": path.resolve(__dirname, "src/ts/@types")
+      "gsap/all": "scripts/greensock/esm/all.js"
+      // "eunosTypes": path.resolve(__dirname, "src/ts/@types")
     }
   },
   plugins: [
     commonjs(),
-    tsconfigPaths(), // Automatically resolves TS path aliases
+    // tsconfigPaths(), // Automatically resolves TS path aliases
     svelte({
       configFile: "../svelte.config.cjs"
     }),

@@ -3,9 +3,9 @@ import C from "../core/constants";
 import OverrideLancerPilot from "../overrides/eunos-lancer-actor";
 import {registerHandlebarHelpers} from "../core/helpers";
 import Hack_BarBrawl from "../module-hacks/barbrawl";
-import type {LancerActor, LancerActorType} from "eunosTypes/module/actor/lancer-actor";
-import {LancerActorSheet} from "eunosTypes/module/actor/lancer-actor-sheet";
-import {LancerToken} from "eunosTypes/module/token";
+// import type {LancerActor, LancerActorType} from "../@types/module/actor/lancer-actor";
+// import {LancerActorSheet} from "../@types/module/actor/lancer-actor-sheet";
+// import {LancerToken} from "../@types/module/token";
 import {EntryType} from "machine-mind";
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
@@ -27,17 +27,17 @@ export default class Hack_EnableScanVision {
   // #region *** INITIALIZATION *** ~
 
   static _registerComponentToggle() {
-    game.settings.register("eunos-lancer-hacks",
-      "enableScanVision",
-      {
-        name: "Title",
-        hint: "Description.",
-        scope: "world",
-        config: true,
-        default: false,
-        type: Boolean
-      }
-    );
+    // game.settings.register("eunos-lancer-hacks",
+    //   "enableScanVision",
+    //   {
+    //     name: "Title",
+    //     hint: "Description.",
+    //     scope: "world",
+    //     config: true,
+    //     default: false,
+    //     type: Boolean
+    //   }
+    // );
   }
 
   static _registerComponentSettings() {

@@ -1,0 +1,6 @@
+
+<div class="dotline {{~#if dotlineClass}} {{dotlineClass}}{{/if}}">
+  {{#forloop 1 max}}
+    <span class="dot {{~#if (test this "<=" ../value)}} full-dot{{/if}}" data-action="toggle-dot" data-target="{{../target}}" data-index="{{this}}" data-dtype="Number"></span>
+  {{/forloop}}
+</div>

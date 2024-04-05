@@ -16,10 +16,10 @@ npx tsc -p tsconfig-emit.json
   Open TWO POWERSHELL WINDOWS (ADMINISTRATOR)
 
     First Window:
-      - cd 'D:\Users\Ryan\Documents\Projects\!!!!CODING\FoundryVTTv10\FoundryDevData\Data\modules\eunos-lancer-hacks'
-      - npx vite build *> .reports/vite-build-output.txt
+      - cd 'D:\Users\Ryan\Documents\Projects\!Roleplaying\Lancer\!CODING\eunos-lancer-hacks'
+      - npx vite build
       - node 'D:\LTSC Programs\FoundryVTTv10\Foundry Virtual Tabletop\resources\app\main.js' --dataPath='D:\Users\Ryan\Documents\Projects\!!!!CODING\FoundryVTTv10\FoundryDevData' --hotReload
-      - node 'D:/LTSC Programs/FoundryVTT/Foundry Virtual Tabletop/resources/app/main.js' --dataPath='D:\Users\Ryan\Documents\Projects\!Roleplaying\!!!FOUNDRY'
+      - node 'D:\LTSC Programs\FoundryVTTv10\Foundry Virtual Tabletop\resources\app\main.js' --dataPath='D:\Users\Ryan\Documents\Projects\!!!!CODING\FoundryVTTv10\FoundryDevData' --hotReload
 
     Second Window:
       - npx vite serve

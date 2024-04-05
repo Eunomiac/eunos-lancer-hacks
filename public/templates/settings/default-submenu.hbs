@@ -1,0 +1,66 @@
+{{log "Submenu Context" this}}
+
+{{!-- {
+    "selectConfig": {
+        "name": "Select BarBrawl Config",
+        "hint": "Choose one of the provided BarBrawl configurations to use.",
+        "type": "Select",
+        "choices": [
+            {
+                "name": "none",
+                "display": "Apply No Configuration"
+            },
+            {
+                "name": "custom",
+                "display": "Apply Euno's Custom Configuration"
+            },
+            {
+                "name": "Kuenaimaku",
+                "display": "Apply Config 'Kuenaimaku'"
+            },
+            {
+                "name": "Bolts",
+                "display": "Apply Config 'Bolts'"
+            },
+            {
+                "name": "Valkyrion",
+                "display": "Apply Config 'Valkyrion'"
+            },
+            {
+                "name": "dodgepong",
+                "display": "Apply Config 'dodgepong'"
+            }
+        ],
+        "default": "custom",
+        "value": "custom"
+    },
+    "toggleBarBrawl": {
+        "name": "Enable Barbrawl Hacks",
+        "hint": "Enable or disable customization of the BarBrawl toolbars.",
+        "type": "Checkbox",
+        "default": true,
+        "value": true
+    }
+} --}}
+<form>
+  {{#each this as |data key|}}
+    {{#if (eq data.type "Checkbox")}}
+    <div class="settings-container checkbox-container">
+      <label class="setting-name">{{data.name}}</label>
+      <span class="setting-hint">{{data.hint}}</span>
+      <input type="checkbox" data-key="toggleBarBrawl" {{#if data.value}}checked{{/if}}>
+    {{/if}}
+    {{#if (eq data.type "Select")}}
+    <div class="settings-container select-container">
+      <label class="setting-name">{{data.name}}</label>
+      <span class="setting-hint">{{data.hint}}</span>
+      <select name="selectConfig" data-key="selectConfig">
+        {{#select data.value}}
+        {{#each data.choices}}
+        <option value="{{name}}">{{display}}</option>
+        {{/each}}
+        {{/select}}
+      </select>
+    {{/if}}
+  {{/each}}
+</form>

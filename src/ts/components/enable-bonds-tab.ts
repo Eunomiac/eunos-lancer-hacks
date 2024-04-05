@@ -1,22 +1,27 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import C from "../core/constants";
+// import type {EunosLancerActor} from "../overrides/eunos-lancer-actor";
 import {EntryType} from "machine-mind";
 
-import EunosLancerPilot from "../overrides/eunos-lancer-actor";
-import {LancerActorSheet} from "eunosTypes/module/actor/lancer-actor-sheet";
-import {LancerToken} from "eunosTypes/module/token";
+// import EunosLancerPilot from "../overrides/eunos-lancer-actor";
+// import {LancerActorSheet} from "../@types";
+// import {LancerToken} from "../@types/module/token";
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 /* Replace __DEPENDENCY_NAME__ with the name of the module that this component depends on. */
 
 declare global {
-  interface EunosLancerPilotSheet extends LancerActorSheet<EntryType.PILOT> {
-    actor: EunosLancerPilot;
+
+  // type LancerPilotSheet = LancerActorSheet<EntryType.PILOT>;
+
+  interface EunosLancerActorSheet<T extends LancerActorType = LancerActorType> extends LancerActorSheet<T> {
+    object: LancerActor & EunosLancerActor_Instance;
+    actor: this["object"];
     isBondsTabActive?: boolean;
   }
 
   interface LancerClockData {
-    id: IDString,
+    id: string,
     name: string,
     value: number,
     max: number,
@@ -50,17 +55,17 @@ export default class Hack_EnableBondsTab {
   // #region *** INITIALIZATION *** ~
   static RegisterSettings() {
 
-    game.settings.register("eunos-lancer-hacks",
-      "enableBondsTab",
-      {
-        name: "Title",
-        hint: "Description.",
-        scope: "world",
-        config: true,
-        default: false,
-        type: Boolean
-      }
-    );
+    // game.settings.register("eunos-lancer-hacks",
+    //   "enableBondsTab",
+    //   {
+    //     name: "Title",
+    //     hint: "Description.",
+    //     scope: "world",
+    //     config: true,
+    //     default: false,
+    //     type: Boolean
+    //   }
+    // );
 
     // game.settings.register("eunos-lancer-hacks",
     //   "__setting_key__",
@@ -76,7 +81,7 @@ export default class Hack_EnableBondsTab {
   }
 
   static RegisterHooks() {
-    Hooks.on("renderLancerActorSheet", (actorSheet: EunosLancerPilotSheet, elem$: JQuery) => {
+    Hooks.on("renderLancerActorSheet", (actorSheet: EunosLancerActorSheet, elem$: JQuery) => {
       if (actorSheet.actor.is_pilot()) {
         this.addBondsTab(actorSheet, elem$).then(function() {
           if (actorSheet.isBondsTabActive) {
@@ -89,12 +94,7 @@ export default class Hack_EnableBondsTab {
   }
 
   static async RegisterTemplates() {
-    loadTemplates([
-      "modules/eunos-lancer-hacks/templates/partials/clock.hbs",
-      "modules/eunos-lancer-hacks/templates/partials/bonds.hbs",
-      "modules/eunos-lancer-hacks/templates/partials/power-chat.hbs",
-      "modules/eunos-lancer-hacks/templates/partials/dotline.hbs"
-    ]);
+
   }
 
   static async Initialize() {
@@ -108,7 +108,7 @@ export default class Hack_EnableBondsTab {
     return this.RegisterTemplates();
   }
 
-  static getBondsTabData(actor: EunosLancerPilot) {
+  static getBondsTabData(actor: EunosLancerActor_Instance) {
     if (!actor.is_pilot()) { return; }
 
     if (
@@ -135,7 +135,7 @@ export default class Hack_EnableBondsTab {
     };
     const burdenIds = Object.values(burden_clocks);
     const clocks = Object.fromEntries(
-      (Object.entries(clocksFlagData) as Array<[IDString, LancerClockData]>)
+      (Object.entries(clocksFlagData) as Array<[string, LancerClockData]>)
         .filter(([clockID]) => !burdenIds.includes(clockID))
     );
 
@@ -173,7 +173,7 @@ export default class Hack_EnableBondsTab {
   }
 
   static async usePower(
-    actor: EunosLancerPilot,
+    actor: EunosLancerActor_Instance,
     powerKey: string
   ) {
     const powerData = actor.fData.bondPowers?.[powerKey];
@@ -201,7 +201,7 @@ export default class Hack_EnableBondsTab {
   }
 
 
-  static async addBondsTab(actorSheet: EunosLancerPilotSheet, sheetElem$: JQuery) {
+  static async addBondsTab(actorSheet: EunosLancerActorSheet, sheetElem$: JQuery) {
     // Gather JQuery references to relevant elements
     const nav$ = sheetElem$.find("nav.lancer-tabs");
     const sheetBody$ = sheetElem$.find(".sheet-body");
@@ -210,7 +210,7 @@ export default class Hack_EnableBondsTab {
     const bondsTab$ = $("<a class=\"item lancer-tab medium\" data-tab=\"bonds\">&lt;PILOT//BONDS&gt;</div>");
     const tabHTML = await renderTemplate(
       "modules/eunos-lancer-hacks/templates/partials/bonds.hbs",
-      this.getBondsTabData(actorSheet.actor as EunosLancerPilot) ?? {}
+      this.getBondsTabData(actorSheet.actor) ?? {}
     );
     const tabContent$ = $(tabHTML);
 
@@ -223,7 +223,7 @@ export default class Hack_EnableBondsTab {
   }
 
   static async activateBondListeners(
-    actorSheet: EunosLancerPilotSheet,
+    actorSheet: EunosLancerActorSheet,
     sheetElem$: JQuery
   ) {
     // Track the active status of the bonds tab as tabs are clicked
@@ -296,7 +296,7 @@ export default class Hack_EnableBondsTab {
           container$.height("auto");
           const fullHeight = container$.height();
           container$.height(0); // Start the animation from 0
-          container$.animate({ height: fullHeight }, 500, function() {
+          container$.animate({height: fullHeight}, 500, function() {
             container$.css("height", "auto"); // Set to auto for dynamic content changes
           });
         } else {
@@ -308,7 +308,7 @@ export default class Hack_EnableBondsTab {
           //   checkVal: elem$.prop("checked")
           // });
           const currentHeight = container$.height() ?? 0;
-          container$.height(currentHeight).animate({ height: 0 }, 500);
+          container$.height(currentHeight).animate({height: 0}, 500);
         }
       });
     });
@@ -317,7 +317,7 @@ export default class Hack_EnableBondsTab {
     sheetElem$.find(".use-power-button").click((event) => {
       const elem$ = $(event.currentTarget);
       const power = elem$.data("power");
-      this.usePower(actorSheet.actor as EunosLancerPilot, power);
+      this.usePower(actorSheet.actor, power);
     });
 
     // Activate dotline event listeners
@@ -341,7 +341,7 @@ export default class Hack_EnableBondsTab {
     // Handle clock listeners
     function changeClock(frameElem$: JQuery, delta: number) {
       const elem$ = frameElem$.closest(".clock");
-      const clockID = elem$.attr("id") as IDString;
+      const clockID = elem$.attr("id") as string;
       const clock = actorSheet.actor.fData.clocks?.[clockID];
       if (!clock) { return; }
       const newValue = Math.max(0, Math.min(clock.value + delta, clock.max));

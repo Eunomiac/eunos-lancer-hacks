@@ -1,147 +1,152 @@
 
 @font-face {
   font-family: "Arial";
-  src: url("../assets/fonts/ArialMT-Bold.otf") format("opentype");
+  src: url("../../public/assets/fonts/ArialMT-Bold.otf") format("opentype");
   font-weight: bold;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Arial";
-  src: url("../assets/fonts/ArialMT-BoldItalic.otf") format("opentype");
+  src: url("../../public/assets/fonts/ArialMT-BoldItalic.otf") format("opentype");
   font-weight: bold;
   font-style: italic;
 }
 
 @font-face {
   font-family: "Arial";
-  src: url("../assets/fonts/ArialMT-Italic.otf") format("opentype");
+  src: url("../../public/assets/fonts/ArialMT-Italic.otf") format("opentype");
   font-weight: normal;
   font-style: italic;
 }
 
 @font-face {
   font-family: "Arial";
-  src: url("../assets/fonts/ArialMT.ttf") format("truetype");
+  src: url("../../public/assets/fonts/ArialMT.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "HelveticaNeue";
-  src: url("../assets/fonts/HelveticaNeue-BoldItalic.otf") format("opentype");
+  src: url("../../public/assets/fonts/HelveticaNeue-BoldItalic.otf") format("opentype");
   font-weight: bold;
   font-style: italic;
 }
 
 @font-face {
   font-family: "HelveticaNeue";
-  src: url("../assets/fonts/HelveticaNeue-Italic.otf") format("opentype");
+  src: url("../../public/assets/fonts/HelveticaNeue-Italic.otf") format("opentype");
   font-weight: normal;
   font-style: italic;
 }
 
 @font-face {
   font-family: "HelveticaNeue";
-  src: url("../assets/fonts/HelveticaNeue-Light.otf") format("opentype");
+  src: url("../../public/assets/fonts/HelveticaNeue-Light.otf") format("opentype");
   font-weight: 300; // Light
   font-style: normal;
 }
 
 @font-face {
   font-family: "HelveticaNeue";
-  src: url("../assets/fonts/HelveticaNeue-Medium.otf") format("opentype");
+  src: url("../../public/assets/fonts/HelveticaNeue-Medium.otf") format("opentype");
   font-weight: bold; // Medium
   font-style: normal;
 }
 
 @font-face {
   font-family: "HelveticaNeue";
-  src: url("../assets/fonts/HelveticaNeue-Thin.otf") format("opentype");
+  src: url("../../public/assets/fonts/HelveticaNeue-Thin.otf") format("opentype");
   font-weight: 100; // Thin
   font-style: normal;
 }
 
 @font-face {
   font-family: "HelveticaNeue";
-  src: url("../assets/fonts/HelveticaNeue.ttf") format("truetype");
+  src: url("../../public/assets/fonts/HelveticaNeue.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "HelveticaNeue";
-  src: url("../assets/fonts/HelveticaNeue-Bold.ttf") format("truetype");
+  src: url("../../public/assets/fonts/HelveticaNeue-Bold.ttf") format("truetype");
   font-weight: bold;
   font-style: normal;
 }
 
 @font-face {
   font-family: "HelveticaNeue";
-  src: url("../assets/fonts/HelveticaNeue-LightItalic.otf") format("opentype");
+  src: url("../../public/assets/fonts/HelveticaNeue-LightItalic.ttf") format("truetype");
   font-weight: 300; // Light
   font-style: italic;
 }
 
 @font-face {
+  font-family: "Oswald";
+  src: url("../../public/assets/fonts/Oswald.ttf") format("truetype");
+}
+
+@font-face {
   font-family: "Plantin";
-  src: url("../assets/fonts/PlantinStd-Bold.otf") format("opentype");
+  src: url("../../public/assets/fonts/PlantinStd-Bold.otf") format("opentype");
 }
 
 @font-face {
   font-family: "Calibri";
-  src: url("../assets/fonts/Calibri-Bold.ttf") format("truetype");
+  src: url("../../public/assets/fonts/Calibri-Bold.ttf") format("truetype");
   font-weight: bold;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Consolas";
-  src: url("../assets/fonts/Consolas.ttf") format("truetype");
+  src: url("../../public/assets/fonts/Consolas.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Consolas";
-  src: url("../assets/fonts/Consolas-Bold.ttf") format("truetype");
+  src: url("../../public/assets/fonts/Consolas-Bold.ttf") format("truetype");
   font-weight: bold;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Consolas";
-  src: url("../assets/fonts/Consolas-BoldItalic.ttf") format("truetype");
+  src: url("../../public/assets/fonts/Consolas-BoldItalic.ttf") format("truetype");
   font-weight: bold;
   font-style: italic;
 }
 
 @font-face {
   font-family: "Consolas";
-  src: url("../assets/fonts/Consolas-Italic.ttf") format("truetype");
+  src: url("../../public/assets/fonts/Consolas-Italic.ttf") format("truetype");
   font-weight: normal;
   font-style: italic;
 }
 
 @font-face {
   font-family: "LucidaGrande";
-  src: url("../assets/fonts/LucidaGrande.ttf") format("truetype");
+  src: url("../../public/assets/fonts/LucidaGrande.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "LucidaGrande";
-  src: url("../assets/fonts/LucidaGrande-Bold.ttf") format("truetype");
+  src: url("../../public/assets/fonts/LucidaGrande-Bold.ttf") format("truetype");
   font-weight: bold;
 }
 
 @font-face {
   font-family: "PerpetuaTilting";
-  src: url("../assets/fonts/PerpetuaTilting-Light.ttf") format("truetype");
+  src: url("../../public/assets/fonts/PerpetuaTilting-Light.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "Compcon";
-  src: url("../assets/fonts/CompCon.ttf") format("truetype");
+  src: url("../../public/assets/fonts/CompCon.ttf") format("truetype");
 }

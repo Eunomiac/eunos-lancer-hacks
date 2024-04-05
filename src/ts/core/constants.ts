@@ -1,5 +1,22 @@
 import {EntryType} from "machine-mind";
-import {type LancerActorType} from "eunosTypes/module/actor/lancer-actor";
+// import {type LancerActorType} from "../@types/module/actor/lancer-actor";
+
+declare global {
+  type LancerBondType = "harlequin" | "titan" | "pathfinder" | "builder" | "magus" | "wolf" | "fool" | "broker";
+
+  interface LancerBondPowerData {
+    name: string,
+    bond: LancerBondType,
+    description: string,
+    frequency?: number,
+    prerequisite?: string,
+    master?: boolean,
+    key?: string,
+    isVeteran?: boolean,
+    uses?: number,
+    boon?: boolean
+  }
+}
 
 const getMajorIdeals = (methods: string): Record<"a"|"b"|"c", string> => ({
   a: `I addressed challenges with ${methods}.`,
@@ -11,56 +28,6 @@ const getBondQuestions = (bQuestion: string) => ({
   a: {question: "What gives you your power?"},
   b: {question: `${bQuestion.charAt(0)}${bQuestion.slice(1).toLowerCase()}`}
 }) as Record<"a"|"b", {question: string}>;
-
-declare global {
-
-  interface BB_BarConfig {
-    id: string;
-    ignoreMin?: boolean;
-    ignoreMax?: boolean;
-    mincolor: string;
-    maxcolor: string;
-    position: string;
-    attribute: string;
-    visibility: number;
-    hideFull?: boolean;
-    hideEmpty?: boolean;
-    indentLeft?: number | null;
-    indentRight?: number | null;
-    shareHeight?: boolean;
-    otherVisibility?: number;
-    ownerVisibility?: number;
-    gmVisibility?: number;
-    style?: string;
-    label?: string;
-    invert?: boolean;
-    subdivisions?: number | null;
-    subdivisionsOwner?: boolean;
-    subdivisionsMatchesMax?: boolean;
-    fgImage?: string;
-    bgImage?: string;
-    opacity?: number | null;
-    order?: number;
-    max?: number | null;
-  }
-
-  type BB_Config = Record<string, BB_BarConfig>;
-}
-
-export type LancerBondType = "harlequin" | "titan" | "pathfinder" | "builder" | "magus" | "wolf" | "fool" | "broker";
-
-export interface LancerBondPowerData {
-  name: string,
-  bond: LancerBondType,
-  description: string,
-  frequency?: number,
-  prerequisite?: string,
-  master?: boolean,
-  key?: string,
-  isVeteran?: boolean,
-  uses?: number,
-  boon?: boolean
-}
 
 const C: {
   bondTypes: Record<LancerBondType, string>,
@@ -781,7 +748,263 @@ const C: {
     return this.clockColors[Math.floor(Math.random() * this.clockColors.length)];
   },
   barBrawlConfigs: {
-    none: {},
+    custom: {
+      [EntryType.MECH]: {
+        bar1: {
+          id: "bar1",
+          ignoreMin: true,
+          ignoreMax: false,
+          mincolor: "#FF0000",
+          maxcolor: "#80FF00",
+          position: "bottom-inner",
+          attribute: "derived.hp",
+          visibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+          indentLeft: 40,
+          indentRight: 10,
+          shareHeight: true,
+          label: "HP",
+          style: "fraction"
+        },
+        structure: {
+          id: "structure",
+          attribute: "derived.structure",
+          mincolor: "#1F9EFF",
+          maxcolor: "#1F9EFF",
+          position: "bottom-inner",
+          visibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+          indentLeft: 10,
+          indentRight: 60,
+          shareHeight: true,
+          subdivisions: 4,
+          subdivisionsMatchesMax: true,
+          subdivisionsOwner: true,
+          hideFull: false
+        },
+        bar2: {
+          id: "bar2",
+          ignoreMax: true,
+          ignoreMin: false,
+          mincolor: "#700000",
+          maxcolor: "#ff0000",
+          position: "bottom-outer",
+          attribute: "derived.heat",
+          visibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+          indentLeft: 40,
+          indentRight: 10,
+          shareHeight: true,
+          label: "Heat",
+          style: "fraction"
+        },
+        stress: {
+          id: "stress",
+          mincolor: "#FF7B00",
+          maxcolor: "#FF7B00",
+          position: "bottom-outer",
+          attribute: "derived.stress",
+          visibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+          indentLeft: 10,
+          indentRight: 60,
+          shareHeight: true,
+          subdivisions: 4,
+          subdivisionsMatchesMax: true,
+          subdivisionsOwner: true,
+          hideFull: false
+        },
+        burn: {
+          id: "burn",
+          mincolor: "#992222",
+          maxcolor: "#992222",
+          position: "top-outer",
+          attribute: "burn",
+          visibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+          subdivisions: 5,
+          subdivisionsMatchesMax: true,
+          subdivisionsOwner: true,
+          hideEmpty: true
+        },
+        overshield: {
+          id: "overshield",
+          mincolor: "#222299",
+          maxcolor: "#222299",
+          position: "top-outer",
+          attribute: "overshield",
+          visibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+          subdivisions: 5,
+          subdivisionsMatchesMax: true,
+          subdivisionsOwner: true,
+          hideEmpty: true
+        }
+      },
+      [EntryType.NPC]: {
+        bar1: {
+          id: "bar1",
+          ignoreMin: true,
+          ignoreMax: false,
+          mincolor: "#FF0000",
+          maxcolor: "#80FF00",
+          position: "bottom-inner",
+          attribute: "derived.hp",
+          visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          indentLeft: 40,
+          indentRight: 10,
+          shareHeight: true,
+          label: "HP",
+          style: "fraction"
+        },
+        structure: {
+          id: "structure",
+          attribute: "derived.structure",
+          mincolor: "#1F9EFF",
+          maxcolor: "#1F9EFF",
+          position: "bottom-inner",
+          visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          indentLeft: 10,
+          indentRight: 60,
+          shareHeight: true,
+          subdivisions: 4,
+          subdivisionsMatchesMax: true,
+          subdivisionsOwner: true,
+          hideFull: false
+        },
+        bar2: {
+          id: "bar2",
+          ignoreMax: true,
+          ignoreMin: false,
+          mincolor: "#700000",
+          maxcolor: "#ff0000",
+          position: "bottom-outer",
+          attribute: "derived.heat",
+          visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          indentLeft: 40,
+          indentRight: 10,
+          shareHeight: true,
+          label: "Heat",
+          style: "fraction"
+        },
+        stress: {
+          id: "stress",
+          mincolor: "#FF7B00",
+          maxcolor: "#FF7B00",
+          position: "bottom-outer",
+          attribute: "derived.stress",
+          visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          indentLeft: 10,
+          indentRight: 60,
+          shareHeight: true,
+          subdivisions: 4,
+          subdivisionsMatchesMax: true,
+          subdivisionsOwner: true,
+          hideFull: false
+        },
+        burn: {
+          id: "burn",
+          mincolor: "#992222",
+          maxcolor: "#992222",
+          position: "top-outer",
+          attribute: "burn",
+          visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.OWNER
+        },
+        overshield: {
+          id: "overshield",
+          mincolor: "#222299",
+          maxcolor: "#222299",
+          position: "top-outer",
+          attribute: "overshield",
+          visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.OWNER
+        }
+      },
+      [EntryType.PILOT]: {
+        bar1: {
+          id: "bar1",
+          ignoreMin: true,
+          ignoreMax: false,
+          mincolor: "#FF0000",
+          maxcolor: "#80FF00",
+          position: "bottom-inner",
+          attribute: "derived.hp",
+          visibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+          indentLeft: 10,
+          indentRight: 10,
+          shareHeight: true,
+          label: "HP",
+          style: "fraction"
+        },
+        overshield: {
+          id: "overshield",
+          mincolor: "#222299",
+          maxcolor: "#222299",
+          position: "top-outer",
+          attribute: "overshield",
+          visibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS
+        }
+      },
+      [EntryType.DEPLOYABLE]: {
+        bar1: {
+          id: "bar1",
+          ignoreMin: true,
+          ignoreMax: false,
+          mincolor: "#FF0000",
+          maxcolor: "#80FF00",
+          position: "bottom-inner",
+          attribute: "derived.hp",
+          visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          indentLeft: 10,
+          indentRight: 10,
+          shareHeight: true,
+          label: "HP",
+          style: "fraction"
+        },
+        bar2: {
+          id: "bar2",
+          ignoreMax: true,
+          ignoreMin: false,
+          mincolor: "#700000",
+          maxcolor: "#ff0000",
+          position: "bottom-outer",
+          attribute: "derived.heat",
+          visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          indentLeft: 10,
+          indentRight: 10,
+          shareHeight: true,
+          label: "Heat",
+          style: "fraction"
+        },
+        burn: {
+          id: "burn",
+          mincolor: "#992222",
+          maxcolor: "#992222",
+          position: "top-outer",
+          attribute: "burn",
+          visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.OWNER
+        },
+        overshield: {
+          id: "overshield",
+          mincolor: "#222299",
+          maxcolor: "#222299",
+          position: "top-outer",
+          attribute: "overshield",
+          visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.OWNER
+        }
+      }
+    },
     Kuenaimaku: {
       hp: {
         id: "hp",

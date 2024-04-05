@@ -3,4 +3,4 @@
 // in dev, foundry loads index.js, this file, which loads lancer.ts
 
 window.global = window; // some of your dependencies might need this
-import "./ts/blades.ts";
+import "./ts/eunos-lancer-hacks.ts";
