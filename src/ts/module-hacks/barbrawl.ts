@@ -37,9 +37,14 @@ declare global {
 }
 
 export default class Hack_BarBrawl {
-  static get IsValid() {
+  // #region Environment Viability Checks ~
+  static get canEnable(): boolean {
     return game.modules.has("barbrawl");
   }
+  static isEnabled(): boolean {
+    return this.canEnable && ELH.Settings.IsSubmenuEnabled("barbrawl");
+  }
+  // #endregion
 
   static RegisterSettings() {
     ELH.Settings.RegisterSettingsMenu(
@@ -53,81 +58,71 @@ export default class Hack_BarBrawl {
         selectConfig: {
           name: "Select BarBrawl Config",
           hint: "Choose one of the provided BarBrawl configurations to use.",
-          type: "Select",
-          choices: Object.keys(C.barBrawlConfigs).map((bbKey) => {
-            switch (bbKey) {
-              case "custom": return {name: "custom", display: "Apply Euno's Custom Configuration"};
-              default: return {name: bbKey, display: `Apply Config '${bbKey}'`};
-            }
-          }),
+          inputType: ELH.Settings.InputType.Select,
           default: "custom",
-          value: "custom"
-        },
-        toggleBarBrawl: {
-          name: "Enable Barbrawl Hacks",
-          hint: "Enable or disable customization of the BarBrawl toolbars.",
-          type: "Checkbox",
-          default: true,
-          value: true
+          choices: Object.fromEntries(
+              Object.keys(C.barBrawlConfigs).map((bbKey) => {
+                  switch (bbKey) {
+                      case "custom": return ["custom", "Apply Euno's Custom Configuration"];
+                      default: return [bbKey, `Apply Config '${bbKey}'`];
+                  }
+              })
+          ),
+          handlers: {
+              change: (event, elem$, data) => {
+                  const selectedValue = elem$.val() as string;
+                  const currentValue = data.selectConfig;
+                  if (currentValue !== selectedValue) {
+                      ui.notifications.info(`Applying BarBrawl token configuration: ${selectedValue}...`);
+                      data.selectConfig = selectedValue;
+                      Hack_BarBrawl.ApplyConfig(selectedValue);
+                      ELH.Settings.SubmenuSet("barbrawl", data);
+                  }
+              }
+          }
         },
         overrideTokenBorders: {
           name: "Override Token Border",
           hint: "Update token borders to be wider.",
-          type: "Button",
-          icon: "fa-regular fa-hexagon"
-        }
-      },
-      {
-        selectConfig: {
-          change: (event: Event) => {
-            const select$ = $(event.target as HTMLSelectElement);
-            const bbMenuData = ELH.Settings.SubmenuGet("barbrawl");
-            const selectedValue = select$.val() as string;
-            const currentValue = bbMenuData.selectConfig.value;
-            if (bbMenuData.toggleBarBrawl.value && currentValue !== selectedValue) {
-              ui.notifications?.info(`Applying BarBrawl token configuration: ${selectedValue}...`);
-              bbMenuData.selectConfig.value = selectedValue;
-              Hack_BarBrawl.ApplyConfig(selectedValue);
-              ELH.Settings.SubmenuSet("barbrawl", bbMenuData);
+          inputType: ELH.Settings.InputType.Button,
+          icon: "fa-regular fa-hexagon",
+          default: undefined,
+          handlers: {
+            click: () => {
+              ELH.Settings.SetData("hex-size-support", {
+                borderWidth: 20,
+                altOrientationDefault: false,
+                borderBehindToken: true,
+                fillBorder: true,
+                alwaysShowBorder: false,
+                controlledColor: "#FFFF00",
+                partyColor: "#00cddb",
+                friendlyColor: "#055076",
+                neutralColor: "#b47e08",
+                hostileColor: "#8c0d0f"
+              });
             }
-          }
-        },
-        toggleBarBrawl: {
-          click: (event: Event, elem$: JQuery<HTMLElement>) => {
-            const bbData = ELH.Settings.SubmenuGet("barbrawl");
-            const isBBEnabled = $(event.currentTarget as HTMLElement).is(":checked");
-            if (isBBEnabled) {
-              ui.notifications?.info(`Applying BarBrawl token configuration: ${bbData.selectConfig.value}...`);
-              Hack_BarBrawl.ApplyConfig(bbData.selectConfig.value as string);
-              bbData.toggleBarBrawl.value = true;
-              elem$.attr("checked", "true");
-            } else {
-              ui.notifications?.info("Disabling BarBrawl token configuration.");
-              Hack_BarBrawl.DisableConfig();
-              bbData.toggleBarBrawl.value = false;
-              elem$.attr("checked", "false");
-            }
-            ELH.Settings.SubmenuSet("barbrawl", bbData);
-          }
-        },
-        overrideTokenBorders: {
-          click: () => {
-            if (!ELH.Hacks.HexTokenSize.IsActive) { return; }
-            ELH.Settings.SetData("hex-size-support", {
-              borderWidth: 20,
-              altOrientationDefault: false,
-              borderBehindToken: true,
-              fillBorder: true,
-              alwaysShowBorder: false,
-              controlledColor: "#FFFF00",
-              partyColor: "#00cddb",
-              friendlyColor: "#055076",
-              neutralColor: "#b47e08",
-              hostileColor: "#8c0d0f"
-            });
           }
         }
       }
+        // toggleBarBrawl: {
+        //   click: (event: Event, elem$: JQuery<HTMLElement>) => {
+        //     const bbData = ELH.Settings.SubmenuGet("barbrawl");
+        //     const isBBEnabled = $(event.currentTarget as HTMLElement).is(":checked");
+        //     if (isBBEnabled) {
+        //       ui.notifications?.info(`Applying BarBrawl token configuration: ${bbData.selectConfig.value}...`);
+        //       Hack_BarBrawl.ApplyConfig(bbData.selectConfig.value as string);
+        //       bbData.toggleBarBrawl.value = true;
+        //       elem$.attr("checked", "true");
+        //     } else {
+        //       ui.notifications?.info("Disabling BarBrawl token configuration.");
+        //       Hack_BarBrawl.DisableConfig();
+        //       bbData.toggleBarBrawl.value = false;
+        //       elem$.attr("checked", "false");
+        //     }
+        //     ELH.Settings.SubmenuSet("barbrawl", bbData);
+        //   }
+        // },
     );
   }
 

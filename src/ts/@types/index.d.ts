@@ -41,17 +41,17 @@ declare global {
     }
   }
 
+  interface LenientGlobalVariableTypes {
+    game: never,
+    ui: never,
+    canvas: never
+  }
+
   function fromUuidSync(uuid: string, options?: {
     relative?: Document|LancerActor,
     invalid?: boolean,
     strict?: boolean
   }): LancerDoc | null;
-
-  namespace EunosHacks {
-
-    export interface Game {
-    }
-  }
 
   namespace Lancer {
     export interface Game {
@@ -81,26 +81,25 @@ declare global {
   }
 
 
-  interface LenientGlobalVariableTypes { game: never }
-
   // GreenSock Accessor Object
   const gsap: gsap;
   type TweenTarget = JQuery<HTMLElement> | gsap.TweenTarget;
 
 
   // JQuery Simplified Events
-  type ClickEvent = JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
-  type ContextMenuEvent = JQuery.ContextMenuEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
-  type TriggerEvent = JQuery.TriggeredEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
-  type InputChangeEvent = JQuery.ChangeEvent<HTMLInputElement, undefined, HTMLInputElement, HTMLInputElement>;
-  type BlurEvent = JQuery.TypeEventHandler<HTMLElement, undefined, HTMLElement, HTMLElement, "blur">;
-  // type DropEvent = JQuery.TypeEventHandler<HTMLElement, undefined, HTMLElement, HTMLElement, "drop">;
-  type DropEvent = JQuery.DropEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
-  type OnSubmitEvent = Event & ClickEvent & {
-    result: Promise<Record<string, string|number|boolean>>
-  }
-  type ChangeEvent = JQuery.ChangeEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
-  type SelectChangeEvent = JQuery.ChangeEvent<HTMLSelectElement, undefined, HTMLSelectElement, HTMLSelectElement>;
+  type ClickEvent = JQuery.Event & JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
+  type ContextMenuEvent = JQuery.Event & JQuery.ContextMenuEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
+  type DoubleClickEvent = JQuery.Event & JQuery.DoubleClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
+
+  type InputChangeEvent = JQuery.Event & JQuery.ChangeEvent<HTMLInputElement, undefined, HTMLInputElement, HTMLInputElement>;
+  type SelectChangeEvent = JQuery.Event & JQuery.ChangeEvent<HTMLSelectElement, undefined, HTMLSelectElement, HTMLSelectElement>;
+  type ChangeEvent = InputChangeEvent | SelectChangeEvent;
+
+  type MouseEnterEvent = JQuery.Event & JQuery.MouseEnterEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
+  type MouseLeaveEvent = JQuery.Event & JQuery.MouseLeaveEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
+  type BlurEvent = JQuery.Event & JQuery.TypeEventHandler<HTMLElement, undefined, HTMLElement, HTMLElement, "blur">;
+  type DropEvent = JQuery.Event & JQuery.DropEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
+  type SubmitEvent = JQuery.Event & JQuery.SubmitEvent<HTMLElement, undefined, HTMLElement, HTMLElement>;
 
 
   class LancerActor extends TYPES_ACTOR.LancerActor { }
@@ -108,12 +107,6 @@ declare global {
   class LancerItem extends TYPES_ITEM.LancerItem { }
   class LancerToken extends TYPES_TOKEN.LancerToken { }
   class LancerTokenDocument extends TYPES_TOKEN.LancerTokenDocument { }
-
-  // type LancerActor = InstanceType<LancerActorClass>;
-  // type LancerActorSheet<T extends TYPES_ACTOR.LancerActorType> = InstanceType<LancerActorSheetClass<T>>;
-  // type LancerItem = InstanceType<LancerItemClass>
-  // type LancerToken = InstanceType<LancerTokenClass>;
-  // type LancerTokenDocument = InstanceType<LancerTokenDocumentClass>;
 
   type LancerActorType = TYPES_ACTOR.LancerActorType;
 }

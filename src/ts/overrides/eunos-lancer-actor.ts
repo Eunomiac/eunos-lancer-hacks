@@ -171,6 +171,7 @@ export default class Hack_LancerActor {
 
         // Extract relevant data from retrieved Comp/Con data object
         const {bondId, bondPowers: bondPowerData, bondAnswers, minorIdeal, stress, xp} = data;
+        console.log("Bond Power Data: ", {bondId, bondPowerData, bondAnswers, minorIdeal, stress, xp});
 
         if (typeof bondId !== "string" || bondId.length < 3) {
           ui.notifications?.error("Bond not selected; bond tab will be disabled. Please configure your Bonds in the COMP/CON app, then sync again.");
@@ -205,11 +206,9 @@ export default class Hack_LancerActor {
         };
 
         if (bondPowers) {
-
           for (const pKey of Object.keys(bondPowers)) {
             collapse.powers[pKey as PowerKey] = true;
           }
-
         }
 
         // Prepare new flag update data
@@ -253,6 +252,7 @@ export default class Hack_LancerActor {
 
   static async Initialize() {
 
+    console.log("*** OVERRIDING LANCER ACTOR DOCUMENT CLASS ***");
     CONFIG.Actor.documentClass = this.Define_EunosLancerActor(CONFIG.Actor.documentClass);
 
     return loadTemplates([

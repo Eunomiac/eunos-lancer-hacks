@@ -115,6 +115,9 @@ declare global {
   // Represents a UUID string, of the form /^[A-Za-z]+\.[A-Za-z0-9]{16}$/
   type UUIDString = string & { __uuidStringBrand: never }; // This type is compatible with string, but requires explicit casting, enforcing the UUID pattern.
 
+  // Represents a tuple of two elements
+  type Tuple<T1, T2 = T1> = [T1, T2];
+
   // Represents a dotkey
   type DotKey = string & { __dotKeyBrand: never };
 

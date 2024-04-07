@@ -21,11 +21,11 @@ declare global {
 /* Define the initialization queue. Each group initializes in sequence, with all members initializing together. */
 const InitializationQueue: ELHComponent[][] = [
   [
-    EunosHacksSettings,
-    HandlebarHelpers
+    Hack_LancerActor
   ],
   [
-    Hack_LancerActor
+    EunosHacksSettings,
+    HandlebarHelpers
   ],
   [
     Hack_BarBrawl,
@@ -55,7 +55,7 @@ Hooks.on("init", async function() {
 
   console.log("*** INITIALIZING EUNO'S LANCER HACKS ***");
 
-  if (!game.user?.isGM) { return; }
+  // if (!game.user?.isGM) { return; }
   // Expose Lancer classes to global scope
   const {LancerActor: LancerActorClass, LancerItem: LancerItemClass} = game.lancer.entities as {LancerActor: typeof LancerActor, LancerItem: typeof LancerItem};
   Object.assign(globalThis, {

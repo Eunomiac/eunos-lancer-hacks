@@ -17,10 +17,10 @@ export default class Hack_EnableScanVision {
 
   // #region Environment Viability Checks ~
   static get canEnable(): boolean {
-    return game.modules.has("__DEPENDENCY_NAME__");
+    return true;
   }
   static isEnabled(): boolean {
-    return this.canEnable && ELH.Settings.SubmenuGet("sensorVision", "refreshSensorVision").value === true;
+    return this.canEnable && ELH.Settings.IsSubmenuEnabled("sensorVision");
   }
   // #endregion
 
@@ -48,22 +48,20 @@ export default class Hack_EnableScanVision {
         refreshSensorVision: {
           name: "Refresh Sensor Vision",
           hint: "Refresh the sensor vision for all tokens controlled by mech characters.",
-          type: "Button"
-        }
-      },
-      {
-        refreshSensorVision: {
-          click: async (event: Event, elem$: JQuery<HTMLElement>) => {
-            const menuData = ELH.Settings.SubmenuGet("sensorVision");
-            ui.notifications?.info("Refreshing token sensor ranges...");
-            await Promise.all((game.scenes ?? [])
-              .map((s: Scene) => Promise.all(s.tokens
-                .map(
-                  async (t: LancerTokenDocument) => Hack_EnableScanVision.SetScanAura(t, true)
-                )
-              ))
-            );
-            ui.notifications?.info("Token sensor ranges refreshed.");
+          inputType: ELH.Settings.InputType.Button,
+          icon: "fa-duotone fa-refresh",
+          handlers: {
+            click: async () => {
+              ui.notifications.info("Refreshing token sensor ranges...");
+              await Promise.all((game.scenes ?? [])
+                .map((s: Scene) => Promise.all(s.tokens
+                  .map(
+                    async (t: LancerTokenDocument) => Hack_EnableScanVision.SetScanAura(t, true)
+                  )
+                ))
+              );
+              ui.notifications.info("Token sensor ranges refreshed.");
+            }
           }
         }
       }
@@ -123,7 +121,16 @@ export default class Hack_EnableScanVision {
     if (token instanceof LancerToken) {
       token = token.document;
     }
-    const sensorRange = this.GetSensorRange(token);
+
+    // Verify that this is a token, controlled by an actor, of type 'mech'.
+    if (!token?.actor?.is_mech()) { return; }
+
+    // Get sensor range of actor's active mech frame
+    const activeFrameID = token.actor.data.data.loadout.frame?.id;
+    const activeFrame = token.actor.items.get(activeFrameID ?? "");
+    if (!activeFrame?.is_frame()) { return; }
+    const sensorRange = activeFrame.system.stats.sensor_range;
+    if (typeof sensorRange !== "number") { return; }
     token.update({
       detectionModes: [
         {id: "feelTremor", enabled: isEnabling, range: sensorRange},

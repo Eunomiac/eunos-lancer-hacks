@@ -12,9 +12,7 @@
   display: none !important;
 }
 
-.-emu-layout {
-  @import "./module-hacks/ernies-modern-ui";
-}
+#client-settings { @import "./settings";}
 
 /* Modifications to Bond Chat Messages */
 #chat-log {
