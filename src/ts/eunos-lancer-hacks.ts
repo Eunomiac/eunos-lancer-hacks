@@ -6,6 +6,9 @@ import C from "./core/constants";
 import EunosHacksSettings from "./core/settings";
 import HandlebarHelpers from "./core/helpers";
 
+import Hack_ApplyEunosSettings from "./components/apply-eunos-settings";
+import Hack_MaintainPermissions from "./components/maintain-permissions";
+import Hack_TokenTooltipAlt from "./module-hacks/token-tooltip-alt";
 import Hack_LancerActor from "./overrides/eunos-lancer-actor";
 import Hack_BarBrawl from "./module-hacks/barbrawl";
 import Hack_BondsTab from "./components/enable-bonds-tab";
@@ -19,10 +22,13 @@ declare global {
 }
 
 /* Define the initialization queue. Each group initializes in sequence, with all members initializing together. */
-const InitializationQueue: ELHComponent[][] = [
+const InitQueue: ELHComponent[][] = [
   [
     Hack_LancerActor
-  ],
+  ]
+];
+
+const ReadyQueue: ELHComponent[][] = [
   [
     EunosHacksSettings,
     HandlebarHelpers
@@ -31,7 +37,10 @@ const InitializationQueue: ELHComponent[][] = [
     Hack_BarBrawl,
     Hack_BondsTab,
     Hack_ScanVision,
-    Hack_HexTokenSize
+    Hack_HexTokenSize,
+    Hack_TokenTooltipAlt,
+    Hack_ApplyEunosSettings,
+    Hack_MaintainPermissions
   ]
 ];
 
@@ -48,7 +57,7 @@ Hooks.on("init", async function() {
         console.log("Lancer System Initialized!");
         resolve(true); // Resolve the promise when LancerActor is found
       } else {
-        setTimeout(checkLancerStatus, 100); // Check again after 100ms
+        setTimeout(checkLancerStatus, 10); // Check again after 10ms
       }
     })();
   });
@@ -65,8 +74,19 @@ Hooks.on("init", async function() {
     LancerTokenDocument: CONFIG.Token.documentClass
   });
 
-  // Initialize components in the InitializationQueue, in sequential groups.
-  for (const queueGroup of InitializationQueue) {
+  // Initialize components in the InitQueue, in sequential groups.
+  for (const queueGroup of InitQueue) {
+    await Promise.all(queueGroup.map(
+      async (component) => component.Initialize()
+    ));
+  }
+});
+
+/* Wait for the "ready" hook, then update general settings */
+Hooks.on("ready", async function() {
+
+  // Initialize components in the ReadyQueue, in sequential groups.
+  for (const queueGroup of ReadyQueue) {
     await Promise.all(queueGroup.map(
       async (component) => component.Initialize()
     ));
@@ -80,7 +100,10 @@ const _ELH = {
     BarBrawl: Hack_BarBrawl,
     BondsTab: Hack_BondsTab,
     ScanVision: Hack_ScanVision,
-    HexTokenSize: Hack_HexTokenSize
+    HexTokenSize: Hack_HexTokenSize,
+    ApplyEunosSettings: Hack_ApplyEunosSettings,
+    MaintainPermissions: Hack_MaintainPermissions,
+    TokenTooltipAlt: Hack_TokenTooltipAlt
   },
   Utils: {
     resetBondFlags: () => {

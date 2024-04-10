@@ -1,35 +1,45 @@
 import C from "../core/constants";
 import Hack_BarBrawl from "../module-hacks/barbrawl";
 
+// #region TYPES & HELPER FUNCTIONS ~
 declare global {
   namespace EHS {
 
-    namespace Submenu {
-      type Type = ReturnType<(typeof EunosHacksSettings)["GetSubmenuApplication"]>;
+    type DependencyData = {
+      type: "system"|"module";
+      id: string;
+      display: string;
+    }
 
-      interface Config extends Omit<SettingSubmenuConfig, "key"|"namespace"|"type"|"name"> {
+    namespace Submenu {
+      type Type = ReturnType<(typeof EunosHacksSettings)["BuildSubmenuApplication"]>;
+
+      interface Config extends Omit<SettingSubmenuConfig, "key" | "namespace" | "type" | "name"> {
         name: string;
         type?: Type;
-        default?: Omit<Data, "storedData">;
+        default?: Data;
         template?: string;
+        dependencies: EHS.DependencyData[];
+        onEnable?: () => Promise<unknown>;
+        onDisable?: () => Promise<unknown>;
+        onRefresh?: () => Promise<unknown>;
       }
 
-      interface Params extends Config {
+      interface Params extends Omit<Config, "onEnable" | "onDisable" | "template"> {
         key: string;
         namespace: string;
         type: Type;
-        template: string;
-        default: Omit<Data, "storedData">
+        default: Data
       }
 
-      type Data = List<Setting.Data> & {storedData?: List<Setting.Data>};
+      type Data = List<Setting.Data>;
 
       type Context = Awaited<ReturnType<FormApplication["getData"]>>
         & List<object | string | Setting.Context, string>;
 
       namespace Setting {
         interface ConfigBase<T, I extends InputType> extends Omit<SettingConfig<T>, "key" | "namespace" | "scope" | "choices"> {
-          inputType: I,
+          inputType: I;
           handlers?: {
             click?: (event: JQuery.Event, elem$: JQuery<HTMLElement>, data: EHS.Submenu.Data) => void;
             contextmenu?: (event: JQuery.Event, elem$: JQuery<HTMLElement>, data: EHS.Submenu.Data) => void;
@@ -37,11 +47,13 @@ declare global {
             mouseenter?: (event: JQuery.Event, elem$: JQuery<HTMLElement>, data: EHS.Submenu.Data) => void;
             mouseleave?: (event: JQuery.Event, elem$: JQuery<HTMLElement>, data: EHS.Submenu.Data) => void;
           };
-          onMenuToggle?: (isEnabled: boolean) => Promise<void>;
+          onEnable?: () => Promise<unknown>;
+          onDisable?: () => Promise<unknown>;
+          onRefresh?: () => Promise<unknown>;
         }
 
         type Config<T, I extends InputType> =
-            I extends InputType.Select ? ConfigBase<T, InputType.Select> & {inputType: InputType.Select, default: T, choices: Record<string, string>}
+          I extends InputType.Select ? ConfigBase<T, InputType.Select> & {inputType: InputType.Select, default: T, choices: Record<string, string>}
           : I extends InputType.Button ? ConfigBase<T, InputType.Button> & {inputType: InputType.Button, icon: string}
           : ConfigBase<T, I> & {inputType: I, default: T};
         // interface Config<T, inputType extends InputType> extends Omit<SettingConfig<T>, "key" | "namespace" | "scope"> {
@@ -64,6 +76,10 @@ declare global {
       type Data = unknown;
 
       type Context = Data;
+    }
+
+    interface SettingsUpdateData {
+      [k: string]: Record<string, unknown>
     }
   }
 }
@@ -95,10 +111,11 @@ enum InputType {
   Color = "Color",
   Checkbox = "Checkbox"
 }
+// #endregion
 
 export default class EunosHacksSettings {
 
-  static get InputType() { return InputType; }
+  static get InputType() {return InputType;}
 
   // #region *** INITIALIZATION *** ~
   private static _getSubMenuKeys(subMenu$: JQuery<HTMLElement>): Record<"menuKey" | "dataKey" | "toggleKey", string | null> {
@@ -113,7 +130,7 @@ export default class EunosHacksSettings {
     return keysData;
   }
 
-  private static _getSubMenuElems$(html$: JQuery<HTMLElement>): Array<Tuple<JQuery<HTMLElement>>> {
+  private static _getSubMenuElems$(html$: JQuery<HTMLElement>, namespace = "eunos-lancer-hacks"): Array<Tuple<JQuery<HTMLElement>>> {
     const container$ = html$
       .find(".categories > .scrollable .tab[data-tab='eunos-lancer-hacks'] > .module-settings-wrapper");
     return Array.from(container$.find(".form-group.submenu"))
@@ -122,21 +139,17 @@ export default class EunosHacksSettings {
         const {toggleKey} = this._getSubMenuKeys(subMenu$);
         return [
           subMenu$,
-          container$.find(`[name='eunos-lancer-hacks.${toggleKey}']`).closest(".form-group")
+          container$.find(`[name='${namespace}.${toggleKey}']`).closest(".form-group")
         ] as const;
       });
   }
 
-  private static _getSubMenuData(dataKey: string): EHS.Submenu.Data {
-    return game.settings.get("eunos-lancer-hacks", dataKey) as EHS.Submenu.Data;
+  private static _getSubMenuParams(menuKey: string, namespace = "eunos-lancer-hacks"): EHS.Submenu.Params {
+    return game.settings.menus.get(`${namespace}.${menuKey}`) as EHS.Submenu.Params;
   }
 
-  private static _getSubMenuParams(menuKey: string): EHS.Submenu.Params {
-    return game.settings.menus.get(`eunos-lancer-hacks.${menuKey}`) as EHS.Submenu.Params;
-  }
-
-  private static _getSubMenuApp(menuKey: string): ReturnType<typeof EunosHacksSettings.GetSubmenuApplication> {
-    return this._getSubMenuParams(menuKey).type;
+  private static _getSubMenuApp(menuKey: string, namespace = "eunos-lancer-hacks"): ReturnType<typeof EunosHacksSettings.BuildSubmenuApplication> {
+    return this._getSubMenuParams(menuKey, namespace).type;
   }
 
   private static _reorderNavTabs(html$: JQuery<HTMLElement>) {
@@ -147,34 +160,66 @@ export default class EunosHacksSettings {
     eTabButton$.insertAfter(lancerTabButton$);
   }
 
-  private static _refreshSubMenuToggle([subMenu$, toggleGroup$]: Tuple<JQuery<HTMLElement>>) {
+  private static async _refreshSubMenuToggle([subMenu$, toggleGroup$]: Tuple<JQuery<HTMLElement>>): Promise<unknown> {
     const toggleControl$ = toggleGroup$.find("[type='checkbox']");
     const isChecked = toggleControl$.prop("checked");
     subMenu$.toggleClass("eunos-submenu-disabled", !isChecked);
+    return Promise.resolve();
+  }
+
+  private static _addSubMenuListeners([subMenu$, toggleGroup$]: Tuple<JQuery<HTMLElement>>) {
+    const toggleControl$ = toggleGroup$.find("[type='checkbox']");
+    const {menuKey} = this._getSubMenuKeys(subMenu$);
+    if (!menuKey) {
+      throw new Error(`Failed to get menuKey for subMenu$: ${subMenu$}`);
+    }
+
+    // Add event listener to toggleControl$ that enables/disables submenuButton$ depending on whether it is checked,
+    // ... and a contextmenu listener to call the menu's refresh function
+    toggleControl$.on({
+      change: () => {
+        const value = toggleControl$.prop("checked");
+        subMenu$.toggleClass("eunos-submenu-disabled", !value);
+        EunosHacksSettings.ToggleSubmenu(menuKey, value);
+      },
+      contextmenu: () => {
+        const value = toggleControl$.prop("checked");
+        if (value) {
+          EunosHacksSettings.RefreshSubmenu(menuKey);
+        }
+      }
+    });
+  }
+
+  private static async _formatSubMenu([subMenu$, toggleGroup$]: Tuple<JQuery<HTMLElement>>) {
+    subMenu$.addClass("eunos-submenu");
+    toggleGroup$.addClass("eunos-submenu-toggle");
+    subMenu$.add(toggleGroup$).wrapAll("<div class='eunos-form-group-wrapper'></div>");
+
     const {menuKey} = this._getSubMenuKeys(subMenu$);
     if (!menuKey) {
       throw new Error(`Failed to get menuKey for subMenu$: ${subMenu$}`);
     }
     const subMenuApp = this._getSubMenuApp(menuKey);
-    if (subMenuApp.IsEnabled !== isChecked) {
-      if (isChecked) {
-        subMenuApp.Enable();
-      } else {
-        subMenuApp.Disable();
+    const missingDependencies = subMenuApp.Dependencies.filter((dep) => {
+      if (dep.type === "module") {
+        return !game.modules.get(dep.id)?.active;
+      } else if (dep.type === "system") {
+        return game.system.id !== dep.id;
       }
+      throw new Error(`Unknown dependency type: ${dep.type}`);
+    });
+    if (missingDependencies.length > 0) {
+      subMenu$.addClass("eunos-submenu-disabled");
+      subMenu$.append(`<div class="eunos-dependency-notice">
+        <i class="fa-duotone fa-triangle-exclamation"></i>
+        <p>This requires the following modules to be installed: <strong class='eunos-dependency'>${missingDependencies.map((dep) => dep.display).join("</strong>, <strong class='eunos-dependency'>")}</strong></p>
+      </div>`);
+      return;
     }
-    return isChecked;
-  }
 
-  private static _addSubMenuListeners(toggleGroup$: JQuery<HTMLElement>) {
-    const toggleControl$ = toggleGroup$.find("[type='checkbox']");
-
-  }
-
-  private static _formatSubMenu([subMenu$, toggleGroup$]: Tuple<JQuery<HTMLElement>>) {
-    subMenu$.addClass("eunos-submenu");
-    const isChecked = this._refreshSubMenuToggle([subMenu$, toggleGroup$]);
-    this._addSubMenuListeners(toggleGroup$);
+    await this._refreshSubMenuToggle([subMenu$, toggleGroup$]);
+    this._addSubMenuListeners([subMenu$, toggleGroup$]);
   }
 
   static Initialize(): Promise<unknown> {
@@ -193,59 +238,56 @@ export default class EunosHacksSettings {
   }
   // #endregion
 
-  static OldInitialize(): Promise<unknown> {
-
-    Hooks.on("renderSettingsConfig", (_sConfig: never, html$: JQuery<HTMLElement>) => {
-
-      // Rearrange settings navigation
-      const sidebar$ = html$.find(".sidebar");
-      const lancerTabButton$ = sidebar$.find(".item.category-tab[data-tab='system']");
-      const eTabButton$ = sidebar$.find(".item.category-tab[data-tab='eunos-lancer-hacks']");
-      eTabButton$.insertAfter(lancerTabButton$);
-
-      // Move setting toggles to left of setting submenus
-      const container$ = html$.find(".categories > .scrollable");
-      const eSettingsContainer$ = container$.find(".tab[data-tab='eunos-lancer-hacks'] > .module-settings-wrapper");
-      const subMenus$ = eSettingsContainer$.find(".form-group.submenu");
-      subMenus$.each((_i, subMenu) => {
-        const subMenu$ = $(subMenu);
-        subMenu$.addClass("eunos-submenu");
-        const menuKey = subMenu$.find("[data-key]").data("key");
-        if (!menuKey) {return;}
-        const toggleKey = menuKey.replace("Menu", "Toggle");
-        const toggleFormGroup$ = eSettingsContainer$.find(`[name='${toggleKey}']`).closest(".form-group");
-        toggleFormGroup$.addClass("eunos-submenu-toggle");
-        subMenu$.add(toggleFormGroup$).wrapAll("<div class='eunos-form-group-wrapper'></div>");
-
-        const toggleControl$ = toggleFormGroup$.find("[type='checkbox']");
-        const isChecked = toggleControl$.prop("checked");
-
-        if (!isChecked) {
-          subMenu$.addClass("eunos-submenu-disabled");
-        }
-
-        // Add event listener to toggleControl$ that enables/disables submenuButton$ depending on whether it is checked
-        toggleControl$.on("change", () => {
-          const newValue = toggleControl$.prop("checked");
-          subMenu$.toggleClass("eunos-submenu-disabled", !newValue);
-          EunosHacksSettings.ToggleSubmenu(menuKey.split(".").pop().replace("Menu", ""), newValue);
-        });
+  static GetSettingsNamespace(namespace: string) {
+    const keyList: List = {};
+    Object.keys(flattenObject(Object.fromEntries(Array.from(game.settings.settings).filter(([key, {namespace: nSpace}]) => nSpace === namespace))))
+      .forEach((fullKey) => {
+        const [_, ...keyParts] = fullKey.split(".");
+        let dotKey = keyParts.join(".");
+        dotKey = dotKey
+          .replace(/\.(range|choices|default)\..*$/g, "")
+          .replace(/\.(name|type|default|scope|onChange|hint|config|requiresReload|key|namespace|restricted)$/g, "");
+        if (dotKey in keyList) {return;}
+        const dotVal = EunosHacksSettings.Get(namespace, dotKey);
+        keyList[dotKey] = dotVal;
       });
-    });
-
-    return loadTemplates([
-      this.defaultTemplate,
-      ...Object.values(this.customTemplates)
-    ]);
+    return keyList;
   }
 
+  static async SafeUpdate(updateData: EHS.SettingsUpdateData) {
+    if (!game.user?.isGM) {return;}
+    const promises: Array<Promise<unknown>> = [];
+    for (const [module, settingsData] of Object.entries(updateData)) {
+      if (!game.modules.get(module)?.active && !["core", "lancer"].includes(module)) {continue;}
+      for (const [settingKey, value] of Object.entries(settingsData)) {
+        if (!game.settings.settings.has(`${module}.${settingKey}`)) {
+          console.error(`Setting ${module}.${settingKey} not found`);
+          continue;
+        }
+        const curValue = EunosHacksSettings.Get(module, settingKey);
+        // const defaultValue = game.settings.settings.get(`${module}.${settingKey}`)?.default;
+        // Check if the value is an object literal (not null, an object, and not an array)
+        if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+          if (!(typeof curValue === "object" && curValue !== null && !Array.isArray(curValue))) {
+            console.error(`${module}.${settingKey} is not an object literal`);
+            continue;
+          }
+          const mergedValue = {...curValue, ...value};
+          if (JSON.stringify(mergedValue) === JSON.stringify(curValue)) {continue;}
+          console.log(`Updating merged ${module}.${settingKey}:`, mergedValue);
+          promises.push(EunosHacksSettings.Set(module, settingKey, value));
+          continue;
+        }
+        if (JSON.stringify(curValue) === JSON.stringify(value)) {continue;}
+        console.log(`Updating ${module}.${settingKey} to ${value}`);
+        promises.push(EunosHacksSettings.Set(module, settingKey, value));
+      }
+    }
+    return Promise.all(promises);
+  }
   static defaultTemplate = "modules/eunos-lancer-hacks/templates/settings/default-submenu.hbs";
 
   static customTemplates: Record<string, string> = {};
-
-  static GetSubmenuApp(menuKey: string) {
-
-  }
 
   static ToggleSubmenu(menuKey: string, state: boolean) {
     const submenuApp = this._getSubMenuApp(menuKey);
@@ -256,10 +298,15 @@ export default class EunosHacksSettings {
     }
   }
 
-  static GetSubmenuApplication(
+  static RefreshSubmenu(menuKey: string) {
+    this._getSubMenuApp(menuKey)?.Refresh();
+  }
+
+  static BuildSubmenuApplication(
     dataKey: string,
     menuConfig: EHS.Submenu.Config,
-    settingsConfig: List<EHS.Submenu.Setting.Config<unknown, InputType>>
+    settingsConfig: List<EHS.Submenu.Setting.Config<unknown, InputType>>,
+    settingsToStore: Array<Tuple<string> | Threeple<string>>
   ) {
     return class EunosSubmenuApp extends FormApplication {
 
@@ -272,62 +319,115 @@ export default class EunosHacksSettings {
       static readonly menuConfig = menuConfig;
       static readonly settingsConfig = settingsConfig;
 
-      static get Data(): EHS.Submenu.Data {
-        return game.settings.get("eunos-lancer-hacks", this.dataKey) as EHS.Submenu.Data;
+      static get Dependencies(): EHS.DependencyData[] {
+        return this.menuConfig.dependencies ?? [];
+      }
+
+      static get Data(): Maybe<EHS.Submenu.Data> {
+        return EunosHacksSettings.Get("eunos-lancer-hacks", this.dataKey);
       }
 
       static get DefaultData(): EHS.Submenu.Data {
         return Object.fromEntries(
           Object.entries(this.settingsConfig)
             .map(([settingKey, setting]) => [settingKey, setting.default])
-            .filter(([key, value]) => key !== "storedData" && value !== undefined)
+            .filter(([key, value]) => value !== undefined)
         );
       }
 
-      static StoreData(data: EHS.Submenu.Data) {
-        const {storedData, ...menuData} = data;
-        data.storedData = menuData;
-        EunosHacksSettings.SubmenuSet(this.dataKey, data);
+      static StoreData(isOverwriting = false) {
+        const storageData = this.StoredData;
+        for (const settingData of settingsToStore) {
+          if (settingData.length === 3) {
+            // This is a setting that should be stored in a submenu.
+            const [namespace, menuDataKey, subDataKey] = settingData;
+            storageData[namespace] ??= {};
+            storageData[namespace][menuDataKey] ??= {};
+
+            // If a value is already stored here, don't overwrite it unless isOverwriting.
+            if (!isOverwriting && subDataKey in (storageData[namespace][menuDataKey] as EHS.Submenu.Data)) {continue;}
+            const curVal = EunosHacksSettings.Get(namespace, menuDataKey, subDataKey);
+            if (curVal === undefined) {continue;}
+            (storageData[namespace][menuDataKey] as EHS.Submenu.Data)[subDataKey] = curVal;
+          } else {
+            // This is a standard setting.
+            const [namespace, settingKey] = settingData;
+            storageData[namespace] ??= {};
+            // If a value is already stored here, don't overwrite it.
+            if (settingKey in storageData[namespace]) {continue;}
+            const curVal = EunosHacksSettings.Get(namespace, settingKey);
+            if (curVal === undefined) {continue;}
+            storageData[namespace][settingKey] = curVal;
+          }
+        }
+        return EunosHacksSettings.Set(this.storageKey, storageData);
       }
 
-      static get StoredData(): EHS.Submenu.Data {
-        const storedData = EunosHacksSettings.SubmenuGet(this.dataKey, "storedData") ?? {};
-        return {...this.DefaultData, ...storedData};
+      static get StoredData(): Record<string, Record<string, EHS.Setting.Data | EHS.Submenu.Data>> {
+        return EunosHacksSettings.Get(this.storageKey) ?? {};
+      }
+
+      static async RestoreStoredData() {
+        const restoreData: Array<Threeple<string, string, unknown>> = [];
+        for (const [namespace, storageData] of Object.entries(this.StoredData)) {
+          for (const [settingKey, settingValue] of Object.entries(storageData)) {
+            restoreData.push([namespace, settingKey, settingValue]);
+          }
+        }
+        return Promise.all(restoreData.map(([namespace, settingKey, settingValue]) => EunosHacksSettings.Set(namespace, settingKey, settingValue)));
       }
 
       static get IsEnabled(): boolean {
-        return game.settings.get("eunos-lancer-hacks", this.toggleKey) as boolean;
+        return EunosHacksSettings.IsSubmenuEnabled(this.dataKey);
       }
 
-            /*
-      When submenu disabled:
-        - Store existing data in a 'config: false' setting called 'storedData'
-        - Call 'onMenuToggle' on all settings in submenu
-      */
-      static async Disable() {
-        await this.StoreData(this.Data);
-        game.settings.set("eunos-lancer-hacks", this.toggleKey, false);
-        return Promise.all(
+      static async Refresh() {
+        if (this.menuConfig.onRefresh) {
+          await this.menuConfig.onRefresh();
+        }
+        await Promise.all(
           Object.values(this.settingsConfig)
-            .map(async (setting) => setting.onMenuToggle?.(false))
+            .map(async (setting) => setting.onRefresh?.())
         );
       }
 
       /*
-      When submenu enabled:
-        - Set data to 'storedData', or 'DefaultData' if no storedData to be found
-        - Call 'onMenuToggle' on all settings in submenu
-
-      static getter StoredData() returns either stored data if present, or default data if not.
+      When submenu disabled:
+        - Call 'onDisable' on all settings in submenu
+        - Restore stored data.
       */
-     static async Enable() {
-      await EunosHacksSettings.SubmenuSet(this.dataKey, this.StoredData);
-      await game.settings.set("eunos-lancer-hacks", this.toggleKey, true);
-      return Promise.all(
-        Object.values(this.settingsConfig)
-          .map(async (setting) => setting.onMenuToggle?.(true))
-      );
-     }
+      static async Disable() {
+        await Promise.all(
+          Object.values(this.settingsConfig)
+            .map(async (setting) => setting.onDisable?.())
+        );
+        await game.settings.set("eunos-lancer-hacks", this.toggleKey, false);
+        if (this.menuConfig.onDisable) {
+          await this.menuConfig.onDisable();
+        }
+        await Promise.all(
+          Object.values(this.settingsConfig)
+            .map(async (setting) => setting.onDisable?.())
+        );
+        return this.RestoreStoredData();
+      }
+
+      /*
+      When submenu enabled:
+        - Store data, overwriting existing storage.
+        - Call 'onEnable' on all settings in submenu
+      */
+      static async Enable() {
+        await this.StoreData(true);
+        await game.settings.set("eunos-lancer-hacks", this.toggleKey, true);
+        if (this.menuConfig.onEnable) {
+          await this.menuConfig.onEnable();
+        }
+        return Promise.all(
+          Object.values(this.settingsConfig)
+            .map(async (setting) => setting.onEnable?.())
+        );
+      }
 
       constructor(object = {}, formApplicationOptions = {}) {
         super(object, formApplicationOptions);
@@ -341,11 +441,10 @@ export default class EunosHacksSettings {
       get menuConfig(): EHS.Submenu.Config {return (this.constructor as typeof EunosSubmenuApp).menuConfig;}
       get settingsConfig(): List<EHS.Submenu.Setting.Config<unknown, InputType>> {return (this.constructor as typeof EunosSubmenuApp).settingsConfig;}
 
-      get toggleData(): boolean {return game.settings.get("eunos-lancer-hacks", this.toggleKey) as boolean;}
-      set toggleData(value: boolean) {game.settings.set("eunos-lancer-hacks", this.toggleKey, value);}
+      get isEnabled(): boolean {return EunosHacksSettings.IsSubmenuEnabled(this.dataKey);}
 
-      get data(): EHS.Submenu.Data {return game.settings.get("eunos-lancer-hacks", this.dataKey) as EHS.Submenu.Data;}
-      set data(value: EHS.Submenu.Data) {game.settings.set("eunos-lancer-hacks", this.dataKey, value);}
+      get data(): EHS.Submenu.Data {return EunosHacksSettings.Get("eunos-lancer-hacks", this.dataKey) ?? {};}
+      set data(value: EHS.Submenu.Data) {EunosHacksSettings.Set("eunos-lancer-hacks", this.dataKey, value);}
 
       /**
      * Default Options for this FormApplication
@@ -378,7 +477,7 @@ export default class EunosHacksSettings {
         );
         return {
           ...context,
-          ...contextData
+          data: contextData
         };
       }
 
@@ -396,7 +495,6 @@ export default class EunosHacksSettings {
        * @param formData - the form data
        */
       override async _updateObject(_event: Event, formData: EHS.Submenu.Data) {
-        const data = await this.getData();
         if (!formData) {return;}
         formData = expandObject(formData);
 
@@ -433,8 +531,73 @@ export default class EunosHacksSettings {
     };
   }
 
-  static IsSubmenuEnabled(menuKey: string): boolean {
-    return game.settings.get("eunos-lancer-hacks", `${menuKey}Toggle`) as boolean;
+  static IsSubmenuEnabled(namespace: string, dataKey: string): boolean
+  static IsSubmenuEnabled(dataKey: string): boolean
+  static IsSubmenuEnabled(...args: string[]): boolean {
+    if (args.length === 1) {
+      args.unshift("eunos-lancer-hacks");
+    }
+    const [namespace, dataKey] = args as [string, string];
+    const toggleKey = `${dataKey}Toggle`;
+
+    // If no toggle key exists, this menu isn't part of this module: assume it's enabled.
+    if (!game.settings.settings.has(`${namespace}.${toggleKey}`)) {return true;}
+
+    return EunosHacksSettings.Get(namespace, toggleKey) ?? false;
+  }
+
+  static Get<T = unknown>(module: string, menuDataKey: string, propKey: string): Maybe<T>
+  static Get<T = unknown>(module: string, propKey: string): Maybe<T>
+  static Get<T = unknown>(propKey: string): Maybe<T>
+  static Get<T = unknown>(...args: string[]): Maybe<T> {
+    if (args.length === 1) {
+      args.unshift("eunos-lancer-hacks");
+    }
+    if (!EunosHacksSettings.IsSubmenuEnabled(...args as Tuple<string>)) {
+      return undefined;
+    }
+    if (args.length === 3) {
+      // This is data stored in a submenu.
+      const propKey = args.pop() as string;
+      const submenuData = EunosHacksSettings.Get(...args as Tuple<string>);
+      if (!submenuData) {return undefined;}
+      return submenuData[propKey as keyof typeof submenuData];
+    }
+    if (
+      !game.settings.settings.has(args.join("."))
+    ) {
+      console.error(`[EHS.Get] Setting ${args.join(".")} not found`);
+      return undefined;
+    }
+    return game.settings.get(...args as [string, string]) as Maybe<T>;
+  }
+
+  static SetData(module: string, updateData: Record<string, unknown>): Promise<unknown>
+  static SetData(updateData: Record<string, unknown>): Promise<unknown>
+  static SetData(...args: unknown[]): Promise<unknown> {
+    if (args.length === 1) {
+      args.unshift("eunos-lancer-hacks");
+    }
+    const [module, updateData] = args as [string, Record<string, unknown>];
+    return Promise.all(Object.entries(updateData)
+      .map(([propKey, value]) => EunosHacksSettings.Set(module, propKey, value)
+      ));
+  }
+
+  static async Set(module: string, propKey: string, value: unknown): Promise<unknown>
+  static async Set(propKey: string, value: unknown): Promise<unknown>
+  static async Set(...args: string[]): Promise<unknown> {
+    if (args.length === 2) {
+      args.unshift("eunos-lancer-hacks");
+    }
+    const value = args.pop();
+    if (
+      !game.settings.settings.has(args.join("."))
+    ) {
+      console.error(`[EHS.Set] Setting ${args.join(".")} not found`);
+      return undefined;
+    }
+    return game.settings.set(...args as [string, string], value);
   }
 
   static RegisterSetting<T>(key: string, configData: EHS.Setting.Config<T>) {
@@ -456,84 +619,39 @@ export default class EunosHacksSettings {
     game.settings.register("eunos-lancer-hacks", key, config);
   }
 
-  static Get<T = unknown>(module: string, propKey: string): Maybe<T>
-  static Get<T = unknown>(propKey: string): Maybe<T>
-  static Get<T = unknown>(...args: string[]): Maybe<T> {
-    if (args.length === 1) {
-      args.unshift("eunos-lancer-hacks");
-    }
-    const toggleKey = `${args[1]}Toggle`;
-    if (
-      game.settings.settings.has(`${args[0]}.${toggleKey}`)
-      && !game.settings.get(args[0], toggleKey)
-    ) {return undefined;}
-    return game.settings.get(...args as [string, string]) as Maybe<T>;
-  }
-
-  static SetData(module: string, updateData: Record<string, unknown>): Promise<unknown>
-  static SetData(updateData: Record<string, unknown>): Promise<unknown>
-  static SetData(...args: unknown[]): Promise<unknown> {
-    if (args.length === 1) {
-      args.unshift("eunos-lancer-hacks");
-    }
-    const [module, updateData] = args as [string, Record<string, unknown>];
-    return Promise.all(Object.entries(updateData)
-      .map(([propKey, value]) => game.settings.set(module, propKey, value)));
-  }
-
-  static Set(module: string, propKey: string, value: unknown): Promise<unknown>
-  static Set(propKey: string, value: unknown): Promise<unknown>
-  static Set(...args: string[]): Promise<unknown> {
-    if (args.length === 2) {
-      args.unshift("eunos-lancer-hacks");
-    }
-    return game.settings.set(...args as [string, string, unknown]);
-  }
-
-  static SubmenuGet(menuKey: string): Maybe<EHS.Submenu.Data>
-  static SubmenuGet(menuKey: string, dataKey: string): Maybe<EHS.Submenu.Data>
-  static SubmenuGet(menuKey: string, dataKey?: string): Maybe<EHS.Submenu.Data> | Maybe<EHS.Submenu.Setting.Data> {
-    const toggleKey = `${menuKey}Toggle`;
-    if (
-      game.settings.settings.has(`eunos-lancer-hacks.${toggleKey}`)
-      && !game.settings.get("eunos-lancer-hacks", toggleKey)
-    ) {return undefined;}
-    return game.settings.get("eunos-lancer-hacks", [menuKey, dataKey].filter(Boolean).join("."));
-  }
-
-  static async SubmenuSet(menuKey: string, value: EHS.Submenu.Data): Promise<unknown>
-  static async SubmenuSet(menuKey: string, dataKey: string, value: EHS.Submenu.Setting.Data): Promise<unknown>
-  static async SubmenuSet(menuKey: string, dataKey: string, propKey: string, value: unknown): Promise<unknown>
-  static async SubmenuSet(...args:
-    [string, EHS.Submenu.Data]
-    | [string, string, EHS.Submenu.Setting.Data]
-    | [string, string, string, unknown]): Promise<unknown> {
-    const value = args.pop();
-    return game.settings.set("eunos-lancer-hacks", args.filter(Boolean).join("."), value);
-  }
-
   static RegisterSettingsMenu(
     key: string,
     menuData: EHS.Submenu.Config,
-    settingsData: List<EHS.Submenu.Setting.Config<unknown, InputType>>
+    settingsData: List<EHS.Submenu.Setting.Config<unknown, InputType>>,
+    settingsToStore: Array<Tuple<string> | Threeple<string>>
   ) {
+    const menuApp = EunosHacksSettings.BuildSubmenuApplication(key, menuData, settingsData, settingsToStore);
 
-    const toggleConfig: SettingConfig<boolean> = {
-      key: `${key}Toggle`,
-      namespace: "eunos-lancer-hacks",
+    game.settings.register("eunos-lancer-hacks", menuApp.toggleKey, {
       scope: "world",
       config: true,
       type: Boolean,
-      default: false
-    };
-    game.settings.register("eunos-lancer-hacks", toggleConfig.key, toggleConfig);
+      default: false,
+      onChange: (value: boolean) => {
+        if (value) {
+          menuApp.Enable();
+        } else {
+          menuApp.Disable();
+        }
+      }
+    });
 
-    const menuApp = EunosHacksSettings.GetSubmenuApplication(key, menuData, settingsData);
+    game.settings.register("eunos-lancer-hacks", menuApp.storageKey, {
+      scope: "world",
+      config: false,
+      type: Object,
+      default: {}
+    });
 
     const menuConfig: ClientSettings.PartialSettingSubmenuConfig = {
       label: menuData.label ?? menuData.name,
       icon: "fa-duotone fa-gear",
-      type: EunosHacksSettings.GetSubmenuApplication(key, menuData, settingsData),
+      type: menuApp,
       restricted: true,
       ...menuData
     };
@@ -545,7 +663,7 @@ export default class EunosHacksSettings {
       default: menuApp.DefaultData
     };
 
-    console.log(`Registering Menu "${key}Menu"`, menuConfig, toggleConfig);
+    console.log(`Registering Menu "${key}Menu"`, menuConfig, settingsToStore);
     game.settings.registerMenu("eunos-lancer-hacks", `${key}Menu`, menuConfig);
     console.log(`Registering Setting "${key}"`, settingConfig);
     game.settings.register("eunos-lancer-hacks", key, settingConfig);

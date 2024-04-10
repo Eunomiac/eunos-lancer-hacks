@@ -15,9 +15,9 @@ export default class EunosLancerItem {
 
   // #region Environment Viability Checks ~
   static get canEnable(): boolean {
-    return game.modules.has("__DEPENDENCY_NAME__");
+    return game.modules.get("__DEPENDENCY_NAME__")?.active ?? false;
   }
-  static isEnabled(): boolean {
+  static get isEnabled(): boolean {
     return this.canEnable && game.settings.get("eunos-lancer-hacks", "__ENABLE_TOGGLE__") === true;
   }
   // #endregion

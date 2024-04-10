@@ -39,9 +39,9 @@ declare global {
 export default class Hack_BarBrawl {
   // #region Environment Viability Checks ~
   static get canEnable(): boolean {
-    return game.modules.has("barbrawl");
+    return game.modules.get("barbrawl")?.active ?? false;
   }
-  static isEnabled(): boolean {
+  static get isEnabled(): boolean {
     return this.canEnable && ELH.Settings.IsSubmenuEnabled("barbrawl");
   }
   // #endregion
@@ -50,9 +50,13 @@ export default class Hack_BarBrawl {
     ELH.Settings.RegisterSettingsMenu(
       "barbrawl",
       {
-        name: "BarBrawl Hacks",
-        hint: "Configure settings related to the BarBrawl token bars module.",
-        icon: "fa-duotone fa-bars"
+        name: "Token Bars & Borders",
+        hint: "Select and apply a BarBrawls token bars configuration, and update width, visibility and appearance of token borders.",
+        icon: "fa-duotone fa-bars",
+        dependencies: [
+          {type: "module", id: "barbrawl", display: "BarBrawl"},
+          {type: "module", id: "hex-size-support", display: "Hex Size Support"}
+        ]
       },
       {
         selectConfig: {
@@ -76,10 +80,19 @@ export default class Hack_BarBrawl {
                       ui.notifications.info(`Applying BarBrawl token configuration: ${selectedValue}...`);
                       data.selectConfig = selectedValue;
                       Hack_BarBrawl.ApplyConfig(selectedValue);
-                      ELH.Settings.SubmenuSet("barbrawl", data);
+                      ELH.Settings.Set("eunos-lancer-hacks", "barbrawl", data);
                   }
               }
-          }
+          },
+          onEnable() {
+            const selectConfig = ELH.Settings.Get("eunos-lancer-hacks", "barbrawl", "selectConfig") as string;
+            if (!selectConfig) { return Promise.resolve(); }
+            return Hack_BarBrawl.ApplyConfig(selectConfig);
+          },
+          onDisable() {
+            return Hack_BarBrawl.DisableConfig();
+          },
+          async onRefresh() { return this.onEnable?.(); }
         },
         overrideTokenBorders: {
           name: "Override Token Border",
@@ -102,46 +115,54 @@ export default class Hack_BarBrawl {
                 hostileColor: "#8c0d0f"
               });
             }
-          }
+          },
+          onEnable() {
+            return ELH.Settings.SetData("hex-size-support", {
+              borderWidth: 20,
+              altOrientationDefault: false,
+              borderBehindToken: true,
+              fillBorder: true,
+              alwaysShowBorder: false,
+              controlledColor: "#FFFF00",
+              partyColor: "#00cddb",
+              friendlyColor: "#055076",
+              neutralColor: "#b47e08",
+              hostileColor: "#8c0d0f"
+            });
+          },
+          async onRefresh() { return this.onEnable?.(); }
         }
-      }
-        // toggleBarBrawl: {
-        //   click: (event: Event, elem$: JQuery<HTMLElement>) => {
-        //     const bbData = ELH.Settings.SubmenuGet("barbrawl");
-        //     const isBBEnabled = $(event.currentTarget as HTMLElement).is(":checked");
-        //     if (isBBEnabled) {
-        //       ui.notifications?.info(`Applying BarBrawl token configuration: ${bbData.selectConfig.value}...`);
-        //       Hack_BarBrawl.ApplyConfig(bbData.selectConfig.value as string);
-        //       bbData.toggleBarBrawl.value = true;
-        //       elem$.attr("checked", "true");
-        //     } else {
-        //       ui.notifications?.info("Disabling BarBrawl token configuration.");
-        //       Hack_BarBrawl.DisableConfig();
-        //       bbData.toggleBarBrawl.value = false;
-        //       elem$.attr("checked", "false");
-        //     }
-        //     ELH.Settings.SubmenuSet("barbrawl", bbData);
-        //   }
-        // },
+      },
+      [
+        ["hex-size-support", "borderWidth"],
+        ["hex-size-support", "altOrientationDefault"],
+        ["hex-size-support", "borderBehindToken"],
+        ["hex-size-support", "fillBorder"],
+        ["hex-size-support", "alwaysShowBorder"],
+        ["hex-size-support", "controlledColor"],
+        ["hex-size-support", "partyColor"],
+        ["hex-size-support", "friendlyColor"],
+        ["hex-size-support", "neutralColor"],
+        ["hex-size-support", "hostileColor"],
+        ["barbrawl", "defaultsPerType"],
+        ["barbrawl", "defaultTypeResources"]
+      ]
     );
   }
 
-  static get IsActive() {
-    return game.modules.has("barbrawl");
-  }
-
   static Initialize() {
-    if (!this.IsActive) return;
+    if (!this.canEnable) return;
+    if (!game.user?.isGM) { return; }
     this.RegisterSettings();
   }
   static get IsSubdivisionsMatchesMaxOk() {
-    if (!this.IsActive) { return false; }
+    if (!this.canEnable) { return false; }
     const bbModule = game.modules.get("barbrawl") as Game.ModuleData<Game.PackageData<unknown>> & {version: string} | undefined;
     return bbModule && bbModule.version === "1.7.8";
   }
 
   static get Configs() {
-    if (!this.IsActive) { return []; }
+    if (!this.canEnable) { return []; }
     const validConfigs: Record<string, string> = {
       none: "No Change (Custom)",
       Kuenaimaku: "Kuenaimaku's Bars",
@@ -155,9 +176,6 @@ export default class Hack_BarBrawl {
   }
 
   static async DisableConfig() {
-    await game.settings.set("barbrawl", "defaultsPerType", false);
-    await game.settings.set("barbrawl", "defaultTypeResources", {});
-
     // :warning: Reset all actors' prototype token bars
     await Promise.all(game.actors?.map((a) => a.update({"token.flags.barbrawl.-=resourceBars": null})) ?? []);
 
@@ -177,8 +195,8 @@ export default class Hack_BarBrawl {
       return Boolean(ref && typeof ref === "object" && EntryType.MECH in ref);
     }
     // const isPerType = isPerType(barBrawlConfig);
-    await game.settings.set("barbrawl", "defaultsPerType", isPerType(barBrawlConfig));
-    await game.settings.set("barbrawl", "defaultTypeResources", C.barBrawlConfigs[value]);
+    await ELH.Settings.Set("barbrawl", "defaultsPerType", isPerType(barBrawlConfig));
+    await ELH.Settings.Set("barbrawl", "defaultTypeResources", C.barBrawlConfigs[value]);
 
     // :warning: Reset all actors' prototype token bars
     await Promise.all(game.actors?.map((a) => a.update({"token.flags.barbrawl.-=resourceBars": null})) ?? []);

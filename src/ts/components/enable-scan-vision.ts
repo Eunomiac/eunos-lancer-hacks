@@ -19,7 +19,7 @@ export default class Hack_EnableScanVision {
   static get canEnable(): boolean {
     return true;
   }
-  static isEnabled(): boolean {
+  static get isEnabled(): boolean {
     return this.canEnable && ELH.Settings.IsSubmenuEnabled("sensorVision");
   }
   // #endregion
@@ -37,12 +37,14 @@ export default class Hack_EnableScanVision {
   }
 
   static RegisterSettings() {
+    if (!game.user?.isGM) { return; }
     ELH.Settings.RegisterSettingsMenu(
       "sensorVision",
       {
         name: "Sensor Vision",
-        hint: "Configure how token vision and detection modes are handled.",
-        icon: "fa-duotone fa-eye"
+        hint: "Maintain sight range and detection modes for mech tokens.",
+        icon: "fa-duotone fa-eye",
+        dependencies: []
       },
       {
         refreshSensorVision: {
@@ -62,14 +64,19 @@ export default class Hack_EnableScanVision {
               );
               ui.notifications.info("Token sensor ranges refreshed.");
             }
-          }
+          },
+          onEnable: async () => this.RegisterHooks(),
+          onDisable: async () => this.UnregisterHooks(),
+          async onRefresh() { return this.handlers?.click?.(null as never, null as never, null as never); }
         }
-      }
+      },
+      []
     );
   }
 
+  static registeredHookIDs: number[] = [];
   static RegisterHooks() {
-    Hooks.on("drawToken", (token: EunosLancerToken|EunosLancerTokenDocument): void => {
+    this.registeredHookIDs.push(Hooks.on("drawToken", (token: EunosLancerToken|EunosLancerTokenDocument): void => {
       // Verify component is active
       if (!this.isEnabled) { return; }
 
@@ -100,7 +107,11 @@ export default class Hack_EnableScanVision {
           {id: "basicSight", enabled: true, range: sensorRange}
         ]
       });
-    });
+    }));
+  }
+
+  static UnregisterHooks() {
+    this.registeredHookIDs.forEach((id: number) => Hooks.off("drawToken", id));
   }
 
   static GetSensorRange(token?: LancerTokenDocument) {

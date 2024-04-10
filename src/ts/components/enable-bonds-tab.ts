@@ -47,8 +47,8 @@ export default class Hack_EnableBondsTab {
   static get canEnable(): boolean {
     return true;
   }
-  static isEnabled(): boolean {
-    return this.canEnable && game.settings.get("eunos-lancer-hacks", "enableBondsTab") === true;
+  static get isEnabled(): boolean {
+    return this.canEnable && ELH.Settings.IsSubmenuEnabled("bondsTab") === true;
   }
   // #endregion
 

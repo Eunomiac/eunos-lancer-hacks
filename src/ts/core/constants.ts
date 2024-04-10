@@ -764,7 +764,9 @@ const C: {
           indentRight: 10,
           shareHeight: true,
           label: "HP",
-          style: "fraction"
+          style: "fraction",
+          hideFull: true,
+          hideEmpty: true
         },
         structure: {
           id: "structure",
@@ -780,7 +782,8 @@ const C: {
           subdivisions: 4,
           subdivisionsMatchesMax: true,
           subdivisionsOwner: true,
-          hideFull: false
+          hideFull: true,
+          hideEmpty: true
         },
         bar2: {
           id: "bar2",
@@ -796,7 +799,8 @@ const C: {
           indentRight: 10,
           shareHeight: true,
           label: "Heat",
-          style: "fraction"
+          style: "fraction",
+          hideEmpty: true
         },
         stress: {
           id: "stress",
@@ -812,7 +816,8 @@ const C: {
           subdivisions: 4,
           subdivisionsMatchesMax: true,
           subdivisionsOwner: true,
-          hideFull: false
+          hideFull: true,
+          hideEmpty: true
         },
         burn: {
           id: "burn",
@@ -856,7 +861,9 @@ const C: {
           indentRight: 10,
           shareHeight: true,
           label: "HP",
-          style: "fraction"
+          style: "fraction",
+          hideFull: true,
+          hideEmpty: true
         },
         structure: {
           id: "structure",
@@ -872,7 +879,8 @@ const C: {
           subdivisions: 4,
           subdivisionsMatchesMax: true,
           subdivisionsOwner: true,
-          hideFull: false
+          hideFull: true,
+          hideEmpty: true
         },
         bar2: {
           id: "bar2",
@@ -888,7 +896,8 @@ const C: {
           indentRight: 10,
           shareHeight: true,
           label: "Heat",
-          style: "fraction"
+          style: "fraction",
+          hideEmpty: true
         },
         stress: {
           id: "stress",
@@ -904,7 +913,8 @@ const C: {
           subdivisions: 4,
           subdivisionsMatchesMax: true,
           subdivisionsOwner: true,
-          hideFull: false
+          hideFull: true,
+          hideEmpty: true
         },
         burn: {
           id: "burn",
@@ -913,7 +923,8 @@ const C: {
           position: "top-outer",
           attribute: "burn",
           visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
-          otherVisibility: CONST.TOKEN_DISPLAY_MODES.OWNER
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          hideEmpty: true
         },
         overshield: {
           id: "overshield",
@@ -922,7 +933,8 @@ const C: {
           position: "top-outer",
           attribute: "overshield",
           visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
-          otherVisibility: CONST.TOKEN_DISPLAY_MODES.OWNER
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          hideEmpty: true
         }
       },
       [EntryType.PILOT]: {
@@ -940,7 +952,9 @@ const C: {
           indentRight: 10,
           shareHeight: true,
           label: "HP",
-          style: "fraction"
+          style: "fraction",
+          hideFull: true,
+          hideEmpty: true
         },
         overshield: {
           id: "overshield",
@@ -949,7 +963,8 @@ const C: {
           position: "top-outer",
           attribute: "overshield",
           visibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
-          otherVisibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.ALWAYS,
+          hideEmpty: true
         }
       },
       [EntryType.DEPLOYABLE]: {
@@ -967,7 +982,9 @@ const C: {
           indentRight: 10,
           shareHeight: true,
           label: "HP",
-          style: "fraction"
+          style: "fraction",
+          hideFull: true,
+          hideEmpty: true
         },
         bar2: {
           id: "bar2",
@@ -983,7 +1000,8 @@ const C: {
           indentRight: 10,
           shareHeight: true,
           label: "Heat",
-          style: "fraction"
+          style: "fraction",
+          hideEmpty: true
         },
         burn: {
           id: "burn",
@@ -992,7 +1010,8 @@ const C: {
           position: "top-outer",
           attribute: "burn",
           visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
-          otherVisibility: CONST.TOKEN_DISPLAY_MODES.OWNER
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          hideEmpty: true
         },
         overshield: {
           id: "overshield",
@@ -1001,7 +1020,8 @@ const C: {
           position: "top-outer",
           attribute: "overshield",
           visibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
-          otherVisibility: CONST.TOKEN_DISPLAY_MODES.OWNER
+          otherVisibility: CONST.TOKEN_DISPLAY_MODES.OWNER,
+          hideEmpty: true
         }
       }
     },

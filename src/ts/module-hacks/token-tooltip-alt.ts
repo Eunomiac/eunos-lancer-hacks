@@ -3,15 +3,7 @@
 $(".token-tooltip-alt-tooltip-container").clone().appendTo("body")
 
 ... then hover over a tooltip and press enter. */
-
-
 const TTA_CONFIG = {
-  masterSettings: {
-    "actorData": "actor.data.data.derived",
-    "maxRows": 4,
-    "tooltipManager.custom": ["Pilot", "Mech", "NPC", "Deployable"],
-    "darkTheme": true
-  },
   gmSettings: {
     default: {
       items: [
@@ -1450,7 +1442,7 @@ const TTA_CONFIG = {
         }
       ],
       static: {
-        displayNameInTooltip: false,
+        displayNameInTooltip: true,
         useAccentEverywhere: false,
         accentColor: "#cccccc",
         tokenDispositions: [
@@ -2421,7 +2413,7 @@ const TTA_CONFIG = {
         }
       ],
       static: {
-        displayNameInTooltip: "HOSTILE",
+        displayNameInTooltip: true,
         useAccentEverywhere: false,
         accentColor: "#2964c2",
         tokenDispositions: [
@@ -2681,7 +2673,7 @@ const TTA_CONFIG = {
         }
       ],
       static: {
-        displayNameInTooltip: "HOSTILE",
+        displayNameInTooltip: true,
         useAccentEverywhere: false,
         accentColor: "#2964c2",
         tokenDispositions: [
@@ -3413,7 +3405,7 @@ const TTA_CONFIG = {
         }
       ],
       static: {
-        displayNameInTooltip: "HOSTILE",
+        displayNameInTooltip: true,
         useAccentEverywhere: false,
         accentColor: "#b31414",
         tokenDispositions: [
@@ -3705,7 +3697,7 @@ const TTA_CONFIG = {
         }
       ],
       static: {
-        displayNameInTooltip: "NONE",
+        displayNameInTooltip: true,
         useAccentEverywhere: false,
         accentColor: "#c8c8c8",
         tokenDispositions: [
@@ -4221,7 +4213,7 @@ const TTA_CONFIG = {
         }
       ],
       static: {
-        displayNameInTooltip: "HOSTILE",
+        displayNameInTooltip: true,
         useAccentEverywhere: false,
         accentColor: "#2964c2",
         tokenDispositions: [
@@ -4235,3 +4227,105 @@ const TTA_CONFIG = {
     }
   }
 };
+
+const TTA_SETTINGS = {
+  "token-tooltip-alt": {
+    dataSource: "actor.data.data.derived",
+    maxRows: 4,
+    fontSize: 1,
+    tooltipPosition: "top",
+    actors: [
+      {
+          id: "default",
+          enable: true,
+          custom: true,
+          isDefault: true
+      },
+      {
+          id: "pilot",
+          enable: true,
+          custom: true
+      },
+      {
+          id: "mech",
+          enable: true,
+          custom: true
+      },
+      {
+          id: "npc",
+          enable: true,
+          custom: true
+      },
+      {
+          id: "deployable",
+          enable: true,
+          custom: true
+      }
+    ],
+    ...TTA_CONFIG,
+    darkTheme: true
+  }
+};
+
+
+
+declare global {
+
+}
+
+export default class Hack_TokenTooltipAlt {
+
+  // #region Environment Viability Checks ~
+  static get canEnable(): boolean {
+    return game.modules.get("token-tooltip-alt")?.active ?? false;
+  }
+  static get isEnabled(): boolean {
+    return this.canEnable && ELH.Settings.IsSubmenuEnabled("tokenTooltipAlt");
+  }
+  // #endregion
+
+  // #region *** INITIALIZATION *** ~
+  static async Initialize() {
+
+    // Register settings related to this component
+    this.RegisterSettings();
+
+    if (!this.isEnabled) { return; }
+
+    // Register hooks related to this component
+    this.RegisterHooks();
+  }
+
+  static RegisterSettings() {
+    if (!game.user?.isGM) { return; }
+    ELH.Settings.RegisterSettingsMenu(
+      "tokenTooltipAlt",
+      {
+        name: "Token Tooltips",
+        hint: "Apply customized settings to Token Tooltip Alt tooltips.",
+        icon: "fa-duotone fa-chat",
+        dependencies: [
+          {type: "module", id: "token-tooltip-alt", display: "Token Tooltip Alt"}
+        ],
+        onEnable() {
+          return ELH.Settings.SafeUpdate(TTA_SETTINGS);
+        }
+      },
+      {},
+      [
+        ["token-tooltip-alt", "dataSource"],
+        ["token-tooltip-alt", "maxRows"],
+        ["token-tooltip-alt", "fontSize"],
+        ["token-tooltip-alt", "tooltipPosition"],
+        ["token-tooltip-alt", "actors"],
+        ["token-tooltip-alt", "gmSettings"],
+        ["token-tooltip-alt", "playerSettings"],
+        ["token-tooltip-alt", "darkTheme"]
+      ]
+    );
+  }
+
+  static RegisterHooks() {
+    return true;
+  }
+}

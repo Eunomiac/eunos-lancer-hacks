@@ -37,6 +37,10 @@
   }
 }
 
+#token-action-hud { @import './module-hacks/token-action-hud'; }
+
+.token-tooltip-alt-tooltip-container { @import './module-hacks/token-tooltip-alt'; }
+
 /* Modifications to Sheet Tabs to make room for Bonds Tab */
 .app.window-app.lancer.sheet.actor.pilot {
 

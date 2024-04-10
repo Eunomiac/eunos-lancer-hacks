@@ -118,6 +118,9 @@ declare global {
   // Represents a tuple of two elements
   type Tuple<T1, T2 = T1> = [T1, T2];
 
+  // Represents a tuple of three elements
+  type Threeple<T1, T2 = T1, T3 = T2> = [T1, T2, T3];
+
   // Represents a dotkey
   type DotKey = string & { __dotKeyBrand: never };
 

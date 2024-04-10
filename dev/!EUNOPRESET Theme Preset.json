@@ -1,0 +1,101 @@
+{
+    "name": "!EUNOPRESET",
+    "theme": {
+        "--color-shadow-primary": {
+            "value": "#ff0000ff"
+        },
+        "--tidy-sidebar-padding-y": {
+            "value": "0px"
+        },
+        "--tidy-sidebar-padding-x": {
+            "value": "0px"
+        },
+        "--palette-primary": {
+            "value": "#e9fbffff"
+        },
+        "--tidy-sidebar-border-radius": {
+            "value": "0px"
+        },
+        "--app-background": {
+            "value": "#4a536ccc"
+        },
+        "--palette-secondary": {
+            "value": "#638f91ff"
+        },
+        "cssTidySidebar": {
+            "value": "false"
+        },
+        "--app-background-image": {
+            "value": {
+                "url": "",
+                "blend": "normal"
+            }
+        },
+        "--palette-tertiary": {
+            "value": "#d7efe7ff"
+        },
+        "--app-dialog-background": {
+            "value": "#ecececff"
+        },
+        "--app-dialog-background-image": {
+            "value": {
+                "url": "",
+                "blend": "normal"
+            }
+        },
+        "cssfoundryVTTColors": {
+            "value": "true"
+        },
+        "--palette-danger": {
+            "value": "#c92030ff"
+        },
+        "cssTidyHUD": {
+            "value": "true"
+        },
+        "cssTidyHUDDisableLogo": {
+            "value": "true"
+        },
+        "--tidy-hud-controls-margin-top": {
+            "value": "44px"
+        },
+        "--tidy-hud-controls-alignment": {
+            "value": "start"
+        },
+        "--tidy-hud-controls-font-size": {
+            "value": "18px"
+        },
+        "--tidy-hud-controls-size": {
+            "value": "24px"
+        },
+        "--tidy-hud-offset-margin-top": {
+            "value": "0px"
+        },
+        "cssTidyHUDControls": {
+            "value": "true"
+        },
+        "--tidy-hud-offset-margin-left": {
+            "value": "-75px"
+        },
+        "cssTidyHUDSceneBrowser": {
+            "value": "true"
+        },
+        "cssTidyHUDPlayers": {
+            "value": "true"
+        },
+        "--tidy-hud-hotbar-alignment": {
+            "value": "left"
+        },
+        "--tidy-hud-hotbar-offset": {
+            "value": "6px"
+        },
+        "cssTidyHUDHotbar": {
+            "value": "true"
+        },
+        "cssTidyHUDNotifications": {
+            "value": "true"
+        },
+        "cssTidyHUDPlayersExpandOffline": {
+            "value": "false"
+        }
+    }
+}

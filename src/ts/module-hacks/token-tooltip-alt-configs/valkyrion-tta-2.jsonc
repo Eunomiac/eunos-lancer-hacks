@@ -1444,7 +1444,7 @@ Dark Theme:   true
         }
       ],
       "static": {
-        "displayNameInTooltip": false,
+        "displayNameInTooltip": true,
         "useAccentEverywhere": false,
         "accentColor": "#cccccc",
         "tokenDispositions": [
@@ -2415,7 +2415,7 @@ Dark Theme:   true
         }
       ],
       "static": {
-        "displayNameInTooltip": "HOSTILE",
+        "displayNameInTooltip": true,
         "useAccentEverywhere": false,
         "accentColor": "#2964c2",
         "tokenDispositions": [
@@ -2675,7 +2675,7 @@ Dark Theme:   true
         }
       ],
       "static": {
-        "displayNameInTooltip": "HOSTILE",
+        "displayNameInTooltip": true,
         "useAccentEverywhere": false,
         "accentColor": "#2964c2",
         "tokenDispositions": [
@@ -3407,7 +3407,7 @@ Dark Theme:   true
         }
       ],
       "static": {
-        "displayNameInTooltip": "HOSTILE",
+        "displayNameInTooltip": true,
         "useAccentEverywhere": false,
         "accentColor": "#b31414",
         "tokenDispositions": [
@@ -3699,7 +3699,7 @@ Dark Theme:   true
         }
       ],
       "static": {
-        "displayNameInTooltip": "NONE",
+        "displayNameInTooltip": true,
         "useAccentEverywhere": false,
         "accentColor": "#c8c8c8",
         "tokenDispositions": [
@@ -4215,7 +4215,7 @@ Dark Theme:   true
         }
       ],
       "static": {
-        "displayNameInTooltip": "HOSTILE",
+        "displayNameInTooltip": true,
         "useAccentEverywhere": false,
         "accentColor": "#2964c2",
         "tokenDispositions": [

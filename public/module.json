@@ -2,7 +2,7 @@
   "id": "eunos-lancer-hacks",
   "title": "Euno's Lancer Hacks",
   "description": "A collection of bespoke hacks for a Lancer campaign run by Thaumaterge.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "authors": [
     {
       "name": "Eunomiac",
@@ -22,6 +22,16 @@
   ],
   "styles": [
     "style.css"
+  ],
+	"packs": [
+		{
+			"name": "eunoMacros_Dev",
+			"label": "[Dev] Eunos Macros",
+			"path": "packs/eunos-hacks-dev.db",
+			"type": "Macro",
+			"private": false,
+			"flags": {}
+		}
   ],
   "relationships": {
     "systems": [
@@ -105,6 +115,21 @@
         "id": "wall-height",
         "type": "module",
         "compatibility": {}
+      },
+      {
+        "id": "tidy-ui_game-settings",
+        "type": "module",
+        "compatibility": {}
+		  },
+      {
+        "id": "token-action-hud",
+        "type": "module",
+        "compatibility": {}
+		  },
+      {
+        "id": "color-picker",
+        "type": "module",
+        "compatibility": {}
       }
     ],
     "recommends": [
@@ -135,15 +160,7 @@
       {
         "id": "permission_viewer",
         "type": "module"
-      },
-      {
-        "id": "tidy-ui_game-settings",
-        "type": "module"
-		  },
-      {
-        "id": "token-action-hud-core",
-        "type": "module"
-		  }
+      }
     ]
   },
   "flags": {
@@ -157,5 +174,5 @@
   },
   "url": "https://github.com/Eunomiac/eunos-lancer-hacks",
   "manifest": "https://raw.githubusercontent.com/Eunomiac/eunos-lancer-hacks/main/public/module.json",
-  "download": "https://github.com/Eunomiac/eunos-lancer-hacks/releases/download/v1.0.0/eunos-lancer-hacks-v1.0.0.zip"
+  "download": "https://github.com/Eunomiac/eunos-lancer-hacks/releases/download/v1.1.0/eunos-lancer-hacks-v1.1.0.zip"
 }

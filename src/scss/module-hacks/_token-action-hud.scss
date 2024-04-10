@@ -1,0 +1,232 @@
+& {
+  #tah-collapse-expand {
+    button#tah-collapse-hud {
+      i.fas.fa-caret-left {}
+    }
+
+    button#tah-expand-hud {
+      i.fas.fa-caret-right {}
+    }
+  }
+
+  #tah-categories {
+    .tah-category {
+      button.tah-title-button {}
+
+
+      &.hover {
+        .tah-content.expand-down {
+          .tah-subcategory {
+            .tah-subtitle-wrapper {
+              .tah-subtitle {}
+            }
+
+            .tah-actions {
+              .tah-action {
+                button .tah-action-name {}
+              }
+            }
+          }
+        }
+      }
+
+      &#tah-category-pilot {}
+
+      &#tah-category-mech {}
+
+      &#tah-category-weapons {}
+
+      &#tah-category-systems {}
+
+      &#tah-category-utility {}
+    }
+  }
+}
+
+& {
+  top: 50px;
+  opacity: 0.5;
+}
+
+&:hover {
+  opacity: 1;
+}
+
+& #tah-collapse-expand {}
+
+& #tah-collapse-expand button#tah-collapse-hud {
+  background: black;
+  padding: 0 3px;
+  width: min-content;
+  position: relative;
+  left: -2px;
+  border-radius: 0;
+}
+
+& #tah-collapse-expand button#tah-collapse-hud i.fas.fa-caret-left {
+  padding: 0;
+  margin: 0;
+}
+
+& #tah-collapse-expand button#tah-expand-hud {
+  background: black;
+  padding: 0 3px;
+  width: min-content;
+  position: relative;
+  left: -2px;
+  border-radius: 0;
+  height: 14px;
+  outline: 1px solid white;
+  top: 14px;
+}
+
+& #tah-collapse-expand button#tah-expand-hud i.fas.fa-caret-right {
+  padding: 0;
+  margin: 0;
+  top: -7px;
+}
+
+& #tah-categories {
+  gap: 5px;
+}
+
+& #tah-categories .tah-category {
+  --tah-action-color: 128, 128, 128;
+}
+
+& #tah-categories .tah-category button.tah-title-button {
+  line-height: 1;
+  font-family: Oswald;
+  padding: 1px 3px;
+  border-radius: 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  color: rgba(var(--tah-action-color), 1);
+  text-shadow: 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black;
+  background: rgba(0, 0, 0, 1);
+  outline: 2px inset rgba(var(--tah-action-color), 1);
+  margin-left: 3px;
+  font-weight: bold;
+  opacity: 0.5;
+}
+
+& #tah-categories .tah-category button.tah-title-button i.fa.fa-filter {
+  display: none;
+}
+
+& #tah-categories .tah-category.hover button.tah-title-button {
+  opacity: 1;
+  color: black;
+  background: rgba(var(--tah-action-color), 1);
+  text-shadow: none;
+  outline-style: solid;
+  box-shadow: none;
+
+}
+
+& #tah-categories .tah-category.hover .tah-content.expand-down {}
+
+& #tah-categories .tah-category.hover .tah-content.expand-down .tah-subcategory:nth-child(2n) {
+  background: rgba(var(--tah-action-color), 0.25);
+
+}
+
+& #tah-categories .tah-category.hover .tah-content.expand-down .tah-subcategory .tah-subtitle-wrapper {
+  height: 16px;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: row;
+  width: 175px;
+  background: linear-gradient(to right, transparent, black);
+  /* margin-right: 5px; */
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+  /* padding: 3px 0px; */
+}
+
+& #tah-categories .tah-category.hover .tah-content.expand-down .tah-subcategory .tah-subtitle-wrapper .tah-subtitle {
+  font-family: Oswald;
+  text-shadow: 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black;
+  background: black;
+  max-width: min-content;
+  white-space: nowrap;
+  /* margin-left: auto; */
+  text-align: right;
+  display: inline-block;
+  /* padding-left: 5px; */
+}
+
+& #tah-categories .tah-category.hover .tah-content.expand-down .tah-subcategory .tah-subtitle-wrapper .tah-subtitle::after {
+  content: ":";
+  color: white;
+  display: inline-block;
+}
+
+& #tah-categories .tah-category.hover .tah-content.expand-down .tah-subcategory .tah-actions {
+  margin-left: 5px;
+  /* border-bottom: 1px dotted cyan; */
+  /* padding: 3px 0px; */
+  /* margin: 0; */
+}
+
+& #tah-categories .tah-category.hover .tah-content.expand-down .tah-subcategory .tah-actions .tah-action {
+  border-color: rgba(var(--tah-action-color), 0.5);
+}
+
+& #tah-categories .tah-category.hover .tah-content.expand-down .tah-subcategory .tah-actions .tah-action button {
+  box-shadow: 0 0 0 1px rgba(var(--tah-action-color), 0.5),
+    0 0 10px rgba(var(--tah-action-color), 0.5);
+  background: black;
+  border-radius: 0;
+}
+
+& #tah-categories .tah-category.hover .tah-content.expand-down .tah-subcategory .tah-actions .tah-action button:hover {
+  border-color: black;
+  background: rgba(var(--tah-action-color), 0.5);
+  color: black;
+}
+
+& #tah-categories .tah-category.hover .tah-content.expand-down .tah-subcategory .tah-actions .tah-action button .tah-action-name {
+  line-height: 16px;
+  font-family: Oswald;
+  color: rgba(var(--tah-action-color), 1);
+  font-variant: small-caps;
+}
+
+& #tah-categories .tah-category.hover .tah-content.expand-down .tah-subcategory .tah-actions .tah-action button:hover .tah-action-name {
+  line-height: 16px;
+  font-family: Oswald;
+  color: black;
+  text-shadow: none;
+}
+
+& #tah-categories .tah-category#tah-category-pilot {
+  --tah-action-color: 255, 255, 50;
+}
+
+& #tah-categories .tah-category#tah-category-mech {
+  --tah-action-color: 255, 30, 30;
+}
+
+& #tah-categories .tah-category#tah-category-weapons {
+  --tah-action-color: 255, 30, 30;
+}
+
+& #tah-categories .tah-category#tah-category-systems {
+  --tah-action-color: 255, 30, 30;
+}
+
+& #tah-categories .tah-category#tah-category-utility {
+  --tah-action-color: 30, 255, 255;
+}
+
+#tah-buttons {}
+
+#tah-buttons #tah-edit-categories {}
+
+#tah-buttons #tah-edit-categories i.fa.fa-book {
+  font-size: 12px;
+  padding: 0 3px;
+  margin: 0 3px;
+}
