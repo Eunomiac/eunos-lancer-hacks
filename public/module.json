@@ -43,9 +43,29 @@
     ],
     "requires": [
       {
-        "id": "barbrawl",
+        "id": "lib-wrapper",
         "type": "module",
-        "manifest": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/raw/3ae5ef28510ea57b53bc9a1fa1412dee47a79dc1/src/module.json"
+        "manifest": "https://github.com/ruipin/fvtt-lib-wrapper/releases/latest/download/module.json"
+      },
+      {
+        "id": "_mathjs",
+        "type": "module",
+        "manifest": "https://raw.githubusercontent.com/League-of-Foundry-Developers/mathjs-lib/master/module.json"
+      },
+      {
+        "id": "_sortablejs",
+        "type": "module",
+        "manifest": "https://raw.githubusercontent.com/League-of-Foundry-Developers/sortablejs-lib/main/module.json"
+      },
+      {
+        "id": "socketlib",
+        "type": "module",
+        "manifest": "https://raw.githubusercontent.com/manuelVo/foundryvtt-socketlib/v1.0.13/module.json"
+      },
+      {
+        "id": "sequencer",
+        "type": "module",
+        "manifest": "https://github.com/fantasycalendar/FoundryVTT-Sequencer/releases/download/3.1.4/module.json"
       },
       {
         "id": "_CodeMirror",
@@ -56,6 +76,11 @@
         "id": "color-picker",
         "type": "module",
         "manifest": "https://github.com/Larkinabout/fvtt-color-picker/releases/download/1.3/module.json"
+      },
+      {
+        "id": "barbrawl",
+        "type": "module",
+        "manifest": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/raw/3ae5ef28510ea57b53bc9a1fa1412dee47a79dc1/src/module.json"
       },
       {
         "id": "ct-effect-tooltips",
@@ -80,7 +105,7 @@
       {
         "id": "grid-aware-templates",
         "type": "module",
-        "manifest": "https://raw.githubusercontent.com/BoltsJ/grid-aware-templates/main/public/module.json"
+        "manifest": "https://github.com/BoltsJ/grid-aware-templates/releases/download/v3/module.json"
 		  },
       {
         "id": "hex-size-support",
@@ -107,16 +132,6 @@
         "type": "module",
         "manifest": "https://raw.githubusercontent.com/League-of-Foundry-Developers/fvtt-module-popout/master/module.json"
 		  },
-      {
-        "id": "sequencer",
-        "type": "module",
-        "manifest": "https://github.com/fantasycalendar/FoundryVTT-Sequencer/releases/download/3.1.4/module.json"
-      },
-      {
-        "id": "socketlib",
-        "type": "module",
-        "manifest": "https://raw.githubusercontent.com/manuelVo/foundryvtt-socketlib/v1.0.13/module.json"
-      },
       {
         "id": "statuscounter",
         "type": "module",
