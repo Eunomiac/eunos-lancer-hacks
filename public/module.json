@@ -45,106 +45,110 @@
       {
         "id": "barbrawl",
         "type": "module",
-        "compatibility": {}
+        "manifest": "https://gitlab.com/woodentavern/foundryvtt-bar-brawl/-/raw/3ae5ef28510ea57b53bc9a1fa1412dee47a79dc1/src/module.json"
+      },
+      {
+        "id": "_CodeMirror",
+        "type": "module",
+        "manifest": "https://raw.githubusercontent.com/League-of-Foundry-Developers/codemirror-lib/master/module.json"
+      },
+      {
+        "id": "color-picker",
+        "type": "module",
+        "manifest": "https://github.com/Larkinabout/fvtt-color-picker/releases/download/1.3/module.json"
       },
       {
         "id": "ct-effect-tooltips",
         "type": "module",
-        "compatibility": {}
+        "manifest": "https://github.com/dor-fvtt-released-modules/combat-tracker-effect-tooltips/releases/download/3.1.1/module.json"
       },
       {
         "id": "drag-ruler",
         "type": "module",
-        "compatibility": {}
+        "manifest": "https://raw.githubusercontent.com/manuelVo/foundryvtt-drag-ruler/v1.13.4/module.json"
       },
+      {
+        "id": "easy-target",
+        "type": "module",
+        "manifest": "https://bitbucket.org/Fyorl/easy-target/raw/master/module.json"
+		  },
       {
         "id": "elevatedvision",
         "type": "module",
-        "compatibility": {}
+        "manifest": "https://github.com/caewok/fvtt-elevated-vision/releases/download/0.4.12/module.json"
       },
+      {
+        "id": "grid-aware-templates",
+        "type": "module",
+        "manifest": "https://raw.githubusercontent.com/BoltsJ/grid-aware-templates/main/public/module.json"
+		  },
       {
         "id": "hex-size-support",
         "type": "module",
-        "compatibility": {}
+        "manifest": "https://github.com/Kuenaimaku/Hex-Size-Support/releases/latest/download/module.json"
       },
       {
         "id": "JB2A_DnD5e",
         "type": "module",
-        "compatibility": {}
+        "manifest": "https://raw.githubusercontent.com/Jules-Bens-Aa/JB2A_DnD5e/main/module.json"
       },
       {
         "id": "lancer-speed-provider",
         "type": "module",
-        "compatibility": {}
+        "manifest": "https://github.com/BoltsJ/lancer-speed-provider/releases/download/v4.1/module.json"
       },
       {
         "id": "lancer-weapon-fx",
         "type": "module",
-        "compatibility": {}
+        "manifest": "https://github.com/Z3nner/lancer-weapon-fx/releases/latest/download/module.json"
       },
       {
         "id": "popout",
-        "type": "module"
+        "type": "module",
+        "manifest": "https://raw.githubusercontent.com/League-of-Foundry-Developers/fvtt-module-popout/master/module.json"
 		  },
       {
         "id": "sequencer",
         "type": "module",
-        "compatibility": {}
+        "manifest": "https://github.com/fantasycalendar/FoundryVTT-Sequencer/releases/download/3.1.4/module.json"
       },
       {
         "id": "socketlib",
         "type": "module",
-        "compatibility": {}
+        "manifest": "https://raw.githubusercontent.com/manuelVo/foundryvtt-socketlib/v1.0.13/module.json"
       },
       {
         "id": "statuscounter",
         "type": "module",
-        "compatibility": {}
-      },
-      {
-        "id": "token-tooltip-alt",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
-        "id": "tokenmagic",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
-        "id": "wall-height",
-        "type": "module",
-        "compatibility": {}
+        "manifest": "https://gitlab.com/woodentavern/status-icon-counters/-/raw/c451a54f50c9557d4609b22b2985c993228325a9/src/module.json"
       },
       {
         "id": "tidy-ui_game-settings",
         "type": "module",
-        "compatibility": {}
+        "manifest": "https://raw.githubusercontent.com/sdenec/tidy-ui_game-settings/master/module.json"
 		  },
       {
         "id": "token-action-hud",
         "type": "module",
-        "compatibility": {}
+        "manifest": "https://github.com/Drental/fvtt-tokenactionhud/releases/download/3.0.21/module.json"
 		  },
       {
-        "id": "color-picker",
+        "id": "token-tooltip-alt",
         "type": "module",
-        "compatibility": {}
+        "manifest": "https://github.com/bmarian/token-tooltip-alt/releases/latest/download/module.json"
+      },
+      {
+        "id": "tokenmagic",
+        "type": "module",
+        "manifest": "https://raw.githubusercontent.com/Feu-Secret/Tokenmagic/master-v0.6.3.x/tokenmagic/module.json"
+      },
+      {
+        "id": "wall-height",
+        "type": "module",
+        "manifest": "https://github.com/theripper93/wall-height/releases/download/4.9.6/module.json"
       }
     ],
     "recommends": [
-      {
-        "id": "easy-target",
-        "type": "module"
-		  },
-      {
-        "id": "ernies-modern-layout",
-        "type": "module"
-		  },
-      {
-        "id": "grid-aware-templates",
-        "type": "module"
-		  },
       {
         "id": "mountup",
         "type": "module"

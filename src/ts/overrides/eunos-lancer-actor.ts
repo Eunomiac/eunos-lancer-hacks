@@ -98,7 +98,7 @@ export default class Hack_LancerActor {
       throw new Error("[Define_EunosLancerActor] No LancerActor class provided.");
     }
 
-    class EunosLancerActor_Class extends lancerActorClass {
+    class EunosLancerActor extends lancerActorClass {
 
       // constructor(...args: ConstructorParameters<typeof LancerActor>) {
       //   super(...args);
@@ -247,7 +247,7 @@ export default class Hack_LancerActor {
       // }
     }
 
-    return EunosLancerActor_Class as typeof Actor & ConstructorOf<EunosLancerActor>;
+    return EunosLancerActor as typeof Actor & ConstructorOf<EunosLancerActor>;
   }
 
   static async Initialize() {
