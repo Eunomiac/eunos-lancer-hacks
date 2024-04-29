@@ -36,6 +36,18 @@ export default class Hack_EnableScanVision {
     this.RegisterHooks();
   }
 
+  static async ApplyScanVision() {
+    ui.notifications.info("Refreshing token sensor ranges...");
+    await Promise.all((game.scenes ?? [])
+      .map((s: Scene) => Promise.all(s.tokens
+        .map(
+          async (t: LancerTokenDocument) => Hack_EnableScanVision.SetScanAura(t, true)
+        )
+      ))
+    );
+    ui.notifications.info("Token sensor ranges refreshed.");
+  }
+
   static RegisterSettings() {
     if (!game.user?.isGM) { return; }
     ELH.Settings.RegisterSettingsMenu(
@@ -44,39 +56,26 @@ export default class Hack_EnableScanVision {
         name: "Sensor Vision",
         hint: "Maintain sight range and detection modes for mech tokens.",
         icon: "fa-duotone fa-eye",
-        dependencies: []
+        hasSubmenu: false,
+        toggleDefault: true,
+        dependencies: [],
+        async onEnable() {
+          Hack_EnableScanVision.RegisterHooks();
+          return Hack_EnableScanVision.ApplyScanVision();
+        },
+        onDisable: async () => this.UnregisterHooks(),
+        async onRefresh() { return Hack_EnableScanVision.ApplyScanVision(); }
       },
       {
-        refreshSensorVision: {
-          name: "Refresh Sensor Vision",
-          hint: "Refresh the sensor vision for all tokens controlled by mech characters.",
-          inputType: ELH.Settings.InputType.Button,
-          icon: "fa-duotone fa-refresh",
-          handlers: {
-            click: async () => {
-              ui.notifications.info("Refreshing token sensor ranges...");
-              await Promise.all((game.scenes ?? [])
-                .map((s: Scene) => Promise.all(s.tokens
-                  .map(
-                    async (t: LancerTokenDocument) => Hack_EnableScanVision.SetScanAura(t, true)
-                  )
-                ))
-              );
-              ui.notifications.info("Token sensor ranges refreshed.");
-            }
-          },
-          onEnable: async () => this.RegisterHooks(),
-          onDisable: async () => this.UnregisterHooks(),
-          async onRefresh() { return this.handlers?.click?.(null as never, null as never, null as never); }
-        }
       },
       []
     );
   }
 
-  static registeredHookIDs: number[] = [];
-  static RegisterHooks() {
-    this.registeredHookIDs.push(Hooks.on("drawToken", (token: EunosLancerToken|EunosLancerTokenDocument): void => {
+  static registeredHookIDs: Array<Tuple<string, number>> = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static registeredHooks: Record<string, (...args: any[]) => Promise<any>> = {
+    drawToken: async (token: EunosLancerToken|EunosLancerTokenDocument): Promise<void> => {
       // Verify component is active
       if (!this.isEnabled) { return; }
 
@@ -107,11 +106,17 @@ export default class Hack_EnableScanVision {
           {id: "basicSight", enabled: true, range: sensorRange}
         ]
       });
-    }));
+    }
+  };
+
+  static RegisterHooks() {
+    for (const [name, hook] of Object.entries(this.registeredHooks)) {
+      this.registeredHookIDs.push([name, Hooks.on(name, hook)]);
+    }
   }
 
   static UnregisterHooks() {
-    this.registeredHookIDs.forEach((id: number) => Hooks.off("drawToken", id));
+    this.registeredHookIDs.forEach(([name, id]) => Hooks.off(name, id));
   }
 
   static GetSensorRange(token?: LancerTokenDocument) {

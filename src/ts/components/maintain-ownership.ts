@@ -13,7 +13,7 @@ declare global {
 
 }
 
-export default class Hack_MaintainPermissions {
+export default class Hack_MaintainOwnership {
 
   // #region Environment Viability Checks ~
   static get canEnable(): boolean {
@@ -44,18 +44,26 @@ export default class Hack_MaintainPermissions {
     ELH.Settings.RegisterSettingsMenu(
       "maintainPermissions",
       {
-        name: "Euno's Permissions",
+        name: "Maintain Ownership",
         hint: "Maintain ownership permissions based on Actors folder structure.",
         icon: "fa-duotone fa-lock",
+        hasSubmenu: false,
+        toggleDefault: false,
         dependencies: [],
         async onEnable() {
-          Hack_MaintainPermissions.RegisterHooks();
-          return Hack_MaintainPermissions.FixCharacterPermissions();
+          ui.notifications.info("Fixing character permissions...");
+          Hack_MaintainOwnership.RegisterHooks();
+          await Hack_MaintainOwnership.FixCharacterPermissions();
+          ui.notifications.info("Character permissions fixed successfully.");
         },
         async onDisable() {
-          return Hack_MaintainPermissions.UnregisterHooks();
+          return Hack_MaintainOwnership.UnregisterHooks();
         },
-        async onRefresh() { return Hack_MaintainPermissions.FixCharacterPermissions(); }
+        async onRefresh() {
+          ui.notifications.info("Fixing character permissions...");
+          await Hack_MaintainOwnership.FixCharacterPermissions();
+          ui.notifications.info("Character permissions fixed successfully.");
+        }
       },
       {
       },
@@ -63,18 +71,25 @@ export default class Hack_MaintainPermissions {
     );
   }
 
-  static registeredHookIDs: number[] = [];
-  static RegisterHooks() {
-    this.registeredHookIDs.push(Hooks.on("createActor", async (actor: EunosLancerActor) => {
+  static registeredHookIDs: Array<Tuple<string, number>> = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static registeredHooks: Record<string, (...args: any[]) => Promise<any>> = {
+    createActor: async (actor: EunosLancerActor) => {
       // Verify component is active
       if (!this.isEnabled || !actor.id) { return; }
 
       return this.FixActorPermission(actor.id);
-    }));
+    }
+  };
+
+  static RegisterHooks() {
+    for (const [name, hook] of Object.entries(this.registeredHooks)) {
+      this.registeredHookIDs.push([name, Hooks.on(name, hook)]);
+    }
   }
 
   static UnregisterHooks() {
-    this.registeredHookIDs.forEach((id: number) => Hooks.off("drawToken", id));
+    this.registeredHookIDs.forEach(([name, id]) => Hooks.off(name, id));
   }
 
   static get FolderMap() {
@@ -95,7 +110,7 @@ export default class Hack_MaintainPermissions {
     const userID = this.FolderMap[(actor?.folder?.name ?? "") as keyof typeof this.FolderMap];
     const user = (game.users as unknown as Collection<User>).get(userID);
     console.log(`Fixing Permissions for actor '${actor?.name}' for user '${user?.name}' in folder '${actor?.folder?.name}'`, {actor, user});
-    if (!actor || !user) { return; }
+    if (!actor || !user) { return undefined; }
     // @ts-expect-error: 'ownership' not recognized
     const {ownership} = actor as {ownership: Record<string, number>};
     ownership.default ??= 10;
@@ -118,10 +133,12 @@ export default class Hack_MaintainPermissions {
     if (Object.keys(updateData).length > 0) {
       return actor.update({ownership: updateData});
     }
+
+    return undefined;
   }
 
   static async FixCharacterPermissions(actor?: EunosLancerActor) {
-    if (!game.user?.isGM) { return; }
+    if (!game.user?.isGM) { return undefined; }
     if (actor && actor.id) {
       return this.FixActorPermission(actor.id);
     }

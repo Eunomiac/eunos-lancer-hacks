@@ -64,7 +64,8 @@ export default class Hack_ApplyEunosSettings {
         "permissions-preload": 0
       },
       "token-action-hud": {
-        showHudTitle: false
+        showHudTitle: false,
+        style: "compact"
       }
     };
   }
@@ -112,9 +113,13 @@ export default class Hack_ApplyEunosSettings {
         name: "Euno's Settings",
         hint: "Apply customized settings to other installed modules.",
         icon: "fa-duotone fa-gear",
+        hasSubmenu: false,
+        toggleDefault: true,
         dependencies: [],
         async onEnable() {
-          return Hack_ApplyEunosSettings.UpdateSettings();
+          ui.notifications.info("Updating settings...");
+          await Hack_ApplyEunosSettings.UpdateSettings();
+          ui.notifications.info("Settings updated successfully.");
         },
         async onRefresh() { return this.onEnable?.(); }
       },
@@ -134,7 +139,7 @@ export default class Hack_ApplyEunosSettings {
   }
 
   static async UpdateSettings() {
-    ELH.Settings.SafeUpdate(this.EunosSettings);
+    await ELH.Settings.SafeUpdate(this.EunosSettings);
   }
 }
 // #endregion

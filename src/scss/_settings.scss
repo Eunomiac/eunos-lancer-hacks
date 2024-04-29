@@ -67,6 +67,33 @@
                   }
                 }
 
+                .eunos-dependency-notice {
+                  background: gold;
+                  display: flex;
+                  gap: 5px;
+                  padding: 5px 15px;
+                  border-radius: 15px;
+                  margin-left: -30px;
+                  align-items: center;
+
+                  p { margin: 0 }
+                  i {
+                    font-size: 25px;
+                    color: rgb(100, 0, 0);
+                  }
+              }
+
+                .eunos-refresh-notice {
+                  padding: 0 5px 0px 2px;
+                  border-radius: 5px;
+                  font-family: Oswald;
+                  color: rgba(150, 0, 0, 1);;
+                  line-height: 1;
+                  font-size: 12px;
+                  font-weight: bold;
+                  font-style: italic;
+                }
+
                 button {
                   font-size: 18px;
                   display: flex;
@@ -94,6 +121,23 @@
                     color: #990000;
                   }
 
+                  button {
+                    pointer-events: none;
+                    opacity: 0;
+                  }
+
+                  .eunos-refresh-notice { display: none }
+
+                  &.eunos-submenu-disabled-dependencies {
+
+                    + .eunos-submenu-toggle input {
+                      pointer-events: none;
+                      opacity: 0.25;
+                    }
+                  }
+                }
+
+                &.eunos-submenu-no-submenu {
                   button {
                     pointer-events: none;
                     opacity: 0;

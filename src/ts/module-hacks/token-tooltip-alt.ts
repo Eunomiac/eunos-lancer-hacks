@@ -4294,6 +4294,8 @@ export default class Hack_TokenTooltipAlt {
 
     // Register hooks related to this component
     this.RegisterHooks();
+
+    await ELH.Settings.SafeUpdate(TTA_SETTINGS);
   }
 
   static RegisterSettings() {
@@ -4307,9 +4309,14 @@ export default class Hack_TokenTooltipAlt {
         dependencies: [
           {type: "module", id: "token-tooltip-alt", display: "Token Tooltip Alt"}
         ],
-        onEnable() {
-          return ELH.Settings.SafeUpdate(TTA_SETTINGS);
-        }
+        hasSubmenu: false,
+        toggleDefault: true,
+        async onEnable() {
+          ui.notifications.info("Updating Token Tooltip Alt settings...");
+          await ELH.Settings.SafeUpdate(TTA_SETTINGS);
+          ui.notifications.info("Token Tooltip Alt settings updated successfully.");
+        },
+        async onRefresh() { return this?.onEnable?.(); }
       },
       {},
       [

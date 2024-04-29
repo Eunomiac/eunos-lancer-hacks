@@ -7,13 +7,14 @@ import EunosHacksSettings from "./core/settings";
 import HandlebarHelpers from "./core/helpers";
 
 import Hack_ApplyEunosSettings from "./components/apply-eunos-settings";
-import Hack_MaintainPermissions from "./components/maintain-permissions";
+import Hack_MaintainOwnership from "./components/maintain-ownership";
 import Hack_TokenTooltipAlt from "./module-hacks/token-tooltip-alt";
 import Hack_LancerActor from "./overrides/eunos-lancer-actor";
 import Hack_BarBrawl from "./module-hacks/barbrawl";
 import Hack_BondsTab from "./components/enable-bonds-tab";
 import Hack_ScanVision from "./components/enable-scan-vision";
 import Hack_HexTokenSize from "./module-hacks/hex-token-size";
+import Hack_TokenTweaks from "./components/eunos-token-tweaks";
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 declare global {
@@ -40,7 +41,8 @@ const ReadyQueue: ELHComponent[][] = [
     Hack_HexTokenSize,
     Hack_TokenTooltipAlt,
     Hack_ApplyEunosSettings,
-    Hack_MaintainPermissions
+    Hack_MaintainOwnership,
+    Hack_TokenTweaks
   ]
 ];
 
@@ -102,8 +104,9 @@ const _ELH = {
     ScanVision: Hack_ScanVision,
     HexTokenSize: Hack_HexTokenSize,
     ApplyEunosSettings: Hack_ApplyEunosSettings,
-    MaintainPermissions: Hack_MaintainPermissions,
-    TokenTooltipAlt: Hack_TokenTooltipAlt
+    MaintainPermissions: Hack_MaintainOwnership,
+    TokenTooltipAlt: Hack_TokenTooltipAlt,
+    TokenTweaks: Hack_TokenTweaks
   },
   Utils: {
     resetBondFlags: () => {

@@ -50,6 +50,7 @@
       <label class="setting-name">{{data.name}}</label>
       <span class="setting-hint">{{data.hint}}</span>
       <input type="checkbox" data-key="{{key}}" {{#if data.value}}checked{{/if}}>
+    </div>
     {{/if}}
     {{#if (eq data.inputType "Select")}}
     <div class="settings-container select-container">
@@ -62,9 +63,17 @@
         {{/each}}
         {{/select}}
       </select>
+    </div>
     {{/if}}
     {{#if (eq data.inputType "Button")}}
-      <button data-key="{{key}}">{{data.name}}</button>
+    <div class="settings-container button-container">
+      <label class="setting-name">{{data.name}}</label>
+      <span class="setting-hint">{{data.hint}}</span>
+      <button data-key="{{key}}">
+        <i class="{{data.icon}}"></i>
+        {{data.name}}
+      </button>
+    </div>
     {{/if}}
   {{/each}}
   <button type="submit">OK</button>

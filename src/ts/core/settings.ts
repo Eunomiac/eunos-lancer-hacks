@@ -18,8 +18,10 @@ declare global {
         name: string;
         type?: Type;
         default?: Data;
+        toggleDefault: boolean;
         template?: string;
         dependencies: EHS.DependencyData[];
+        hasSubmenu: boolean;
         onEnable?: () => Promise<unknown>;
         onDisable?: () => Promise<unknown>;
         onRefresh?: () => Promise<unknown>;
@@ -39,6 +41,8 @@ declare global {
 
       namespace Setting {
         interface ConfigBase<T, I extends InputType> extends Omit<SettingConfig<T>, "key" | "namespace" | "scope" | "choices"> {
+          name: string;
+          hint: string;
           inputType: I;
           handlers?: {
             click?: (event: JQuery.Event, elem$: JQuery<HTMLElement>, data: EHS.Submenu.Data) => void;
@@ -195,12 +199,19 @@ export default class EunosHacksSettings {
     subMenu$.addClass("eunos-submenu");
     toggleGroup$.addClass("eunos-submenu-toggle");
     subMenu$.add(toggleGroup$).wrapAll("<div class='eunos-form-group-wrapper'></div>");
+    const hint$ = subMenu$.find(".notes");
 
     const {menuKey} = this._getSubMenuKeys(subMenu$);
     if (!menuKey) {
       throw new Error(`Failed to get menuKey for subMenu$: ${subMenu$}`);
     }
     const subMenuApp = this._getSubMenuApp(menuKey);
+    if (!subMenuApp.menuConfig.hasSubmenu) {
+      subMenu$.addClass("eunos-submenu-no-submenu");
+    }
+    if (subMenuApp.menuConfig.onRefresh) {
+      hint$.append("<span class=\"eunos-refresh-notice\">(Right-Click Checkbox to Refresh.)</span>");
+    }
     const missingDependencies = subMenuApp.Dependencies.filter((dep) => {
       if (dep.type === "module") {
         return !game.modules.get(dep.id)?.active;
@@ -209,11 +220,12 @@ export default class EunosHacksSettings {
       }
       throw new Error(`Unknown dependency type: ${dep.type}`);
     });
+    // if (true) {
     if (missingDependencies.length > 0) {
-      subMenu$.addClass("eunos-submenu-disabled");
-      subMenu$.append(`<div class="eunos-dependency-notice">
+      subMenu$.addClass("eunos-submenu-disabled eunos-submenu-disabled-dependencies");
+      hint$.prepend(`<div class="eunos-dependency-notice">
         <i class="fa-duotone fa-triangle-exclamation"></i>
-        <p>This requires the following modules to be installed: <strong class='eunos-dependency'>${missingDependencies.map((dep) => dep.display).join("</strong>, <strong class='eunos-dependency'>")}</strong></p>
+        <p>This feature requires the following module(s) to be installed and enabled: <strong class='eunos-dependency'>${missingDependencies.map((dep) => dep.display).join("</strong>, <strong class='eunos-dependency'>")}</strong></p>
       </div>`);
       return;
     }
@@ -455,7 +467,7 @@ export default class EunosHacksSettings {
           title: this.menuConfig.name,
           popOut: true,
           template: this.menuConfig.template ?? EunosHacksSettings.defaultTemplate,
-          classes: ["eunos-blades", "settings"],
+          classes: ["eunos-lancer-hacks", "settings"],
           width: 500,
           closeOnSubmit: true,
           submitOnChange: false,
@@ -631,7 +643,7 @@ export default class EunosHacksSettings {
       scope: "world",
       config: true,
       type: Boolean,
-      default: false,
+      default: menuData.toggleDefault,
       onChange: (value: boolean) => {
         if (value) {
           menuApp.Enable();

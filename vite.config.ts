@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 // Importing necessary functions and types from the Vite package and the path module from Node.js
-import {defineConfig, type UserConfig, type Plugin} from "vite";
+import {defineConfig, type Plugin} from "vite";
 import path from "path";
 import fs from "fs";
 import checker from "vite-plugin-checker";
-// const svelte = require("@sveltejs/vite-plugin-svelte");
 import {svelte} from "@sveltejs/vite-plugin-svelte";
-// import tsconfigPaths from "vite-plugin-tsconfig-paths";
 import {visualizer} from "rollup-plugin-visualizer";
 import commonjs from "@rollup/plugin-commonjs";
+import {exec} from "child_process";
 
 /** *** CHECK: *** https://vitejs.dev/guide/performance
  *
@@ -17,6 +16,32 @@ import commonjs from "@rollup/plugin-commonjs";
  * - "allowImportingTsExtensions": true
  * ... in your tsconfig.json's compilerOptions to use .ts and .tsx extensions directly in your code.
  * */
+
+function openChromePlugin(): Plugin {
+  return {
+    name: "open-chrome",
+    apply: "serve", // Only apply this plugin during development
+    configResolved(chromeConfig) {
+      if (chromeConfig.command === "serve") {
+        // Command to open the first Chrome instance
+        const command1 = `start chrome --start-maximized --remote-debugging-port=9222 --auto-open-devtools-for-tabs --user-data-dir="D:/Projects/.CODING/FoundryVTT/ChromeDevProfile_1" http://localhost:${chromeConfig.server.port}`;
+        exec(command1, (error) => {
+          if (error) {
+            console.error("Failed to open first Chrome instance:", error);
+          }
+        });
+
+        // Command to open the second Chrome instance with a different profile
+        const command2 = `start chrome --start-maximized --remote-debugging-port=9223 --auto-open-devtools-for-tabs --user-data-dir="D:/Projects/.CODING/FoundryVTT/ChromeDevProfile_2" http://localhost:${chromeConfig.server.port}`;
+        exec(command2, (error) => {
+          if (error) {
+            console.error("Failed to open second Chrome instance:", error);
+          }
+        });
+      }
+    }
+  };
+}
 
 function scssVariablesToJsPlugin(): Plugin {
   return {
@@ -117,24 +142,24 @@ function foundryPlugin(): Plugin {
 // Defining the Vite configuration object with specific settings for this project
 const config = defineConfig({
   // Setting the root directory for the project to the "src" folder
-  root:      path.resolve(__dirname, "src"),
+  root:      "src/",
   // Setting the base URL for the project when deployed
-  base:      "/eunos-lancer-hacks/",
+  base:      "/modules/eunos-lancer-hacks/",
   // Specifying the directory where static assets are located
-  publicDir: path.resolve(__dirname, "public"),
+  publicDir: "public/",
   // Configuration for the development server
   server:    {
     // Setting the port number for the development server
-    port:  30001,
+    port:  31001,
     // Automatically open the project in the browser when the server starts
-    open:  true,
+    open:  false,
     // Configuring proxy rules for certain URLs
     proxy: {
-      // Redirecting requests that do not start with "/eunos-lancer-hacks" to localhost:30000
-      "^(?!/eunos-lancer-hacks)": "http://localhost:30000/",
+      // Redirecting requests that do not start with "/eunos-lancer-hacks" to localhost:31000
+      "^(?!/eunos-lancer-hacks)": "http://localhost:31000/",
       // Special proxy configuration for WebSocket connections used by socket.io
       "/socket.io":                       {
-        target: "ws://localhost:30000", // Target server for the proxy
+        target: "ws://localhost:31000", // Target server for the proxy
         ws:     true // Enable WebSocket support
       }
     }
@@ -142,7 +167,7 @@ const config = defineConfig({
   // Configuration for the build process
   build: {
     // Directory where the build output will be placed
-    outDir:        "D:/Users/Ryan/Documents/Projects/!!!!CODING/FoundryVTTv10/FoundryDevData/Data/modules/eunos-lancer-hacks",
+    outDir: path.resolve(__dirname, "dist"),
     // Clear the output directory before building
     emptyOutDir:   true,
     // Generate source maps for the build
@@ -174,7 +199,7 @@ const config = defineConfig({
     include: ["lancer-data", "jszip", "axios", "readonly-proxy"] // machine-mind's cjs dependencies
   },
   resolve: {
-    // preserveSymlinks: true,
+    preserveSymlinks: true,
     alias: {
       "gsap/all": "scripts/greensock/esm/all.js"
       // "eunosTypes": path.resolve(__dirname, "src/ts/@types")
@@ -182,16 +207,15 @@ const config = defineConfig({
   },
   plugins: [
     commonjs(),
-    // tsconfigPaths(), // Automatically resolves TS path aliases
-    svelte({
-      configFile: "../svelte.config.cjs"
-    }),
+    svelte({configFile: "../svelte.config.cjs"}),
+
     foundryPlugin(),
     checker({typescript: true}),
     visualizer({
       gzipSize: true,
       template: "treemap"
-    })
+    }),
+    openChromePlugin()
     // scssVariablesToJsPlugin()
   ]
 });

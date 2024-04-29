@@ -56,12 +56,15 @@ export default class Hack_BarBrawl {
         dependencies: [
           {type: "module", id: "barbrawl", display: "BarBrawl"},
           {type: "module", id: "hex-size-support", display: "Hex Size Support"}
-        ]
+        ],
+        toggleDefault: true,
+        hasSubmenu: true,
+        async onRefresh() { return true; }
       },
       {
         selectConfig: {
           name: "Select BarBrawl Config",
-          hint: "Choose one of the provided BarBrawl configurations to use.",
+          hint: "Choose one of the provided BarBrawl configurations to use:",
           inputType: ELH.Settings.InputType.Select,
           default: "custom",
           choices: Object.fromEntries(
@@ -84,21 +87,25 @@ export default class Hack_BarBrawl {
                   }
               }
           },
-          onEnable() {
+          async onEnable() {
             const selectConfig = ELH.Settings.Get("eunos-lancer-hacks", "barbrawl", "selectConfig") as string;
             if (!selectConfig) { return Promise.resolve(); }
-            return Hack_BarBrawl.ApplyConfig(selectConfig);
+            ui.notifications.info(`Applying BarBrawl token configuration: ${selectConfig}...`);
+            await Hack_BarBrawl.ApplyConfig(selectConfig);
+            ui.notifications.info(`BarBrawl token configuration: ${selectConfig} applied successfully.`);
           },
-          onDisable() {
-            return Hack_BarBrawl.DisableConfig();
+          async onDisable() {
+            ui.notifications.info("Disabling BarBrawl token configuration...");
+            await Hack_BarBrawl.DisableConfig();
+            ui.notifications.info("BarBrawl token configuration disabled successfully.");
           },
           async onRefresh() { return this.onEnable?.(); }
         },
         overrideTokenBorders: {
-          name: "Override Token Border",
+          name: "Override Token Borders",
           hint: "Update token borders to be wider.",
           inputType: ELH.Settings.InputType.Button,
-          icon: "fa-regular fa-hexagon",
+          icon: "fa-sharp fa-regular fa-hexagon",
           default: undefined,
           handlers: {
             click: () => {
@@ -116,8 +123,9 @@ export default class Hack_BarBrawl {
               });
             }
           },
-          onEnable() {
-            return ELH.Settings.SetData("hex-size-support", {
+          async onEnable() {
+            ui.notifications.info("Updating token border settings...");
+            await ELH.Settings.SetData("hex-size-support", {
               borderWidth: 20,
               altOrientationDefault: false,
               borderBehindToken: true,
@@ -129,6 +137,7 @@ export default class Hack_BarBrawl {
               neutralColor: "#b47e08",
               hostileColor: "#8c0d0f"
             });
+            ui.notifications.info("Token border settings updated successfully.");
           },
           async onRefresh() { return this.onEnable?.(); }
         }

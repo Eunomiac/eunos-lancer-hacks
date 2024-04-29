@@ -1,0 +1,51 @@
+.window-content {
+
+  form {
+    display: flex;
+    flex-direction: column;
+
+    .settings-container {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+
+      .setting-name {
+        display: block;
+        font-family: Oswald;
+        font-size: 18px;
+        border-bottom: rgba(150, 0, 0, 1) 2px solid;
+        margin-bottom: 5px;
+      }
+
+      .setting-hint {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      select {
+        align-self: flex-end;
+      }
+
+      button {
+        max-width: min-content;
+        white-space: nowrap;
+        align-self: flex-end;
+      }
+
+      &:last-of-type {
+        padding-bottom: 10px;
+        border-bottom: rgba(150, 0, 0, 1) 2px solid;
+
+      }
+
+    }
+
+    button[type="submit"] {
+      align-self: center;
+      max-width: min-content;
+      white-space: nowrap;
+      padding: 0px 20px;
+      font-weight: bold;
+    }
+  }
+}

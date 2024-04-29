@@ -3,18 +3,16 @@
 	"version": "1.0.0",
 	"description": "A collection of bespoke hacks for a Lancer campaign run by Thaumaterge.",
 	"scripts": {
-		"type-check": "tsc --noEmit",
-		"codehawk": "codehawk ts",
-		"preinstall": "npx npm-force-resolutions"
+		"type-check": "tsc --noEmit"
 	},
 	"type": "module",
+	"browserslist": [
+		"last 3 versions"
+	],
 	"sideEffects": [
 		"src/scss/style.scss",
 		"src/scss/fonts.scss",
 		"src/ts/eunos-lancer-hacks.ts"
-	],
-	"browserslist": [
-		"last 3 versions"
 	],
 	"author": "Eunomiac",
 	"license": "",

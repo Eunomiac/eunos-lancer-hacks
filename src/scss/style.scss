@@ -1,11 +1,19 @@
 // Utility imports
 @import './core/functions';
-// @import './core/mixins';
 
 /* Globals */
 :root * {
   @import "./core/colors";
 }
+
+i[class^='fa-'], i[class*=' fa-'] {
+  font-family: "Font Awesome 6 Pro" !important;
+
+  &.fa-duotone {
+    font-family: "Font Awesome 6 Duotone" !important;
+  }
+}
+
 
 /* Disable Lastpass Overlay for people it causes problems for */
 [data-lastpass-root] {
@@ -14,6 +22,8 @@
 
 #client-settings { @import "./settings";}
 
+.app.window-app.eunos-lancer-hacks.settings { @import "./settings-submenu"; }
+
 /* Modifications to Bond Chat Messages */
 #chat-log {
   .message-content {
@@ -21,7 +31,7 @@
       --main-font-family: "HelveticaNeue", Helvetica, Arial, sans-serif;
       .bond-power {
         background-color: var(--bond-red-dark);
-        --main-font-family: "Oswald";
+        --main-font-family: "Oswald", sans-serif;
         text-transform: uppercase;
       }
 
@@ -42,23 +52,28 @@
 .token-tooltip-alt-tooltip-container { @import './module-hacks/token-tooltip-alt'; }
 
 /* Modifications to Sheet Tabs to make room for Bonds Tab */
-.app.window-app.lancer.sheet.actor.pilot {
+.app.window-app {
 
-  .lancer-tabs {
-    justify-content: space-around;
+  &.lancer.sheet.actor.pilot {
 
-    .lancer-tab {
-      font-family: "Oswald";
-      padding: 7px;
-      font-size: 16px;
-      line-height: 16px;
+    .lancer-tabs {
+      justify-content: space-around;
+
+      .lancer-tab {
+        font-family: "Oswald", sans-serif;
+        padding: 7px;
+        font-size: 16px;
+        line-height: 16px;
+      }
+    }
+
+    section.sheet-body.scroll-body {
+      height: calc(100% - 208px);
+      overflow: visible;
     }
   }
 
-  section.sheet-body.scroll-body {
-    height: calc(100% - 208px);
-    overflow: visible;
-  }
+  &.macro-sheet { @import "./module-hacks/code-mirror"; }
 }
 
 .tab.bonds.active { @import './bonds'; }

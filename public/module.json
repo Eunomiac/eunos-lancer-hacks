@@ -25,11 +25,27 @@
   ],
 	"packs": [
 		{
-			"name": "eunoMacros_Dev",
-			"label": "[Dev] Eunos Macros",
-			"path": "packs/eunos-hacks-dev.db",
+			"name": "eunoMacros",
+			"label": "Euno's Macros",
+			"path": "packs/eunos-macros.db",
 			"type": "Macro",
 			"private": false,
+			"flags": {}
+		},
+		{
+			"name": "eunoMacros_GM",
+			"label": "Euno's GM Macros",
+			"path": "packs/eunos-gm-macros.db",
+			"type": "Macro",
+			"private": true,
+			"flags": {}
+		},
+		{
+			"name": "eunoMacros_Dev",
+			"label": "Euno's Dev Macros",
+			"path": "packs/eunos-hacks-dev.db",
+			"type": "Macro",
+			"private": true,
 			"flags": {}
 		}
   ],
