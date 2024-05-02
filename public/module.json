@@ -17,7 +17,7 @@
     "verified": "10"
   },
   "esmodules": [
-    "eunos-lancer-hacks.js",
+    "index.js",
     "greensock/esm/all.js"
   ],
   "styles": [

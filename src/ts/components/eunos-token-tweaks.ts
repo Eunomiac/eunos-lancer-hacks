@@ -114,8 +114,12 @@ export default class Hack_TokenTweaks {
       // Verify component is active
       if (!this.isEnabled) { return; }
 
+      let tokenDoc: EunosLancerTokenDocument;
+
       if (token instanceof LancerToken) {
-        token = token.document;
+        tokenDoc = token.document;
+      } else {
+        tokenDoc = token;
       }
 
       await Hack_TokenTweaks.ApplyTokenTweaks(token);
@@ -192,9 +196,12 @@ export default class Hack_TokenTweaks {
       return await Promise.all(
         (game.scenes ?? []).map(async (s: Scene) => {
           const updates = await Promise.all(s.tokens.map(async (t: LancerTokenDocument) => {
+            if (t instanceof LancerToken) {
+              t = t.document as LancerTokenDocument;
+            }
             const {type} = t.actor ?? {};
             if (!type) { return; }
-            return Hack_TokenTweaks.ApplyTokenTweaks(t as EunosLancerTokenDocument, true);
+            return Hack_TokenTweaks.ApplyTokenTweaks(t, true);
           }));
           return s.updateEmbeddedDocuments("Token", updates.filter(Boolean) as Array<Record<string, unknown>>);
         })

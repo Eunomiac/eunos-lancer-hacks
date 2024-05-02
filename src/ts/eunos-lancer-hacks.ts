@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import "../scss/fonts.scss";
 import "../scss/style.scss";
 
 import C from "./core/constants";
@@ -48,9 +47,8 @@ const ReadyQueue: ELHComponent[][] = [
 
 /* Wait for Foundry to signal the 'init' event, then initialize module. */
 Hooks.on("init", async function() {
-  // Disable Compatibility Warnings
-  CONFIG.compatibility.mode = 0;
 
+  console.log("[Eunos-Lancer-Hacks] Initiating Wait ...");
   // Wait for lancer system to initialize
   await new Promise<boolean>((resolve) => {
     console.log("[Eunos-Lancer-Hacks] Awaiting Lancer System Initialization ...");
@@ -86,6 +84,9 @@ Hooks.on("init", async function() {
 
 /* Wait for the "ready" hook, then update general settings */
 Hooks.on("ready", async function() {
+
+  // Disable Compatibility Warnings
+  CONFIG.compatibility.mode = 0;
 
   // Initialize components in the ReadyQueue, in sequential groups.
   for (const queueGroup of ReadyQueue) {

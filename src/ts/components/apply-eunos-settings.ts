@@ -121,7 +121,7 @@ export default class Hack_ApplyEunosSettings {
           await Hack_ApplyEunosSettings.UpdateSettings();
           ui.notifications.info("Settings updated successfully.");
         },
-        async onRefresh() { return this.onEnable?.(); }
+        async onRefresh() { return this.onEnable?.call(this); }
       },
       {
       },

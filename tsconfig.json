@@ -1,30 +1,28 @@
 {
-  "extends": "@tsconfig/svelte/tsconfig.json",
+  "extends": "@tsconfig/node21/tsconfig.json",
   "compilerOptions": {
-          "allowJs": false,
-          "allowSyntheticDefaultImports": true,
-          "baseUrl": ".",
-          "checkJs": false,
-          "forceConsistentCasingInFileNames": true,
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "importsNotUsedAsValues": "remove",
-    "isolatedModules": false,
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "checkJs": false,
+            "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
     "lib": [
       "ESNext",
       "DOM"
     ],
     "module": "ESNext",
     "moduleResolution": "node",
-    "noEmit": true,
-          "noImplicitAny": true,
-          "noImplicitOverride": true,
-          "noImplicitReturns": true,
-          "noImplicitThis": true,
+    "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
           "paths": {
             "*": [
               "*",
-              "D:/Projects/.CODING/FoundryVTT/Foundry10DistData/Data/modules/*",
+              "D:/Projects/.CODING/FoundryVTT/FoundryV10DistData/Data/modules/*",
+              "D:/Projects/.CODING/FoundryVTT/FoundryV10DevData/Data/modules/*",
               "C:/FoundryVTT/v10/Foundry Virtual Tabletop/resources/app/*"
             ]
           },
@@ -41,18 +39,10 @@
     "target": "ESNext",
     "traceResolution": false,
     "types": [
-      "@league-of-foundry-developers/foundry-vtt-types",
-      "svelte"
-    ],
-    "useDefineForClassFields": false,
-    // "paths": {
-    //   "eunosTypes/*": ["./src/ts/@types/*"]
-    // },
+      "@league-of-foundry-developers/foundry-vtt-types"
+    ]
   },
   "include": [
     "./src/ts/**/*.ts"
-  ],
-  "exclude": [
-    "dist/**"
   ]
 }
