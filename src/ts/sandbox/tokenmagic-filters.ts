@@ -193,7 +193,7 @@ globalThis.TOKENMAGIC_CONFIGS = {
 
 
 globalThis.setConfig = function setConfig(disp, isPrimary, size, isFlying) {
-  const configKey = (`${disp.slice(0,1).toUpperCase()}${disp.slice(1)}_${isPrimary ? "Primary" : "Secondary"}_${isFlying ? "Flying" : "Walker"}_Size${size}`);
+  const configKey = (`${disp.slice(0, 1).toUpperCase()}${disp.slice(1)}_${isPrimary ? "Primary" : "Secondary"}_${isFlying ? "Flying" : "Walker"}_Size${size}`);
   console.log(`Setting Config to Key: '${configKey}'`, TOKENMAGIC_CONFIGS[configKey]);
   globalThis.config = {
     ...globalThis.configDefaults,
@@ -202,6 +202,67 @@ globalThis.setConfig = function setConfig(disp, isPrimary, size, isFlying) {
 };
 
 globalThis.changeBrightness = function changeBrightness(color, factor) {
+  // Convert RGB to HSB
+  const red = (color >> 16) & 0xFF;
+  const green = (color >> 8) & 0xFF; // Extract green component from color
+  const blue = color & 0xFF; // Extract blue component from color
+  const {h, s, b: initialBrightness} = rgbToHsb(red, green, blue); // Convert RGB to HSB
+  // Adjust brightness
+  const adjustedBrightness = Math.min(Math.max(factor, 0), 1); // Ensure brightness stays within the range 0 to 1
+  // Convert HSB back to RGB
+  const {r, g, b: newBlue} = hsbToRgb(h, s, b);
+  return (r << 16) | (g << 8) | newBlue;
+  };
+  // Helper function to convert RGB to HSB
+  function rgbToHsb(r, g, b) {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h;
+  let s;
+  const l = (max + min) / 2;
+  if (max === min) {
+    h = s = 0; // achromatic
+  } else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r:
+        h = ((g - b) / d) + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = ((b - r) / d) + 2;
+        break;
+      case b:
+        h = ((r - g) / d) + 4;
+        break;
+    }
+    h /= 6;
+  }
+  return {h, s, b: l};
+  }
+  // Helper function to convert HSB back to RGB
+  function hsbToRgb(h, s, b) {
+    let r; let g; let blue;
+    const i = Math.floor(h * 6);
+    const f = (h * 6) - i;
+    const p = b * (1 - s);
+    const q = b * (1 - (f * s));
+    const t = b * (1 - ((1 - f) * s));
+    switch (i % 6) {
+      case 0: r = b; g = t; blue = p; break;
+      case 1: r = q; g = b; blue = p; break;
+      case 2: r = p; g = b; blue = t; break;
+      case 3: r = p; g = q; blue = b; break;
+      case 4: r = t; g = p; blue = b; break;
+      case 5: r = b; g = p; blue = q; break;
+    }
+    return {r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(blue * 255)};
+  }
+
+globalThis.changeBrightness_OLD = function changeBrightness(color, factor) {
 
   // Extract the RGB components from the hexadecimal color
   const red = (color >> 16) & 0xFF;
@@ -288,10 +349,10 @@ globalThis.buildOutlineFilter = function buildOutlineFilter() {
   return filterParams;
 };
 
-globalThis.applyFilters = (disp = "hostile", isPrimary = false, size = 1, isFlying = false) => {
+globalThis.applyFilters = async (disp = "hostile", isPrimary = false, size = 1, isFlying = false) => {
   setConfig(disp, isPrimary, size, isFlying);
   // Delete pre-applied filters on the selected tokens/tiles
-  Promise.all([
+  await Promise.all([
     TokenMagic.deleteFiltersOnSelected("dropShadow"),
     TokenMagic.deleteFiltersOnSelected("dropShadow0"),
     TokenMagic.deleteFiltersOnSelected("dropShadow1"),

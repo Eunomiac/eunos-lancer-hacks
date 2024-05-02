@@ -122,7 +122,7 @@ export default class Hack_TokenTweaks {
         tokenDoc = token;
       }
 
-      await Hack_TokenTweaks.ApplyTokenTweaks(token);
+      await Hack_TokenTweaks.ApplyTokenTweaks(tokenDoc);
 
     }
   };

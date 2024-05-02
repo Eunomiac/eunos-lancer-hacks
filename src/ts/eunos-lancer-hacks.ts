@@ -64,7 +64,6 @@ Hooks.on("init", async function() {
 
   console.log("*** INITIALIZING EUNO'S LANCER HACKS ***");
 
-  // if (!game.user?.isGM) { return; }
   // Expose Lancer classes to global scope
   const {LancerActor: LancerActorClass, LancerItem: LancerItemClass} = game.lancer.entities as {LancerActor: typeof LancerActor, LancerItem: typeof LancerItem};
   Object.assign(globalThis, {
