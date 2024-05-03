@@ -1,7 +1,8 @@
 import C from "../core/constants";
+import {getConstructor, InputType} from "../core/utilities";
 import Hack_BarBrawl from "../module-hacks/barbrawl";
 
-// #region TYPES & HELPER FUNCTIONS ~
+// #region TYPES  ~
 declare global {
   namespace EHS {
 
@@ -21,7 +22,6 @@ declare global {
         toggleDefault: boolean;
         template?: string;
         dependencies: EHS.DependencyData[];
-        hasSubmenu: boolean;
         onEnable?: () => Promise<unknown>;
         onDisable?: () => Promise<unknown>;
         onRefresh?: () => Promise<unknown>;
@@ -88,33 +88,9 @@ declare global {
   }
 }
 
-/**
- * Gets the constructor of the given value.
- * For primitive values, it returns their wrapper object constructors (Number, String, Boolean).
- * For object types, it returns their constructor directly.
- * @param {T} value - The value to get the constructor of.
- * @returns {EHS.Setting.Type<T> | null} The constructor of the value, or null if it cannot be determined.
- */
-function getConstructor<T>(value: T): EHS.Setting.Type<T> | null {
-  if (value === null || value === undefined) {return null;}
-  switch (typeof value) {
-    case "string": return String as EHS.Setting.Type<T>;
-    case "number": return Number as EHS.Setting.Type<T>;
-    case "boolean": return Boolean as EHS.Setting.Type<T>;
-    case "object": return (Array.isArray(value) ? Array : value.constructor) as EHS.Setting.Type<T>;
-    default: return null;
-  }
-}
 
-enum InputType {
-  Button = "Button",
-  Select = "Select",
-  Text = "Text",
-  Number = "Number",
-  File = "File",
-  Color = "Color",
-  Checkbox = "Checkbox"
-}
+
+
 // #endregion
 
 export default class EunosHacksSettings {
@@ -206,7 +182,7 @@ export default class EunosHacksSettings {
       throw new Error(`Failed to get menuKey for subMenu$: ${subMenu$}`);
     }
     const subMenuApp = this._getSubMenuApp(menuKey);
-    if (!subMenuApp.menuConfig.hasSubmenu) {
+    if (!subMenuApp.hasSubmenu) {
       subMenu$.addClass("eunos-submenu-no-submenu");
     }
     if (subMenuApp.menuConfig.onRefresh) {
@@ -330,6 +306,7 @@ export default class EunosHacksSettings {
 
       static readonly menuConfig = menuConfig;
       static readonly settingsConfig = settingsConfig;
+      static get hasSubmenu() { return Object.keys(this.settingsConfig).length > 0; }
 
       static get Dependencies(): EHS.DependencyData[] {
         return this.menuConfig.dependencies ?? [];

@@ -72,7 +72,16 @@ declare global {
       id: string,
       enabled: boolean,
       range: number
-    }>
+    }>,
+    texture: {
+      offsetX: number,
+      offsetY: number,
+      rotation: number,
+      scaleX: number,
+      scaleY: number,
+      src: string,
+      tint: string
+    }
   }
 
   type EunosLancerTokenData = LancerToken["data"] & EunosLancerToken_ExtraData;
@@ -99,11 +108,6 @@ export default class Hack_LancerActor {
     }
 
     class EunosLancerActor extends lancerActorClass {
-
-      // constructor(...args: ConstructorParameters<typeof LancerActor>) {
-      //   super(...args);
-      //   // Initialize your properties here
-      // }
 
       parseBondPowersDownload(
         bond: string,

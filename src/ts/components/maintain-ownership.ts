@@ -47,7 +47,6 @@ export default class Hack_MaintainOwnership {
         name: "Maintain Ownership",
         hint: "Maintain ownership permissions based on Actors folder structure.",
         icon: "fa-duotone fa-lock",
-        hasSubmenu: false,
         toggleDefault: false,
         dependencies: [],
         async onEnable() {

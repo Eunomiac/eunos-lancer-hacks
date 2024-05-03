@@ -35,6 +35,17 @@ declare global {
   // Represents a value that may be undefined
   type Maybe<V> = V | undefined;
 
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  // Represents any synchronous function
+  type AnySyncFunction<R = any> = (...args: any[]) => R;
+
+  // Represents any asynchronous function
+  type AnyAsyncFunction<R = any> = (...args: any[]) => Promise<R>;
+
+  // Represents any function
+  type AnyFunction<R = any> = AnySyncFunction<R> | AnyAsyncFunction<R>;
+  /* eslint-enable @typescript-eslint/no-explicit-any */
+
   // Represents a list of a certain type
   type List<V = unknown, K extends key = key> = Record<K, V>
 
@@ -92,10 +103,10 @@ declare global {
   type ValOf<T> = T extends unknown[] | readonly unknown[] ? T[number] : T[keyof T];
 
   // Represents a function that takes a key and an optional value and returns unknown
-  type keyFunc = (key: number | string, val?: any) => unknown;
+  type keyFunc = (key: number | string, val?: never) => unknown;
 
   // Represents a function that takes a value and an optional key and returns any
-  type valFunc = (val: any, key?: number | string) => any;
+  type valFunc = (val: never, key?: number | string) => unknown;
 
   // Represents a test function
   type testFunc<Type extends keyFunc | valFunc> = (...args: Parameters<Type>) => boolean;
@@ -104,7 +115,7 @@ declare global {
   type mapFunc<Type extends keyFunc | valFunc> = (...args: Parameters<Type>) => unknown;
 
   // Represents a check test
-  type checkTest = ((...args: any[]) => any) | testFunc<keyFunc> | testFunc<valFunc> | RegExp | number | string;
+  type checkTest = ((...args: never[]) => never) | testFunc<keyFunc> | testFunc<valFunc> | RegExp | number | string;
 
   // #endregion
 

@@ -54,6 +54,9 @@ declare global {
       [gameSystemId: string|undefined]: {
         mm_size?: number;
       };
+      "eunos-lancer-hacks": {
+        storedData?: Record<string, unknown>
+      };
       "hex-size-support"?: {
         borderSize?: number,
         altSnapping?: boolean,

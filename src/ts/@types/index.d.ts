@@ -1,4 +1,4 @@
-import EunosLancerActor from "../overrides/eunos-lancer-actor";
+import EunosLancerActor, {EunosLancerToken, EunosLancerTokenDocument} from "../overrides/eunos-lancer-actor";
 import {EntryType, Mech, Deployable, Npc, OpCtx, LiveEntryTypes, Pilot, PackedPilotData, RegEntryTypes, Frame} from "machine-mind";
 
 import * as TYPES_CONSTANTS from "../core/constants";
@@ -12,6 +12,7 @@ import type gsap from "gsap/all";
 
 import "./general-types";
 import "./global";
+import "./hooks";
 import "./foundry-vtt-types";
 import "./module";
 /**
@@ -27,6 +28,29 @@ import "./module/helpers/text-enrichers";
 export declare const system_ready: Promise<void>;
 
 declare global {
+  namespace Hooks {
+    /**
+    * A hook event that fires when a PlaceableObject is initially drawn.
+    * The dispatched event name replaces "Object" with the named PlaceableObject subclass,
+    * i.e. "refreshToken".
+    * @param object - The PlaceableObject
+    * @typeParam P  - the type of the PlaceableObject
+    * @remarks The name for this hook is dynamically created by joining 'refresh' and the type name of the PlaceableObject.
+    * @remarks This is called by {@link Hooks.callAll}.
+    */
+     type RefreshPlaceableObject<P extends PlaceableObject = PlaceableObject> = (object: P) => void;
+
+    /**
+    * A hook event that fires when a PlaceableObject is incrementally refreshed.
+    * The dispatched event name replaces "Object" with the named PlaceableObject subclass,
+    * i.e. "refreshToken".
+    * @param object - The PlaceableObject
+    * @typeParam P  - the type of the PlaceableObject
+    * @remarks The name for this hook is dynamically created by joining 'draw' and the type name of the PlaceableObject.
+    * @remarks This is called by {@link Hooks.callAll}.
+    */
+     type DrawPlaceableObject<P extends PlaceableObject = PlaceableObject> = (object: P) => void;
+  }
 
   interface Game {
     actors: Collection<LancerActor>,
@@ -80,6 +104,33 @@ declare global {
     }
   }
 
+  // interface DocumentClassConfig {
+  //   Token: typeof EunosLancerTokenDocument;
+  // }
+
+  // interface PlaceableObjectClassConfig {
+  //   Token: typeof EunosLancerToken;
+  // }
+
+  // interface FlagConfig {
+  //   Token: {
+  //     [gameSystemId: string|undefined]: {
+  //       mm_size?: number;
+  //     };
+  //     "eunos-lancer-hacks": {
+  //       storedData?: Record<string, unknown>
+  //     };
+  //     "hex-size-support"?: {
+  //       borderSize?: number,
+  //       altSnapping?: boolean,
+  //       evenSnap?: boolean,
+  //       alwaysShowBorder?: boolean,
+  //       alternateOrientation?: boolean,
+  //       pivotx?: number,
+  //       pivoty?: number
+  //     };
+  //   };
+  // }
 
   // GreenSock Accessor Object
   const gsap: gsap;

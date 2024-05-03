@@ -41,7 +41,7 @@ export default class Hack_EnableScanVision {
     await Promise.all((game.scenes ?? [])
       .map((s: Scene) => Promise.all(s.tokens
         .map(
-          async (t: LancerTokenDocument) => Hack_EnableScanVision.SetScanAura(t, true)
+          async (t) => Hack_EnableScanVision.SetScanAura(t as EunosLancerTokenDocument, true)
         )
       ))
     );
@@ -56,7 +56,6 @@ export default class Hack_EnableScanVision {
         name: "Sensor Vision",
         hint: "Maintain sight range and detection modes for mech tokens.",
         icon: "fa-duotone fa-eye",
-        hasSubmenu: false,
         toggleDefault: true,
         dependencies: [],
         async onEnable() {
@@ -74,14 +73,15 @@ export default class Hack_EnableScanVision {
 
   static registeredHookIDs: Array<Tuple<string, number>> = [];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static registeredHooks: Record<string, (...args: any[]) => Promise<any>> = {
-    drawToken: async (token: EunosLancerToken|EunosLancerTokenDocument): Promise<void> => {
+  private static readonly registeredHooks: {
+    updateToken: Hooks.UpdateDocument<typeof LancerTokenDocument>
+  } = {
+    updateToken: (async (lToken, change, {diff}) => {
       // Verify component is active
-      if (!this.isEnabled) { return; }
+      if (!this.isEnabled) { return true; }
+      if (!change || !diff) { return true; }
 
-      if (token instanceof LancerToken) {
-        token = token.document;
-      }
+      const token = lToken as EunosLancerTokenDocument;
 
       // Verify that this is a token, controlled by an actor, of type 'mech'.
       if (!token?.actor?.is_mech()) { return; }
@@ -90,23 +90,25 @@ export default class Hack_EnableScanVision {
       const sensorRange = this.GetSensorRange(token);
 
       // Update token with new data
-      token.update({
-        // Assign heat and hp to token bars (but don't make them visible yet)
-        bar1: {attribute: "derived.heat"},
-        bar2: {attribute: "derived.hp"},
-        // Enable sight, disable color, set range to sensors
-        sight: {
-          enabled: true,
-          color: null,
-          range: sensorRange
-        },
-        // Set up both detectionModes to equal sensor range
-        detectionModes: [
-          {id: "feelTremor", enabled: true, range: sensorRange},
-          {id: "basicSight", enabled: true, range: sensorRange}
-        ]
-      });
-    }
+      Object.assign(
+        change,
+        {
+          // Enable sight, disable color, set range to sensors
+          sight: {
+            enabled: true,
+            color: null,
+            range: sensorRange
+          },
+          // Set up both detectionModes to equal sensor range
+          detectionModes: [
+            {id: "feelTremor", enabled: true, range: sensorRange},
+            {id: "basicSight", enabled: true, range: sensorRange}
+          ]
+        }
+      );
+
+      return true;
+    })
   };
 
   static RegisterHooks() {
@@ -119,7 +121,7 @@ export default class Hack_EnableScanVision {
     this.registeredHookIDs.forEach(([name, id]) => Hooks.off(name, id));
   }
 
-  static GetSensorRange(token?: LancerTokenDocument) {
+  static GetSensorRange(token?: EunosLancerTokenDocument) {
     // Verify that this is a token, controlled by an actor, of type 'mech'.
     if (!token?.actor?.is_mech()) { return; }
 
@@ -133,10 +135,7 @@ export default class Hack_EnableScanVision {
     return sensorRange;
   }
 
-  static SetScanAura(token: LancerToken|LancerTokenDocument, isEnabling: boolean) {
-    if (token instanceof LancerToken) {
-      token = token.document;
-    }
+  static SetScanAura(token: EunosLancerTokenDocument, isEnabling: boolean) {
 
     // Verify that this is a token, controlled by an actor, of type 'mech'.
     if (!token?.actor?.is_mech()) { return; }

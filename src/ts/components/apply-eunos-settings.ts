@@ -113,7 +113,6 @@ export default class Hack_ApplyEunosSettings {
         name: "Euno's Settings",
         hint: "Apply customized settings to other installed modules.",
         icon: "fa-duotone fa-gear",
-        hasSubmenu: false,
         toggleDefault: true,
         dependencies: [],
         async onEnable() {

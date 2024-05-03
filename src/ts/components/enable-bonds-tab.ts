@@ -81,7 +81,7 @@ export default class Hack_EnableBondsTab {
   }
 
   static RegisterHooks() {
-    Hooks.on("renderLancerActorSheet", (actorSheet: EunosLancerActorSheet, elem$: JQuery) => {
+    Hooks.on<Hooks.RenderApplication<EunosLancerActorSheet>>("renderLancerActorSheet", (actorSheet: EunosLancerActorSheet, elem$: JQuery) => {
       if (actorSheet.actor.is_pilot()) {
         this.addBondsTab(actorSheet, elem$).then(function() {
           if (actorSheet.isBondsTabActive) {

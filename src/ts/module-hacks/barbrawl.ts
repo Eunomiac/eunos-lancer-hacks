@@ -58,7 +58,6 @@ export default class Hack_BarBrawl {
           {type: "module", id: "hex-size-support", display: "Hex Size Support"}
         ],
         toggleDefault: true,
-        hasSubmenu: true,
         async onRefresh() { return true; }
       },
       {
